@@ -41,10 +41,7 @@ public class Queries {
 	
 	public static final String SHOW_ALL_FILES = "SELECT "+FILE_NAME+" FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?"; // my update
 		
-	
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
-	public static final String EXIST_NAME_ROOT = "SELECT r.* FROM "+RESOURCE_TABLE+" r WHERE r."+PARENT_ID+" IS NULL AND r."+RESOURCE_NAME+" = ? AND r."+USER_ID+"= ? ;";
-	
-	public static final String EXIST_NAME = "SELECT r.* FROM "+RESOURCE_TABLE+" r WHERE r."+PARENT_ID+" = ? AND r."+RESOURCE_NAME+" = ? AND r."+USER_ID+"= ? ;";
+	public static final String EXIST_NAME = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? AND "+USER_ID+"= ? ;";
 }

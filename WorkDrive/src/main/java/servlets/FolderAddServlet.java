@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import dao.AccountsManager;
 import dao.ResourceManager;
+import hashing.AESEncryption;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -54,19 +55,20 @@ public class FolderAddServlet extends HttpServlet {
 
 			Long parentId = null;
 
-			long userId = 0;
-
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
+			long userId = 0;
+
 			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if ("cookie".equals(cookie.getName())) {
-						cookieValue = cookie.getValue();
-						break;
-					}
-				}
-				userId = AccountsManager.getUserId(cookieValue);
-			} 
+			    for (Cookie cookie : cookies) {
+			        if ("cookie".equals(cookie.getName())) {
+			            cookieValue = cookie.getValue();
+			            break;
+			        }
+			    }
+			    userId = AccountsManager.getUserId(cookieValue);
+			}
+			
 			
 			if (!requestObject.isNull("parentId")) {
 				parentId = Long.parseLong(requestObject.getString("parentId"));

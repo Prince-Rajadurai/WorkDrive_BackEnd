@@ -60,14 +60,13 @@ public class ResourceManager {
 	}
 
 	public static boolean existResourceName(long userId, Long parentId, String resourceName) throws SQLException {
-		ResultSet rs;
-		if (parentId != null) {
-			rs = QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { parentId, resourceName, userId });
-		} else {
-			rs = QueryHandler.executeQuerry(Queries.EXIST_NAME_ROOT, new Object[] { resourceName, userId });
-		}
+		ResultSet rs= QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { parentId, resourceName, userId });
 		return rs.next();
-
+	}
+	
+	public static boolean existResourceName(long userId, String resourceName, long resourceId) throws SQLException {
+		ResultSet rs= QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { resourceId, resourceName, userId });
+		return rs.next();
 	}
 
 	public static boolean moveResource(Long parentId, long resourceId, String finalName) {

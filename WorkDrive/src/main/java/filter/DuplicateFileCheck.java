@@ -70,7 +70,7 @@ public class DuplicateFileCheck extends HttpFilter implements Filter {
 		catch(Exception e) {
 			e.printStackTrace();
 			response.getWriter().write(RequestHandler.sendResponse(500, "server error"));
-		}
+		}	
 		
 		
 		

@@ -36,10 +36,13 @@ public class AccountsManager {
 	}
 
 	public static long getUserId(String email) throws Exception {
-		String decryptEmail = new AESEncryption().decrypt(email);
+		String decryptEmail=new AESEncryption().decrypt(email);
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_USERID, new Object[] { decryptEmail });
-		rs.next();
-		return rs.getLong("UserId");
+		long userId = 0;
+		if(rs.next()) {
+			userId = rs.getLong("UserId");
+		}
+		return userId;
 	}
 
 }
