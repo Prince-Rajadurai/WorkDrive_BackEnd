@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.FileOperations;
+import utils.RequestHandler;
 
 /**
  * Servlet implementation class UpdateFileServlet
@@ -53,17 +54,13 @@ public class UploadFileServlet extends HttpServlet {
 			
 			boolean res = ResourceManager.AddFile(folderId, path+"/"+filename, filename);
 			if(res) {
-				responseObject.put("StatusCode", 200);
-				responseObject.put("message", "File uploaded sucessfully");
+				response.getWriter().write(RequestHandler.sendResponse(200, "file uploaded"));
 			}
 			
 		}
 		else {
-				responseObject.put("StatusCode", 400);
-				responseObject.put("message", "File upload failed");
+			response.getWriter().write(RequestHandler.sendResponse(400, "file upload failed"));	
 		}
-		
-		response.getWriter().write(responseObject.toString());
 	}
 
 }

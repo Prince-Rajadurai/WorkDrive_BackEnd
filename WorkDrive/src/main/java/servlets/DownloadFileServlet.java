@@ -39,7 +39,6 @@ public class DownloadFileServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
-		JSONObject responseObject = new JSONObject();
 				
 		String path = requestObject.getString("path");
 		String fileName = requestObject.getString("filename");
@@ -47,16 +46,13 @@ public class DownloadFileServlet extends HttpServlet {
 		
 		if(result.equals("File deleted successfully")) {
 			
-			responseObject.put("Status Code", 200);
-			responseObject.put("message", "File downloaded sucessfully");
+			response.getWriter().write(RequestHandler.sendResponse(200, "file downloaded"));
 			
 		}
 		else {
-			responseObject.put("Status Code", 400);
-			responseObject.put("message", "File download failed");
+			response.getWriter().write(RequestHandler.sendResponse(400, "file downloaded failed"));
 		}
 		
-		response.getWriter().write(responseObject.toString());
 	}
 
 }

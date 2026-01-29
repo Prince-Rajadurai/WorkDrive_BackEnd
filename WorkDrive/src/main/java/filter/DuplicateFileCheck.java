@@ -55,7 +55,6 @@ public class DuplicateFileCheck extends HttpFilter implements Filter {
 			if(ResourceManager.duplicateFile(folderId, fileName)&&replaceFile) {
 				FileOperations.DeleteFile(path, fileName);
 				ResourceManager.deleteFile(folderId, path);
-				request.setAttribute("fileDetails", requestObject);
 				chain.doFilter(request, response);
 			}
 			else if(!(ResourceManager.duplicateFile(folderId, fileName))) {

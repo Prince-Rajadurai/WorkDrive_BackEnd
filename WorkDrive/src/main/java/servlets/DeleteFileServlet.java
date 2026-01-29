@@ -41,8 +41,6 @@ public class DeleteFileServlet extends HttpServlet {
 		
 		
 		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
-		JSONObject responseObject = new JSONObject();
-				
 		String path = requestObject.getString("path");
 		String fileName = requestObject.getString("filename");
 		long folderId = requestObject.getLong("folderId");
@@ -52,17 +50,14 @@ public class DeleteFileServlet extends HttpServlet {
 			
 			boolean res = ResourceManager.deleteFile(folderId, fileName);
 			if(res) {
-				responseObject.put("Status Code", 200);
-				responseObject.put("message", "File deleted sucessfully");
+				response.getWriter().write(RequestHandler.sendResponse(200, "file deleted"));
 			}
 			
 		}
 		else {
-			responseObject.put("Status Code", 400);
-			responseObject.put("message", "File deleted failed");
+			response.getWriter().write(RequestHandler.sendResponse(400, "file deleted failed"));
 		}
 		
-		response.getWriter().write(responseObject.toString());
 		
 	}
 
