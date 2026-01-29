@@ -1,0 +1,69 @@
+package servlets;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import org.json.JSONObject;
+
+import dao.ResourceManager;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import utils.FileOperations;
+import utils.RequestHandler;
+
+/**
+ * Servlet implementation class DeleteFileServlet
+ */
+public class DeleteFileServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * Default constructor. 
+     */
+    public DeleteFileServlet() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
+		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
+		JSONObject responseObject = new JSONObject();
+				
+		String path = requestObject.getString("path");
+		String fileName = requestObject.getString("filename");
+		long folderId = requestObject.getLong("folderId");
+		String result = FileOperations.DeleteFile(path , fileName);
+		
+		if(result.equals("File deleted successfully")) {
+			
+			boolean res = ResourceManager.deleteFile(folderId, fileName);
+			if(res) {
+				responseObject.put("Status Code", 200);
+				responseObject.put("message", "File deleted sucessfully");
+			}
+			
+		}
+		else {
+			responseObject.put("Status Code", 400);
+			responseObject.put("message", "File deleted failed");
+		}
+		
+		response.getWriter().write(responseObject.toString());
+		
+	}
+
+}

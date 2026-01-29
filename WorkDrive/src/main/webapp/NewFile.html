@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+<script>
+	//  Add Folder Servlet
+	async function addFolder() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/FolderAddServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				resourceName : "PRD",
+				parentId : null
+			})
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+
+//	addFolder();
+
+	async function updateFolder() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/FolderUpdateServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				newName : "FUNFOLDER",
+				resourceId : "804042411167711232",
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+
+	//  updateFolder();
+
+	async function deleteFolder() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/FolderDeleteServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				resourceId : "804042411167711232",
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+
+	//  deleteFolder();
+
+	async function getFolder() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/FolderGetServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				parentId : null
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+	
+//	getFolder();
+
+async function moveFolder() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/MoveResourceServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				parentId: "804094150927450112",
+			resourceId: "804096428132532224",
+			resourceName: "MyGoodFolder"
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+	
+	//moveFolder();
+
+async function uploadFile() {
+
+		const response = await fetch("http://localhost:8080/WorkDrive/creation/UploadFileServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				"localfile" : "/home/prince-zstk430/Downloads/newUser.png",
+				"path" : "/homes",
+				"filename" : "newUser.png",
+				"folderId": "804052392386494464",
+				"change" : false
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+	
+	async function addFile(){
+		const response = await fetch("http://localhost:8080/WorkDrive/creation/CreateFileServlet", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({
+				"filename" : "exa1.txt",
+				"path" : "/home",
+				"folderId": "804052392386494464",
+				"change" : false
+			})
+
+		});
+
+		const data = await response.json();
+
+		console.log("Server response:", data);
+	}
+	
+//	uploadFile();
+</script>
+</html>
