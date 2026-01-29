@@ -21,22 +21,22 @@ public class FileOperations {
 			e.printStackTrace();
 		}
 	}
-//	File creation
-	public static String CreateFile(String folderPath , String fileName) {
+//	File creation -> change
+	public static String CreateFile(String folderId ,String folderPath , String fileName) {
 		try {
-			fs.create(new Path(folderPath+"/"+fileName)).close();
+			fs.create(new Path(folderId+"/"+folderPath+"/"+fileName)).close();
 		} catch (IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}
         return "File created sucessfully";
 	}
 	
-//	File upload
-	public static String UploadFile(String folderPath , String localPath , String filename) {
+//	File upload -> change
+	public static String UploadFile(String folderId , String folderPath , String localPath , String filename) {
 		try {
 			
 			Path localFile = new Path(localPath);
-	        Path folder = new Path(folderPath);
+	        Path folder = new Path(folderId+"/"+folderPath);
 	        if(!fs.exists(folder)) {
 	        	fs.mkdirs(folder);
 	        }

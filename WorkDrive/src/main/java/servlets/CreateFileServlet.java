@@ -46,7 +46,7 @@ public class CreateFileServlet extends HttpServlet {
 		String fileName = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
 		long folderId = Long.parseLong(folderid);
-		String result = FileOperations.CreateFile(path, fileName);
+		String result = FileOperations.CreateFile( folderid, path, fileName);
 		
 		if(result.equals("File created sucessfully")) {
 				

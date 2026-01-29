@@ -47,19 +47,19 @@ public class UploadFileServlet extends HttpServlet {
 		String folderid = requestObject.getString("folderId");
 		String localFile = requestObject.getString("localfile");
 		long folderId = Long.parseLong(folderid); 
-		String result = FileOperations.UploadFile(path , localFile , filename);
+		String result = FileOperations.UploadFile( folderid , path , localFile , filename);//-> change
 		
 		if(result.equals("File uploaded sucessfully")) {
 			
 			boolean res = ResourceManager.AddFile(folderId, path+"/"+filename, filename);
 			if(res) {
-				responseObject.put("Status Code", 200);
+				responseObject.put("StatusCode", 200);
 				responseObject.put("message", "File uploaded sucessfully");
 			}
 			
 		}
 		else {
-				responseObject.put("Status Code", 400);
+				responseObject.put("StatusCode", 400);
 				responseObject.put("message", "File upload failed");
 		}
 		
