@@ -46,15 +46,15 @@ public class DuplicateFileCheck extends HttpFilter implements Filter {
 		try {
 			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
-					
-			String path = requestObject.getString("path");
+			
 			String fileName = requestObject.getString("filename");
-			long folderId = requestObject.getLong("folderId");
+			String folderid = requestObject.getString("folderId");
+			long folderId = Long.parseLong(folderid);
 			boolean replaceFile = requestObject.getBoolean("change"); 
 			
 			if(ResourceManager.duplicateFile(folderId, fileName)&&replaceFile) {
-				FileOperations.DeleteFile(path, fileName);
-				ResourceManager.deleteFile(folderId, path);
+				FileOperations.DeleteFile(folderid, fileName);
+				ResourceManager.deleteFile(folderId, fileName);
 				chain.doFilter(request, response);
 			}
 			else if(!(ResourceManager.duplicateFile(folderId, fileName))) {
