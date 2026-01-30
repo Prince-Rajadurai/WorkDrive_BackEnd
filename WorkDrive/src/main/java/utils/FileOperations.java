@@ -22,9 +22,9 @@ public class FileOperations {
 		}
 	}
 //	File creation -> change
-	public static String CreateFile(String folderId ,String folderPath , String fileName) {
+	public static String CreateFile(String folderId, String fileName) {
 		try {
-			fs.create(new Path(folderId+"/"+folderPath+"/"+fileName)).close();
+			fs.create(new Path(folderId+"/"+fileName)).close();
 		} catch (IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -32,15 +32,15 @@ public class FileOperations {
 	}
 	
 //	File upload -> change
-	public static String UploadFile(String folderId , String folderPath , String localPath , String filename) {
+	public static String UploadFile(String folderId , String localPath , String filename) {
 		try {
 			
 			Path localFile = new Path(localPath);
-	        Path folder = new Path(folderId+"/"+folderPath);
+	        Path folder = new Path(folderId+"/");
 	        if(!fs.exists(folder)) {
 	        	fs.mkdirs(folder);
 	        }
-	        Path hdfsPath = new Path(folderPath+"/"+filename);
+	        Path hdfsPath = new Path(folderId+"/"+filename);
 	        fs.copyFromLocalFile(false, true, localFile, hdfsPath);
 	        
 		} catch (IllegalArgumentException | IOException e) {
@@ -51,9 +51,9 @@ public class FileOperations {
 	}
 	
 //	File delete
-	public static String DeleteFile(String folderPath , String fileName) {
+	public static String DeleteFile(String folderId , String fileName) {
 		
-		Path file = new Path(folderPath+"/"+fileName); 
+		Path file = new Path(folderId+"/"+fileName); 
         try {
         	if(fs.exists(file))
         		fs.delete(file,false);
@@ -65,9 +65,9 @@ public class FileOperations {
 	}
 	
 //	File download 
-	public static String DownloadFile(String folderPath , String fileName) {
+	public static String DownloadFile(String folderId , String fileName) {
 		
-		Path hdfsFile = new Path(folderPath+"/"+fileName);
+		Path hdfsFile = new Path(folderId+"/"+fileName);
 
         
         Path localPath = new Path("/home/prince-zstk430/Pictures");

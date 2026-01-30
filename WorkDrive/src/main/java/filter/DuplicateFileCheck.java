@@ -71,8 +71,6 @@ public class DuplicateFileCheck extends HttpFilter implements Filter {
 			response.getWriter().write(RequestHandler.sendResponse(500, "server error"));
 		}	
 		
-		
-		
 	}
 
 	/**

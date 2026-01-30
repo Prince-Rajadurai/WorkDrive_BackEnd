@@ -41,15 +41,14 @@ public class CreateFileServlet extends HttpServlet {
 		
 		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 				
-		String path = requestObject.getString("path");
 		String fileName = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
 		long folderId = Long.parseLong(folderid);
-		String result = FileOperations.CreateFile( folderid, path, fileName);
+		String result = FileOperations.CreateFile( folderid, fileName);
 		
 		if(result.equals("File created sucessfully")) {
 				
-			boolean res = ResourceManager.AddFile(folderId, path, fileName);
+			boolean res = ResourceManager.AddFile(folderId, fileName);
 			response.getWriter().write(RequestHandler.sendResponse(200, "File added sucessfully"));
 				
 		}

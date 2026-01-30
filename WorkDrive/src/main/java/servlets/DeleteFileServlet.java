@@ -41,10 +41,10 @@ public class DeleteFileServlet extends HttpServlet {
 		
 		
 		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
-		String path = requestObject.getString("path");
 		String fileName = requestObject.getString("filename");
-		long folderId = requestObject.getLong("folderId");
-		String result = FileOperations.DeleteFile(path , fileName);
+		String folderid = requestObject.getString("folderId");
+		long folderId = Long.parseLong(folderid);
+		String result = FileOperations.DeleteFile(folderid , fileName);
 		
 		if(result.equals("File deleted successfully")) {
 			

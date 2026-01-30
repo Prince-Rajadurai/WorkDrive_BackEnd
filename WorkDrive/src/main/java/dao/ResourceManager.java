@@ -76,9 +76,9 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static boolean AddFile(long folderId, String filePath, String fileName) {// =====> my updates
+	public static boolean AddFile(long folderId, String fileName) {// =====> my updates
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName, filePath });
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName});
 
 		return i > 0;
 

@@ -40,9 +40,9 @@ public class DownloadFileServlet extends HttpServlet {
 		
 		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 				
-		String path = requestObject.getString("path");
+		String folderid = requestObject.getString("folderId");
 		String fileName = requestObject.getString("filename");
-		String result = FileOperations.DownloadFile(path, fileName);
+		String result = FileOperations.DownloadFile(folderid, fileName);
 		
 		if(result.equals("File deleted successfully")) {
 			

@@ -42,17 +42,15 @@ public class UploadFileServlet extends HttpServlet {
 		JSONObject requestObject = (JSONObject) request.getAttribute("fileDetails");
 		JSONObject responseObject = new JSONObject();
 		
-				
-		String path = requestObject.getString("path");
 		String filename = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
 		String localFile = requestObject.getString("localfile");
 		long folderId = Long.parseLong(folderid); 
-		String result = FileOperations.UploadFile( folderid , path , localFile , filename);//-> change
+		String result = FileOperations.UploadFile( folderid , localFile , filename);
 		
 		if(result.equals("File uploaded sucessfully")) {
 			
-			boolean res = ResourceManager.AddFile(folderId, path+"/"+filename, filename);
+			boolean res = ResourceManager.AddFile(folderId, filename);
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "file uploaded"));
 			}
