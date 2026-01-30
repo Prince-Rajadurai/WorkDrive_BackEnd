@@ -24,7 +24,7 @@ public class FileOperations {
 //	File creation -> change
 	public static String CreateFile(String folderId, String fileName) {
 		try {
-			fs.create(new Path(folderId+"/"+fileName)).close();
+			fs.create(new Path("s/"+fileName)).close();
 		} catch (IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}

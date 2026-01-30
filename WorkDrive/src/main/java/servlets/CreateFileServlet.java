@@ -39,7 +39,7 @@ public class CreateFileServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
+		JSONObject requestObject = (JSONObject) request.getAttribute("fileDetails");
 				
 		String fileName = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
