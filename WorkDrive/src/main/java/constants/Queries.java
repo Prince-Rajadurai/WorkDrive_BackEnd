@@ -39,7 +39,7 @@ public class Queries {
 	
 	public static final String DUPLICATE_FILE_CHECK = "SELECT * FROM "+FILES_TABLE+" where "+FILE_NAME+" = ? and "+FILE_PAREND_ID+" = ?"; // my update
 	
-	public static final String SHOW_ALL_FILES = "SELECT "+FILE_NAME+" FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?"; // my update
+	public static final String SHOW_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?"; // my update
 		
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	

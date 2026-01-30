@@ -2,12 +2,12 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import utils.File;
 import org.json.JSONObject;
 
-import constants.ColumnNames;
 import constants.Queries;
 import databasemanager.QueryHandler;
 import utils.Resource;
@@ -99,24 +99,25 @@ public class ResourceManager {
 	}
 
 	public static ArrayList<JSONObject> getAllFiles(long folderId) throws SQLException {
+	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
 
-		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+	    // Fix: Correct the method name to executeQuery()
+	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
 
-		ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
+	    while (result.next()) {
+	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() ).getFileData());
+	    }
 
-		while (result.next()) {
-			files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime(),
-					result.getTimestamp("fileEditTime").toLocalDateTime()).getFileData());
-		}
-
-		return files;
-
+	    return files;
 	}
 
 	public static long getMyFolderId(long userId) throws SQLException {
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_ROOT_ID, new Object[] { userId });
-		rs.next();
-		return rs.getLong("ResourceId");
+		if(rs.next())
+		{
+			return rs.getLong("ResourceId");
+		}
+		return 0;
 	}
 
 	public static boolean renameFile(String filename, long folderId) {

@@ -24,13 +24,13 @@ public class File {
     	DateTimeFormatter formatter =
     	        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     	
-    	JSONObject object = new JSONObject(); 	
+    	JSONObject resObject = new JSONObject(); 	
     	
-    	object.put("fileneme", filename);
-    	object.put("createTime", createdTime.format(formatter));
-    	object.put("modifiedTime", modifiedTime.format(formatter));
+    	resObject.put("filename", filename);
+    	resObject.put("createTime", createdTime.format(formatter));
+    	resObject.put("modifiedTime", modifiedTime.format(formatter));
     	
-    	return object;
+    	return resObject;
     	
     }
     

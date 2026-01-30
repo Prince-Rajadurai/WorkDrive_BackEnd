@@ -47,20 +47,21 @@ public class ResourceRenderServlet extends HttpServlet {
            Long parentId = null;
            long userId = 0;
            Cookie[] cookies = request.getCookies();
+           String cookieValue = null;
            if (cookies != null) {
                for (Cookie cookie : cookies) {
                    if ("cookie".equals(cookie.getName())) {
-                       userId = AccountsManager.getUserId(cookie.getValue());
+                       cookieValue = cookie.getValue();
                        break;
                    }
                }
+               userId = AccountsManager.getUserId(cookieValue);
            }
            if (!requestObject.isNull("parentId")) {
                parentId = requestObject.getLong("parentId");
            } else {
                parentId = ResourceManager.getMyFolderId(userId);
            }
-          
            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId);
            ArrayList<JSONObject> resources = new ArrayList<>();

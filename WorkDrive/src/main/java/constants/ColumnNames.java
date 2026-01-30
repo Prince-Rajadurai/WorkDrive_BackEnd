@@ -9,7 +9,7 @@ public class ColumnNames {
 	public static final String TYPE = "Type";
 	public static final String CREATED_TIME = "CreatedTime";
 	public static final String MODIFIED_TIME = "LastModifiedTime";
-	public static final String PARENT_ID = "Parentid";
+	public static final String PARENT_ID = "ParentId";
 	
 	public static final String USERS_TABLE = "Users";
 	public static final String USER_ID = "UserId";
