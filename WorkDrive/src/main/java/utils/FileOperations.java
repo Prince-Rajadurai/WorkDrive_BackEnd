@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 
 import databasemanager.QueryHandler;
@@ -91,7 +92,19 @@ public class FileOperations {
 		
 		return "File renamed sucessfully";
 	}
+// File copy operation
+	public static void copyFile( String oldFolderId, String newFolderId , String filename) {
+		
+		Path sourcePath = new Path(oldFolderId + "/" + filename);
 
+	    Path destinationPath = new Path(newFolderId+"/"+ filename);
+
+	    try {
+	        FileUtil.copy(fs, sourcePath, fs, destinationPath, false, fs.getConf());
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 }
 

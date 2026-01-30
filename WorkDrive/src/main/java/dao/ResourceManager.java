@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import utils.File;
+import utils.FileOperations;
+
 import org.json.JSONObject;
 
 import constants.Queries;
@@ -131,6 +133,21 @@ public class ResourceManager {
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_PARENT_ID, new Object[] { resourceId });
 		rs.next();
 		return parentId == rs.getLong(1);
+	}
+	
+	public static boolean copyFile(long olderFolderId , long newFolderId) throws SQLException {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] {olderFolderId});
+		
+		while(res.next()) {
+			
+			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), res.getString("filename"));
+			ResourceManager.AddFile(newFolderId, res.getString("filename"));
+			
+		}
+		
+		return res!=null ? true : false;
+		
 	}
 
 }
