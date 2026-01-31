@@ -26,7 +26,7 @@ public class FileOperations {
 //	File creation -> change
 	public static String CreateFile(String folderId, String fileName) {
 		try {
-			fs.create(new Path("/"+folderId+"/"+fileName)).close();
+			fs.create(new Path("/"+folderId+"/"+fileName));
 		} catch (IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -136,7 +136,7 @@ public class FileOperations {
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
 		
-		Path file = new Path(filePath);
+		Path file = new Path("/"+filePath);
 		FileStatus status = fs.getFileStatus(file);
 		
 		long fileSize = status.getLen();
