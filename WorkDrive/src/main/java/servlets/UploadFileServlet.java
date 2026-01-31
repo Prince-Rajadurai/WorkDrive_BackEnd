@@ -50,7 +50,8 @@ public class UploadFileServlet extends HttpServlet {
 		
 		if(result.equals("File uploaded sucessfully")) {
 			
-			boolean res = ResourceManager.AddFile(folderId, filename);
+			String size = FileOperations.getFileSize(folderid+"/"+filename);
+			boolean res = ResourceManager.AddFile(folderId, filename , size);
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "file uploaded"));
 			}

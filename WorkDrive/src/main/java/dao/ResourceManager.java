@@ -78,9 +78,9 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static boolean AddFile(long folderId, String fileName) {// =====> my updates
+	public static boolean AddFile(long folderId, String fileName , String size) {// =====> my updates
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName , size});
 
 		return i > 0;
 
@@ -107,7 +107,7 @@ public class ResourceManager {
 	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
 
 	    while (result.next()) {
-	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() ).getFileData());
+	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() , result.getString("Size") ).getFileData());
 	    }
 
 	    return files;
@@ -142,7 +142,7 @@ public class ResourceManager {
 		while(res.next()) {
 			
 			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), res.getString("filename"));
-			ResourceManager.AddFile(newFolderId, res.getString("filename"));
+			ResourceManager.AddFile(newFolderId, res.getString("filename") , res.getString("Size"));
 			
 		}
 		

@@ -3,6 +3,7 @@ package utils;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
@@ -104,6 +105,58 @@ public class FileOperations {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
+	}
+	
+//	Folder size 
+	public static String getFolderSize(String folderId) throws IOException {
+		
+		Path file = new Path("/"+folderId);
+		FileStatus status = fs.getFileStatus(file);
+		
+		long fileSize = status.getLen();
+		String size = fileSize+"B";
+		
+		if(fileSize>=1024) {
+			fileSize = fileSize/1000;
+			size = fileSize+"KB";
+			if(fileSize>=1024) {
+				fileSize = fileSize/1000;
+				size = fileSize+"MB";
+				if(fileSize>=1024) {
+					fileSize = fileSize/1000;
+					size = fileSize+"GB";
+				}
+			}
+		}
+		
+		return size;
+		
+	}
+	
+//	File size
+	public static String getFileSize(String filePath) throws IOException {
+		
+		Path file = new Path(filePath);
+		FileStatus status = fs.getFileStatus(file);
+		
+		long fileSize = status.getLen();
+		String size = fileSize+"B";
+		
+		if(fileSize>=1024) {
+			fileSize = fileSize/1000;
+			size = fileSize+"KB";
+			if(fileSize>=1024) {
+				fileSize = fileSize/1000;
+				size = fileSize+"MB";
+				if(fileSize>=1024) {
+					fileSize = fileSize/1000;
+					size = fileSize+"GB";
+				}
+			}
+		}
+		
+		return size;
+		
 	}
 	
 }

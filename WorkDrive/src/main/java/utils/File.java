@@ -10,12 +10,14 @@ public class File {
 	private String filename;
 	private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
+    private String size;
     
-    public File(String filename , LocalDateTime createdTime , LocalDateTime modifiedTime) {
+    public File(String filename , LocalDateTime createdTime , LocalDateTime modifiedTime , String size) {
     	
     	this.filename = filename;
     	this.createdTime = createdTime;
     	this.modifiedTime = modifiedTime;
+    	this.size = size;
     	
     }
     
@@ -29,6 +31,7 @@ public class File {
     	resObject.put("filename", filename);
     	resObject.put("createTime", createdTime.format(formatter));
     	resObject.put("modifiedTime", modifiedTime.format(formatter));
+    	resObject.put("size", size);
     	
     	return resObject;
     	

@@ -31,7 +31,7 @@ public class Queries {
 	
 	public static final String GET_RESOURCE="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";
 	
-	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , CURRENT_TIMESTAMP , CURRENT_TIMESTAMP)";
+	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , CURRENT_TIMESTAMP , CURRENT_TIMESTAMP , ?)";
 	
 	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = SELECT CURRENT_TIMESTAMP WHERE "+FILE_PAREND_ID+" = ? ";
 	
