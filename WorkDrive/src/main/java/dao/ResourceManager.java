@@ -48,7 +48,7 @@ public class ResourceManager {
 		ArrayList<JSONObject> resources = new ArrayList<>();
 
 		ResultSet rs;
-			rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId });
+		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId });
 
 		while (rs.next()) {
 
@@ -62,7 +62,7 @@ public class ResourceManager {
 	}
 
 	public static boolean existResourceName(long userId, long parentId, String resourceName) throws SQLException {
-		ResultSet rs= QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { parentId, resourceName, userId });
+		ResultSet rs = QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { parentId, resourceName, userId });
 		return rs.next();
 	}
 
@@ -73,9 +73,9 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static boolean AddFile(long folderId, String fileName , String size) {// =====> my updates
+	public static boolean AddFile(long folderId, String fileName, String size) {// =====> my updates
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName , size});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName, size });
 
 		return i > 0;
 
@@ -96,22 +96,22 @@ public class ResourceManager {
 	}
 
 	public static ArrayList<JSONObject> getAllFiles(long folderId) throws SQLException {
-	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
+		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+		ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
 
-	    while (result.next()) {
-	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() , result.getString("Size") ).getFileData());
-	    }
-	    
-	    System.out.println(files);
+		while (result.next()) {
+			files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime(),
+					result.getTimestamp("fileEditTime").toLocalDateTime(), result.getString("Size")).getFileData());
+		}
 
-	    return files;
+		System.out.println(files);
+
+		return files;
 	}
 
 	public static long getMyFolderId(long userId) throws SQLException {
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_ROOT_ID, new Object[] { userId });
-		if(rs.next())
-		{
+		if (rs.next()) {
 			return rs.getLong("ResourceId");
 		}
 		return 0;
@@ -129,31 +129,33 @@ public class ResourceManager {
 		rs.next();
 		return parentId == rs.getLong(1);
 	}
-	
-	public static boolean copyFile(long olderFolderId , long newFolderId) throws SQLException {
-		
-		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] {olderFolderId});
-		
-		while(res.next()) {
-			
-			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), res.getString("filename"));
-			ResourceManager.AddFile(newFolderId, res.getString("filename") , res.getString("Size"));
-			
+
+	public static boolean copyFile(long olderFolderId, long newFolderId) throws SQLException {
+
+		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { olderFolderId });
+
+		while (res.next()) {
+
+			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),
+					res.getString("filename"));
+			ResourceManager.AddFile(newFolderId, res.getString("filename"), res.getString("Size"));
+
 		}
-		
-		return res!=null ? true : false;
-		
+
+		return res != null ? true : false;
+
 	}
-	
-	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException {
-		JSONObject folder=addResource(finalName, parentId , userId);
-		long tempFolderId=parentId;
-		while(true) {
-			copyFile(tempFolderId,Long.parseLong(folder.getString("resourceId")));
-			
-			
+
+	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId)
+			throws SQLException {
+		JSONObject folder = addResource(finalName, parentId, userId);
+		long tempFolderId = parentId;
+		copyFile(tempFolderId, Long.parseLong(folder.getString("resourceId")));
+		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { tempFolderId });
+		while (rs.next()) {
+			copyFolder(tempFolderId, rs.getLong("resourceId"), rs.getString("resourceName"), userId);
 		}
-		return false;
+		return true;
 	}
 
 }
