@@ -8,6 +8,29 @@
 
 </body>
 <script>
+
+async function copyFolder() {
+
+	const response = await fetch("http://localhost:8080/WorkDrive/CopyResourceServlet", {
+		method : "POST",
+		headers : {
+			"Content-Type" : "application/json"
+		},
+		body : JSON.stringify({
+			resourceName : "MYFOLDER",
+			parentId : "804921852857155584",
+			resourceId : "804755323112914944"
+		})
+	});
+
+	const data = await response.json();
+
+	console.log("Server response:", data);
+}
+
+// copyFolder();
+
+
 	//  Add Folder Servlet
 	async function addFolder() {
 
@@ -27,7 +50,7 @@
 		console.log("Server response:", data);
 	}
 
-	addFolder();
+//	addFolder();
 
 	async function updateFolder() {
 

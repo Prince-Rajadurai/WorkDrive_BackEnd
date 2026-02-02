@@ -72,7 +72,7 @@ public class ResourceRenderServlet extends HttpServlet {
             ArrayList<JSONObject> resources = new ArrayList<>();
             for (JSONObject folder : folders) {
                 folder.put("type", "FOLDER");
-                folder.put("id", folder.getLong("resourceId"));
+                folder.put("id", String.valueOf(folder.getLong("resourceId")));
                 resources.add(folder);
             }
             for (JSONObject file : files) {
@@ -82,7 +82,8 @@ public class ResourceRenderServlet extends HttpServlet {
             }
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources));
+            System.out.println(resources);
+            response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources , String.valueOf(parentId)));
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));

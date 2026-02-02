@@ -45,6 +45,7 @@ public class UploadFileServlet extends HttpServlet {
 		String filename = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
 		String localFile = requestObject.getString("localfile");
+		System.out.print(localFile);
 		long folderId = Long.parseLong(folderid); 
 		String result = FileOperations.UploadFile( folderid , localFile , filename);
 		

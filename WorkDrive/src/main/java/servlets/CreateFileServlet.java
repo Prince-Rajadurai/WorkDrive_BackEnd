@@ -48,6 +48,7 @@ public class CreateFileServlet extends HttpServlet {
 		
 		if(result.equals("File created sucessfully")) {
 			String size = FileOperations.getFileSize(folderid+"/"+fileName);
+			System.out.println(folderid+"==="+size+"==="+fileName);
 			boolean res = ResourceManager.AddFile(folderId, fileName , size);
 			response.getWriter().write(RequestHandler.sendResponse(200, "File added sucessfully"));
 				

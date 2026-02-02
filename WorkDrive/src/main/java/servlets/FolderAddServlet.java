@@ -53,7 +53,7 @@ public class FolderAddServlet extends HttpServlet {
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String resourceName = requestObject.getString("resourceName");
 
-			Long parentId = null;
+			long parentId = Long.parseLong(requestObject.getString("parentId"));;
 
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
@@ -67,13 +67,6 @@ public class FolderAddServlet extends HttpServlet {
 			        }
 			    }
 			    userId = AccountsManager.getUserId(cookieValue);
-			}
-			
-			
-			if (!requestObject.isNull("parentId")) {
-				parentId = Long.parseLong(requestObject.getString("parentId"));
-			}else {
-				parentId = ResourceManager.getMyFolderId(userId);
 			}
 			
 			if (!ResourceManager.existResourceName(userId, parentId, resourceName)) {
