@@ -142,16 +142,16 @@
 	<servlet>
 		<description>
 		</description>
-		<display-name>CopyResourceServlet</display-name>
-		<servlet-name>CopyResourceServlet</servlet-name>
-		<servlet-class>servlets.CopyResourceServlet</servlet-class>
+		<display-name>ResourceRenderServlet</display-name>
+		<servlet-name>ResourceRenderServlet</servlet-name>
+		<servlet-class>servlets.ResourceRenderServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<description>
 		</description>
-		<display-name>ResourceRenderServlet</display-name>
-		<servlet-name>ResourceRenderServlet</servlet-name>
-		<servlet-class>servlets.ResourceRenderServlet</servlet-class>
+		<display-name>CopyResourceServlet</display-name>
+		<servlet-name>CopyResourceServlet</servlet-name>
+		<servlet-class>servlets.CopyResourceServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>

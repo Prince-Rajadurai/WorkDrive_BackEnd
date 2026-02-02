@@ -67,6 +67,8 @@ public class ResourceRenderServlet extends HttpServlet {
 
             ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
             ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId);
+            
+            System.out.println(files);
             ArrayList<JSONObject> resources = new ArrayList<>();
             for (JSONObject folder : folders) {
                 folder.put("type", "FOLDER");
@@ -75,7 +77,7 @@ public class ResourceRenderServlet extends HttpServlet {
             }
             for (JSONObject file : files) {
                 file.put("type", "FILE");
-                file.put("id", parentId + "-" + file.getString("filename"));
+                file.put("id", file.getString("filename"));
                 resources.add(file);
             }
             response.setContentType("application/json");
@@ -86,6 +88,5 @@ public class ResourceRenderServlet extends HttpServlet {
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));
         }
     }
->>>>>>> d17f30f (resourceRendering update)
 
 }

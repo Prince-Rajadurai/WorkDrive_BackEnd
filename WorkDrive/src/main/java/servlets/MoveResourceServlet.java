@@ -63,24 +63,24 @@ public class MoveResourceServlet extends HttpServlet {
 				}
 				userId = AccountsManager.getUserId(cookieValue);
 			}
-			
-			if(!ResourceManager.sameFolder(parentId,resourceId)) {
-			
-			String finalName = resourceName.replaceAll("\\(\\d+\\)$", "");
-			int counter = 1;
 
-			while (ResourceManager.existResourceName(userId, parentId, finalName)) {
-			    finalName = resourceName + "(" + counter + ")";
-			    counter++;
-			}
-			
-			ResourceManager.moveResource(parentId, resourceId, finalName);
-			
-			response.getWriter().write(RequestHandler.sendResponse(200, "Folder moved as " + finalName));
-			}else {
+			if (!ResourceManager.sameFolder(parentId, resourceId)) {
+
+				String finalName = resourceName.replaceAll("\\(\\d+\\)$", "");
+				int counter = 1;
+
+				while (ResourceManager.existResourceName(userId, parentId, finalName)) {
+					finalName = resourceName + "(" + counter + ")";
+					counter++;
+				}
+
+				ResourceManager.moveResource(parentId, resourceId, finalName);
+
+				response.getWriter().write(RequestHandler.sendResponse(200, "Folder moved as " + finalName));
+			} else {
 				response.getWriter().write(RequestHandler.sendResponse(400, "Folder is placed in same place"));
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.getWriter().write(RequestHandler.sendResponse(500, "Server error"));
