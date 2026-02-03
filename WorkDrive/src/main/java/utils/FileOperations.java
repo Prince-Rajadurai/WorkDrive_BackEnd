@@ -55,10 +55,13 @@ public class FileOperations {
 //	File delete
 	public static String DeleteFile(String folderId , String fileName) {
 		
-		Path file = new Path(folderId+"/"+fileName); 
+		Path file = new Path("/"+folderId+"/"+fileName); 
         try {
         	if(fs.exists(file))
         		fs.delete(file,false);
+        	else {
+        		System.out.println(false);
+        	}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -69,10 +72,10 @@ public class FileOperations {
 //	File download 
 	public static String DownloadFile(String folderId , String fileName) {
 		
-		Path hdfsFile = new Path(folderId+"/"+fileName);
+		Path hdfsFile = new Path("/"+folderId+"/"+fileName);
 
         
-        Path localPath = new Path("/home/prince-zstk430/Pictures");
+        Path localPath = new Path("/home/prince-zstk430/Downloads");
 
         try {
 			fs.copyToLocalFile(false, hdfsFile, localPath, true);
@@ -80,7 +83,7 @@ public class FileOperations {
 			e.printStackTrace();
 		}
 
-        return "File downloaded successfully";
+        return "File deleted successfully";
 	}
 	
 //	File rename
