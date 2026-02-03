@@ -44,10 +44,10 @@ public class UploadFileServlet extends HttpServlet {
 		
 		String filename = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
-		String localFile = requestObject.getString("localfile");
-		System.out.print(localFile);
+		String localFileData = requestObject.getString("data");
+		System.out.print(localFileData);
 		long folderId = Long.parseLong(folderid); 
-		String result = FileOperations.UploadFile( folderid , localFile , filename);
+		String result = FileOperations.UploadFile( folderid , localFileData , filename);
 		
 		if(result.equals("File uploaded sucessfully")) {
 			

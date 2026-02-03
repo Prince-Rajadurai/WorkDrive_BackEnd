@@ -1,8 +1,10 @@
 package utils;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
@@ -34,16 +36,17 @@ public class FileOperations {
 	}
 	
 //	File upload -> change
-	public static String UploadFile(String folderId , String localPath , String filename) {
+	public static String UploadFile(String folderId , String localFileData , String filename) {
 		try {
 			
-			Path localFile = new Path(localPath);
+			byte[] fileBytes = Base64.getDecoder().decode(localFileData);
 	        Path folder = new Path(folderId+"/");
 	        if(!fs.exists(folder)) {
 	        	fs.mkdirs(folder);
 	        }
 	        Path hdfsPath = new Path(folderId+"/"+filename);
-	        fs.copyFromLocalFile(false, true, localFile, hdfsPath);
+	        FSDataOutputStream out = fs.create(hdfsPath, true);
+	        out.write(fileBytes);
 	        
 		} catch (IllegalArgumentException | IOException e) {
 			e.printStackTrace();
@@ -87,10 +90,10 @@ public class FileOperations {
 	}
 	
 //	File rename
-	public static String renameFile(String olderPath , String newPath) throws IOException {
+	public static String renameFile(String folderId,String olderFileName , String newFileName) throws IOException {
 		
-		Path olderName = new Path(olderPath);
-		Path newName = new Path(newPath);
+		Path olderName = new Path("/"+folderId+"/"+olderFileName);
+		Path newName = new Path("/"+folderId+"/"+newFileName);
 		
 		fs.rename(olderName, newName);
 		
