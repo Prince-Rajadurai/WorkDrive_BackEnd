@@ -45,10 +45,9 @@ public class UpdateFileName extends HttpServlet {
 		String newFileName = requestObject.getString("newFileName");
 		String folderid = requestObject.getString("folderId");
 		long folderId = Long.parseLong(folderid);
-		String olderPath = requestObject.getString("olderPath");
-		String newPath = requestObject.getString("newPath");
+		String olderFileName = requestObject.getString("oldFileName");
 		
-		String res =  FileOperations.renameFile(olderPath, newPath);
+		String res =  FileOperations.renameFile(folderid,olderFileName, newFileName);
 		
 		if(res.equals("File renamed sucessfully")) {
 			
