@@ -57,7 +57,9 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
 			if (cookies != null) {
+				System.out.println("Hello");
 				for (Cookie cookie : cookies) {
+					System.out.println("Cookie name: " + cookie.getName() + " | Cookie value: " + cookie.getValue());
 					if ("cookie".equals(cookie.getName())) {
 						cookieValue = cookie.getValue();
 						break;
@@ -66,6 +68,8 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 				userId = AccountsManager.getUserId(cookieValue);
 			}
 			
+			
+
 			if (!ResourceManager.sameFolder(parentId, resourceId)) {
 
 				String finalName = resourceName.replaceAll("\\(\\d+\\)$", "");
@@ -75,7 +79,7 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 					finalName = resourceName + "(" + counter + ")";
 					counter++;
 				}
-
+				System.out.println(userId);
 				ResourceManager.copyFolder(parentId, resourceId, finalName, userId);
 
 				response.getWriter().write(RequestHandler.sendResponse(200, "Folder moved as " + finalName));

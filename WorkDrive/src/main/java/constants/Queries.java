@@ -17,16 +17,12 @@ public class Queries {
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	
-	public static final String GET_RESOURCES_ROOT="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+PARENT_ID+" IS NULL";
-	
 	public static final String GET_PARENT_ID = "SELECT "+PARENT_ID+" FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ? ;";
 	
-	public static final String DELETE_RESOURCE = "DELETE FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ? OR "+PARENT_ID+"= ? ;";
-	
+	public static final String DELETE_RESOURCE = "DELETE FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?;";
+		
 	public static final String ADD_RESOURCE = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+PARENT_ID+", "+USER_ID+") VALUES (?,?,?,?)";
-	
-	public static final String ADD_RESOURCE_ROOT = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+USER_ID+") VALUES (?,?,?)";
-	
+		
 	public static final String UPDATE_RESOURCE="UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
 	public static final String GET_RESOURCE="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";

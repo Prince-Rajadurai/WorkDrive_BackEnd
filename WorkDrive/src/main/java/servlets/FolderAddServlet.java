@@ -53,7 +53,8 @@ public class FolderAddServlet extends HttpServlet {
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String resourceName = requestObject.getString("resourceName");
 
-			long parentId = Long.parseLong(requestObject.getString("parentId"));;
+			
+			long parentId = Long.parseLong(requestObject.getString("parentId"));
 
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;

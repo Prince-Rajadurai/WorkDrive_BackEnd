@@ -58,13 +58,6 @@
 	<servlet>
 		<description>
 		</description>
-		<display-name>FolderServlet</display-name>
-		<servlet-name>FolderServlet</servlet-name>
-		<servlet-class>servlets.FolderServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<description>
-		</description>
 		<display-name>FolderAddServlet</display-name>
 		<servlet-name>FolderAddServlet</servlet-name>
 		<servlet-class>servlets.FolderAddServlet</servlet-class>
@@ -153,6 +146,13 @@
 		<servlet-name>CopyResourceServlet</servlet-name>
 		<servlet-class>servlets.CopyResourceServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>FolderServlet</display-name>
+		<servlet-name>FolderServlet</servlet-name>
+		<servlet-class>servlets.FolderServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/LoginServlet</url-pattern>
@@ -168,10 +168,6 @@
 	<servlet-mapping>
 		<servlet-name>SessionCheck</servlet-name>
 		<url-pattern>/SessionCheck</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>FolderServlet</servlet-name>
-		<url-pattern>/FolderServlet</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>FolderAddServlet</servlet-name>
@@ -220,6 +216,10 @@
 	<servlet-mapping>
 		<servlet-name>CopyResourceServlet</servlet-name>
 		<url-pattern>/CopyResourceServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FolderServlet</servlet-name>
+		<url-pattern>/FolderServlet</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
