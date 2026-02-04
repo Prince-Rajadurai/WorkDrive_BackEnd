@@ -36,21 +36,10 @@ public class ResourceRenderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-        response.getWriter().append("Served at: ").append(request.getContextPath());
-    }
-
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // TODO Auto-generated method stub
         try {
-            JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
-            Long parentId = null;
-            long userId = 0;
-            Cookie[] cookies = request.getCookies();
+        	Long parentId;
+        	long userId = 0;
+        	Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if ("cookie".equals(cookie.getName())) {
@@ -59,16 +48,14 @@ public class ResourceRenderServlet extends HttpServlet {
                     }
                 }
             }
-            if (!requestObject.isNull("parentId")) {
-                parentId = requestObject.getLong("parentId");
+            String parentIdParam = request.getParameter("parentId");
+            if (parentIdParam != null) {
+                parentId = Long.parseLong(parentIdParam);
             } else {
                 parentId = ResourceManager.getMyFolderId(userId);
             }
-
             ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
             ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId);
-            
-            System.out.println(files);
             ArrayList<JSONObject> resources = new ArrayList<>();
             for (JSONObject folder : folders) {
                 folder.put("type", "FOLDER");
@@ -82,12 +69,21 @@ public class ResourceRenderServlet extends HttpServlet {
             }
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            System.out.println(resources);
             response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources , String.valueOf(parentId)));
         } catch (Exception e) {
-            e.printStackTrace();
+        	e.printStackTrace();
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));
         }
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
     }
 
 }
