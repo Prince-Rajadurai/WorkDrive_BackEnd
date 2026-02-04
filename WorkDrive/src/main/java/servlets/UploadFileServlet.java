@@ -44,14 +44,11 @@ public class UploadFileServlet extends HttpServlet {
 		
 		String filename = request.getParameter("filename");
 		String folderid = request.getParameter("folderId");
-		String chunkStr = request.getParameter("chunkIndex");
-		int chunk = 0;
-		if (chunkStr != null && !chunkStr.isEmpty()) {
-		        chunk = Integer.parseInt(chunkStr);
-		}
 		long folderId = Long.parseLong(folderid);
-		boolean chk = Boolean.parseBoolean(request.getParameter("addDb"));
-		if(chk) {
+		
+		Part file1 = request.getPart("file");
+		try {
+			String result = FileOperations.UploadFile(file1 , folderid , filename);
 			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename));
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
@@ -59,15 +56,9 @@ public class UploadFileServlet extends HttpServlet {
 			else {
 				response.getWriter().write(RequestHandler.sendResponse(400, "File uploaded failed"));
 			}
-		}
-		else {
-			Part file1 = request.getPart("file");
-			try {
-				String result = FileOperations.UploadFile(chunk , file1 , folderid , filename);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

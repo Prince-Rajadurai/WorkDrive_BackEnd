@@ -40,7 +40,7 @@ public class FileOperations {
 	}
 	
 //	File upload -> change
-	public static String UploadFile(int chunkIndex, Part file, String folderId, String filename) {
+	public static String UploadFile(Part file, String folderId, String filename) {
 	    
 		try {
 			InputStream in = file.getInputStream();
@@ -126,19 +126,19 @@ public class FileOperations {
 		
 		Path file = new Path("/"+folderId);
 		FileStatus status = fs.getFileStatus(file);
+		float conversionVal = (float) 1024.0;
 		
 		long fileSize = status.getLen();
-		String size = fileSize+"B";
-		
+		String size = fileSize+" B";
 		if(fileSize>=1024) {
-			fileSize = fileSize/1000;
+			fileSize = (long) (fileSize/conversionVal);
 			size = fileSize+"KB";
 			if(fileSize>=1024) {
-				fileSize = fileSize/1000;
-				size = fileSize+"MB";
+				fileSize = (long) (fileSize/conversionVal);
+				size = fileSize+" MB";
 				if(fileSize>=1024) {
-					fileSize = fileSize/1000;
-					size = fileSize+"GB";
+					fileSize = (long) (fileSize/conversionVal);
+					size = fileSize+" GB";
 				}
 			}
 		}
@@ -152,20 +152,19 @@ public class FileOperations {
 		
 		Path file = new Path("/"+filePath);
 		FileStatus status = fs.getFileStatus(file);
+		float conversionVal = (float) 1024.0;
 		
 		long fileSize = status.getLen();
-		String size = fileSize+"B";
-		System.out.println(size);
-		
+		String size = fileSize+" B";
 		if(fileSize>=1024) {
-			fileSize = fileSize/1000;
+			fileSize = (long) (fileSize/conversionVal);
 			size = fileSize+"KB";
 			if(fileSize>=1024) {
-				fileSize = fileSize/1000;
-				size = fileSize+"MB";
+				fileSize = (long) (fileSize/conversionVal);
+				size = fileSize+" MB";
 				if(fileSize>=1024) {
-					fileSize = fileSize/1000;
-					size = fileSize+"GB";
+					fileSize = (long) (fileSize/conversionVal);
+					size = fileSize+" GB";
 				}
 			}
 		}
