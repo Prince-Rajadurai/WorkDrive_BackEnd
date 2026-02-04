@@ -49,10 +49,10 @@ public class ResourceRenderServlet extends HttpServlet {
                 }
             }
             String parentIdParam = request.getParameter("parentId");
-            if (parentIdParam != null) {
-                parentId = Long.parseLong(parentIdParam);
+            if (parentIdParam == null) {
+            	parentId = ResourceManager.getMyFolderId(userId);
             } else {
-                parentId = ResourceManager.getMyFolderId(userId);
+            	parentId = Long.parseLong(parentIdParam);
             }
             ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
             ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId);
