@@ -26,21 +26,28 @@ public class ResourceManager {
 	public static JSONObject addResource(String resourceName, Long parentId, long userId) throws SQLException {
 
 		long id = SnowflakeIdGenerator.nextId();
+		long currentTime=System.currentTimeMillis();
 
-		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId });
+		if(parentId==null) {
+		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
+		}else {
+			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
+		}
 
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_RESOURCE, new Object[] { id });
 		if (rs.next()) {
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
-					rs.getTimestamp("CreatedTime").toLocalDateTime(),
-					rs.getTimestamp("LastModifiedTime").toLocalDateTime(), rs.getLong("parentId"));
+					rs.getLong("CreatedTime"),
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"));
 			return resource.toJson();
 		}
 		return null;
 	}
 
 	public static boolean updateResource(String newName, long resourceId) {
-		int rowsAffected = QueryHandler.executeUpdate(Queries.UPDATE_RESOURCE, new Object[] { newName, resourceId });
+		long currentTime = System.currentTimeMillis();
+		
+		int rowsAffected = QueryHandler.executeUpdate(Queries.UPDATE_RESOURCE, new Object[] { newName, currentTime, resourceId});
 		return rowsAffected > 0;
 	};
 
@@ -53,8 +60,8 @@ public class ResourceManager {
 		while (rs.next()) {
 
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
-					rs.getTimestamp("CreatedTime").toLocalDateTime(),
-					rs.getTimestamp("LastModifiedTime").toLocalDateTime(), rs.getLong("parentId"));
+					rs.getLong("CreatedTime"),
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"));
 			resources.add(resource.toJson());
 		}
 

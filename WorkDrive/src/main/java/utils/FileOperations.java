@@ -1,16 +1,20 @@
 package utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 
 import databasemanager.QueryHandler;
+import jakarta.servlet.http.Part;
 
 public class FileOperations {
 	
@@ -36,24 +40,28 @@ public class FileOperations {
 	}
 	
 //	File upload -> change
-	public static String UploadFile(String folderId , String localFileData , String filename) {
+	public static String UploadFile(int chunkIndex, Part file, String folderId, String filename) {
+	    
 		try {
-			
-			byte[] fileBytes = Base64.getDecoder().decode(localFileData);
-	        Path folder = new Path(folderId+"/");
-	        if(!fs.exists(folder)) {
-	        	fs.mkdirs(folder);
-	        }
-	        Path hdfsPath = new Path(folderId+"/"+filename);
-	        FSDataOutputStream out = fs.create(hdfsPath, true);
-	        out.write(fileBytes);
-	        
-		} catch (IllegalArgumentException | IOException e) {
+			InputStream in = file.getInputStream();
+			Path hdfsPath = new Path("/"+folderId+"/"+filename);
+			FSDataOutputStream out = null;
+			if(!fs.exists(hdfsPath)) {
+				out = fs.create(hdfsPath);
+				IOUtils.copyBytes(in, out, conf);
+			}
+			else {
+				out = fs.append(hdfsPath);
+				IOUtils.copyBytes(in, out, conf);
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return "File uploaded sucessfully";
+		
+	    return "File uploaded sucessfully";
 	}
+
 	
 //	File delete
 	public static String DeleteFile(String folderId , String fileName) {
@@ -147,6 +155,7 @@ public class FileOperations {
 		
 		long fileSize = status.getLen();
 		String size = fileSize+"B";
+		System.out.println(size);
 		
 		if(fileSize>=1024) {
 			fileSize = fileSize/1000;

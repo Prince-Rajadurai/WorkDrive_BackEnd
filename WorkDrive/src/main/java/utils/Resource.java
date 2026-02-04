@@ -9,11 +9,11 @@ public class Resource {
 
     private long resourceId;
     private String resourceName;
-    private LocalDateTime createdTime;
-    private LocalDateTime modifiedTime;
+    private long createdTime;
+    private long modifiedTime;
     private Long parentId;
 
-    public Resource(long resourceId, String resourceName, LocalDateTime createdTime, LocalDateTime modifiedTime,
+    public Resource(long resourceId, String resourceName, long createdTime, long modifiedTime,
                     long parentId) {
         this.resourceId = resourceId;
         this.resourceName=resourceName;
@@ -29,8 +29,8 @@ public class Resource {
         JSONObject obj = new JSONObject();
         obj.put("resourceId", String.valueOf(resourceId));
         obj.put("resourceName", resourceName);
-        obj.put("createdTime", createdTime.format(formatter));
-        obj.put("modifiedTime", modifiedTime.format(formatter));
+        obj.put("createdTime", TimeConversion.convertMillisToFormattedDate(createdTime));
+        obj.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime));
         obj.put("parentId", String.valueOf(parentId));
         return obj;
     }
