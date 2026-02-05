@@ -28,7 +28,7 @@ public class ResourceManager {
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTime=System.currentTimeMillis();
 
-		if(parentId==null) {
+		if(parentId!=null) {
 		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
 		}else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
