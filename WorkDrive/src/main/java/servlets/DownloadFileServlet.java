@@ -42,16 +42,16 @@ public class DownloadFileServlet extends HttpServlet {
 				
 		String folderid = requestObject.getString("folderId");
 		String fileName = requestObject.getString("filename");
-		String result = FileOperations.DownloadFile(folderid, fileName);
+		FileOperations.DownloadFile(folderid, fileName , response);
 		
-		if(result.equals("File deleted successfully")) {
-			
-			response.getWriter().write(RequestHandler.sendResponse(200, "file downloaded"));
-			
-		}
-		else {
-			response.getWriter().write(RequestHandler.sendResponse(400, "file downloaded failed"));
-		}
+//		if(result.equals("File deleted successfully")) {
+//			
+//			response.getWriter().write(RequestHandler.sendResponse(200, "file downloaded"));
+//			
+//		}
+//		else {
+//			response.getWriter().write(RequestHandler.sendResponse(400, "file downloaded failed"));
+//		}
 		
 	}
 

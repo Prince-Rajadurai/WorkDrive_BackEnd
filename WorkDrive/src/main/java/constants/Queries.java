@@ -31,9 +31,9 @@ public class Queries {
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	
-	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , CURRENT_TIMESTAMP , CURRENT_TIMESTAMP , ?)";
+	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , CURRENT_TIMESTAMP , CURRENT_TIMESTAMP , ?)";
 	
-	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = SELECT CURRENT_TIMESTAMP WHERE "+FILE_PAREND_ID+" = ? ";
+	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = CURRENT_TIMESTAMP WHERE "+FILE_ID+" = ? ";
 	
 	public static final String DELETE_FILE = "DELETE FROM "+FILES_TABLE+" WHERE "+FILE_NAME+" = ? and "+FILE_PAREND_ID+" = ?"; // my update
 	
@@ -44,5 +44,7 @@ public class Queries {
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
 	public static final String EXIST_NAME = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? AND "+USER_ID+"= ? ;";
+	
+	public static final String GET_FILE_ID = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ?";
 	
 }
