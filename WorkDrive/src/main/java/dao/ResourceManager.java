@@ -28,7 +28,7 @@ public class ResourceManager {
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTime=System.currentTimeMillis();
 
-		if(parentId==null) {
+		if(parentId!=null) {
 		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
 		}else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
@@ -81,8 +81,10 @@ public class ResourceManager {
 	}
 
 	public static boolean AddFile(long folderId, String fileName , String size) {// =====> my updates
+		
+		long id = SnowflakeIdGenerator.nextId();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { folderId, fileName , size});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName , size});
 
 		return i > 0;
 
@@ -107,7 +109,7 @@ public class ResourceManager {
 	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
 
 	    while (result.next()) {
-	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() , result.getString("Size") ).getFileData());
+	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() , result.getString("Size") ,result.getLong("fileId")).getFileData());
 	    }
 
 	    return files;
@@ -124,8 +126,8 @@ public class ResourceManager {
 
 	public static boolean renameFile(String filename, long folderId) {
 
-		int res = QueryHandler.executeUpdate(filename, new Object[] { filename, folderId });
-
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_FILENAME, new Object[] { filename, folderId});
+		
 		return res > 0;
 	}
 
@@ -175,6 +177,21 @@ public class ResourceManager {
 	    }
 
 	    return true;
+	}
+	
+	public static long findFileId(long folderId , String filename) {
+		
+		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_ID, new Object[] {folderId , filename});
+		
+		try {
+			if(result.next()) {
+				return result.getLong("fileId");
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 

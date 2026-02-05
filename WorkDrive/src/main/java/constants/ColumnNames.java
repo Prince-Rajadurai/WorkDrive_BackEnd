@@ -21,6 +21,7 @@ public class ColumnNames {
 	public static final String FILE_PAREND_ID = "folderId";
 	public static final String FILE_NAME = "filename";
 	public static final String FILE_EDIT = "fileEditTime";
+	public static final String FILE_ID = "fileId";
 	public static final String FILE_SIZE = "Size";
 	
 

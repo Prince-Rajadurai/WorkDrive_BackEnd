@@ -85,48 +85,40 @@ public class FileOperations {
 	}
 
 //	File download 
-	public static String DownloadFile(String folderId, String fileName, HttpServletResponse response) {
+	public static void DownloadFile(String folderId, String fileName, HttpServletResponse response) {
 
-		Path hdfsFile = new Path("/" + folderId + "/" + fileName);
+	    Path path = new Path("/" + folderId + "/" + fileName);
 
-		FSDataInputStream hdfsIn = null;
-		OutputStream out = null;
+	    try {
+	    	if (!fs.exists(path)) {
+	            response.sendError(404, "File not found in HDFS");
+	            return;
+	        }
 
-		try {
-			hdfsIn = fs.open(hdfsFile);
+	        FileStatus status = fs.getFileStatus(path);
 
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+	        response.setContentType("application/octet-stream");
+	        response.setHeader(
+	            "Content-Disposition",
+	            "attachment; filename=\"" + fileName + "\""
+	        );
+	        response.setContentLengthLong(status.getLen());
 
-			FileStatus status = fs.getFileStatus(hdfsFile);
-			response.setContentLengthLong(status.getLen());
+	        try (FSDataInputStream in = fs.open(path);
+	             OutputStream out = response.getOutputStream()) {
 
-			out = response.getOutputStream();
-
-			byte[] buffer = new byte[8192];
-			int len;
-
-			while ((len = hdfsIn.read(buffer)) != -1) {
-				out.write(buffer, 0, len);
-			}
-
-			out.flush();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "Download failed";
-		} finally {
-			try {
-				if (hdfsIn != null)
-					hdfsIn.close();
-				if (out != null)
-					out.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	            byte[] buffer = new byte[8192];
+	            int bytesRead;
+	            while ((bytesRead = in.read(buffer)) != -1) {
+	                out.write(buffer, 0, bytesRead);
+	            }
+	            out.flush();
+	        }
+	    }
+	    catch (Exception e) {
+			// TODO: handle exception
+	    	e.printStackTrace();
 		}
-
-		return "File downloaded successfully";
 	}
 
 //	File rename
