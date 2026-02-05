@@ -57,6 +57,7 @@ public class SignupServlet extends HttpServlet {
 			String password = requestObject.getString("password");
 			String confirmPassword = requestObject.getString("confirmPassword");
 			boolean termsAccepted = requestObject.getBoolean("terms");
+			String timeZone=requestObject.getString("timezone");
 
 			// input validations
 			if (!Validations.lengthValidation(fullName, 3)) {
@@ -93,7 +94,7 @@ public class SignupServlet extends HttpServlet {
 			}
 
 			// inserting valid user
-			if (AccountsManager.addUser(email,fullName,password)) {
+			if (AccountsManager.addUser(email,fullName,password,timeZone)) {
 				ResourceManager.addResource("MYFOLDER", null, AccountsManager.getUserId(new AESEncryption().encrypt(email)) );
 				response.getWriter().write(RequestHandler.sendResponse(200, "Signup successful"));
 			} else {
@@ -104,6 +105,7 @@ public class SignupServlet extends HttpServlet {
             response.addCookie(RequestHandler.setCookie(email));
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.getWriter().write(RequestHandler.sendResponse(500, "Server error"));
 		}
 	}

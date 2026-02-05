@@ -9,11 +9,11 @@ public class Queries {
 	
 	public static final String CHECK_DUPLICATE_USER = "SELECT "+USER_EMAIL+" FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+"=?";
 	
-	public static final String ADD_USER = "INSERT INTO "+USERS_TABLE+" ("+USER_ID+", "+USER_EMAIL+", FullName, "+USER_PASSWORD+") VALUES (?, ?, ?, ?)";
+	public static final String ADD_USER = "INSERT INTO "+USERS_TABLE+" ("+USER_ID+", "+USER_EMAIL+", FullName, "+USER_PASSWORD+", "+USER_TIMEZONE+") VALUES (?, ?, ?, ?, ?)";
 	
 	public static final String VALIDATE_USER = "SELECT COUNT(*) FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+" = ? AND "+USER_PASSWORD+" = ?";
 
-	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+PARENT_ID+" = ?";
+	public static final String GET_RESOURCES="SELECT r.*, u."+USER_TIMEZONE+" FROM "+RESOURCE_TABLE+" r JOIN Users u ON r.UserId = u.UserId WHERE r."+USER_ID+" = ? AND r."+PARENT_ID+" = ?";
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	
@@ -27,7 +27,7 @@ public class Queries {
 	
 	public static final String UPDATE_RESOURCE="UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_NAME+" = ?, "+MODIFIED_TIME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
-	public static final String GET_RESOURCE="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";
+	public static final String GET_RESOURCE="SELECT r.*, u."+USER_TIMEZONE+" FROM "+RESOURCE_TABLE+" r JOIN Users u ON r.UserId = u.UserId WHERE r."+RESOURCE_ID+" = ?";
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	

@@ -6,10 +6,10 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeConversion {
 
-	public static String convertMillisToFormattedDate(long milliseconds) {
+	public static String convertMillisToFormattedDate(long milliseconds, String timezone) {
         Instant instant = Instant.ofEpochMilli(milliseconds);
 
-        ZoneId zoneId = ZoneId.of("Asia/Kolkata"); 
+        ZoneId zoneId = ZoneId.of(timezone); 
         ZonedDateTime zonedDateTime = instant.atZone(zoneId);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ");
