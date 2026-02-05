@@ -48,6 +48,7 @@ public class FolderServlet extends HttpServlet {
 
 			
 			long parentId = Long.parseLong(requestObject.getString("parentId"));
+			System.out.println(parentId);
 
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
