@@ -29,9 +29,6 @@ public class ResourceManager {
 		long currentTime=System.currentTimeMillis();
 
 		if(parentId!=null) {
-<<<<<<< HEAD
-		    QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
-=======
 		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
 >>>>>>> 7bc8c9e3be6d2f7f20051f4c4933974e6b15f6f4
 		}else {
