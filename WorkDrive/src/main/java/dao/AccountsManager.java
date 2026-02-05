@@ -17,11 +17,11 @@ public class AccountsManager {
 		return rs.next();
 	}
 
-	public static boolean addUser(String email, String fullName, String password) throws Exception {
+	public static boolean addUser(String email, String fullName, String password, String timeZone) throws Exception {
 		String encryptPass;
 		long id = SnowflakeIdGenerator.nextId();
 		encryptPass = new PasswordHashing().passwordHashing(password);
-		QueryHandler.executeUpdate(Queries.ADD_USER, new Object[] { id, email, fullName, encryptPass });
+		QueryHandler.executeUpdate(Queries.ADD_USER, new Object[] { id, email, fullName, encryptPass, timeZone });
 		return true;
 	}
 

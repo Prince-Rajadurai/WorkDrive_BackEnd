@@ -12,25 +12,24 @@ public class Resource {
     private long createdTime;
     private long modifiedTime;
     private Long parentId;
+    private String timeZone;
 
     public Resource(long resourceId, String resourceName, long createdTime, long modifiedTime,
-                    long parentId) {
+                    long parentId, String timeZone) {
         this.resourceId = resourceId;
         this.resourceName=resourceName;
         this.createdTime=createdTime;
         this.modifiedTime=modifiedTime;
         this.parentId = parentId;
+        this.timeZone=timeZone;
     }
 
     public JSONObject toJson() {
-    	DateTimeFormatter formatter =
-    	        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    	
         JSONObject obj = new JSONObject();
         obj.put("resourceId", String.valueOf(resourceId));
         obj.put("resourceName", resourceName);
-        obj.put("createdTime", TimeConversion.convertMillisToFormattedDate(createdTime));
-        obj.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime));
+        obj.put("createdTime", TimeConversion.convertMillisToFormattedDate(createdTime,timeZone));
+        obj.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime,timeZone));
         obj.put("parentId", String.valueOf(parentId));
         return obj;
     }

@@ -29,7 +29,8 @@ public class ResourceManager {
 		long currentTime=System.currentTimeMillis();
 
 		if(parentId!=null) {
-		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
+		    QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
+
 		}else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
 		}
@@ -38,7 +39,7 @@ public class ResourceManager {
 		if (rs.next()) {
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
 					rs.getLong("CreatedTime"),
-					rs.getLong("LastModifiedTime"), rs.getLong("parentId"));
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"),rs.getString("TimeZone"));
 			return resource.toJson();
 		}
 		return null;
@@ -61,7 +62,7 @@ public class ResourceManager {
 
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
 					rs.getLong("CreatedTime"),
-					rs.getLong("LastModifiedTime"), rs.getLong("parentId"));
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"));
 			resources.add(resource.toJson());
 		}
 
