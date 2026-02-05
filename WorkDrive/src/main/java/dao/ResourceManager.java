@@ -30,7 +30,6 @@ public class ResourceManager {
 
 		if(parentId!=null) {
 		QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
->>>>>>> 7bc8c9e3be6d2f7f20051f4c4933974e6b15f6f4
 		}else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
 		}
