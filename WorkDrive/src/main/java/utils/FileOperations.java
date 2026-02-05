@@ -3,19 +3,18 @@ package utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Base64;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 
-import databasemanager.QueryHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
@@ -86,40 +85,54 @@ public class FileOperations {
 
 //	File download 
 	public static void DownloadFile(String folderId, String fileName, HttpServletResponse response) {
-
 	    Path path = new Path("/" + folderId + "/" + fileName);
 
+	    FSDataInputStream hdfsIn = null;
+	    OutputStream out = null;
+
 	    try {
-	    	if (!fs.exists(path)) {
-	            response.sendError(404, "File not found in HDFS");
-	            return;
-	        }
+	        hdfsIn = fs.open(path); // Open HDFS file
 
-	        FileStatus status = fs.getFileStatus(path);
-
+	        // Set headers for browser download
 	        response.setContentType("application/octet-stream");
-	        response.setHeader(
-	            "Content-Disposition",
-	            "attachment; filename=\"" + fileName + "\""
-	        );
+	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+	        // Get file size and set content length
+	        FileStatus status = fs.getFileStatus(path);
 	        response.setContentLengthLong(status.getLen());
 
-	        try (FSDataInputStream in = fs.open(path);
-	             OutputStream out = response.getOutputStream()) {
+	        out = response.getOutputStream();
 
-	            byte[] buffer = new byte[8192];
-	            int bytesRead;
-	            while ((bytesRead = in.read(buffer)) != -1) {
-	                out.write(buffer, 0, bytesRead);
-	            }
-	            out.flush();
+	        byte[] buffer = new byte[8192];
+	        int len;
+
+	        // Stream file to browser
+	        while ((len = hdfsIn.read(buffer)) != -1) {
+	            out.write(buffer, 0, len);
+	        }
+
+	        out.flush();
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        try {
+	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            response.getWriter().write("File download failed: " + e.getMessage());
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	    } finally {
+	        try {
+	            if (hdfsIn != null) hdfsIn.close();
+	            if (out != null) out.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
 	        }
 	    }
-	    catch (Exception e) {
-			// TODO: handle exception
-	    	e.printStackTrace();
-		}
 	}
+
+
+
 
 //	File rename
 	public static String renameFile(String folderId, String olderFileName, String newFileName) throws IOException {
