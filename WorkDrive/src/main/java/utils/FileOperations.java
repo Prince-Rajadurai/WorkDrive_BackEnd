@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -14,6 +15,9 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+
+import com.github.luben.zstd.ZstdInputStream;
+import com.github.luben.zstd.ZstdOutputStream;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
@@ -49,21 +53,70 @@ public class FileOperations {
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
 			FSDataOutputStream out = fs.create(hdfsPath, true);
+			ZstdOutputStream zOut = new ZstdOutputStream(out);
+//			GZIPOutputStream zOut = new GZIPOutputStream(out);
 
-			byte[] buffer = new byte[8192];
+			byte[] buffer = new byte[65536];
 			int bytesRead;
 			while ((bytesRead = in.read(buffer)) != -1) {
-				out.write(buffer, 0, bytesRead);
+				zOut.write(buffer, 0, bytesRead);
 			}
-			out.hflush();
-			out.close();
+			zOut.close();
 			in.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			return "File uploaded failed";
 		}
 
 		return "File uploaded sucessfully";
+
+//		try {
+//			
+//			InputStream in = file.getInputStream();
+//
+//			
+//			Path hdfsPath = new Path("/" + folderId + "/" + filename + ".flac"); 
+//			FSDataOutputStream out = fs.create(hdfsPath, true);
+//
+//			
+//			ProcessBuilder pb = new ProcessBuilder("ffmpeg", "-i", "pipe:0", 
+//					"-f", "flac", 
+//					"pipe:1" 
+//			);
+//			pb.redirectError(ProcessBuilder.Redirect.INHERIT); 
+//			Process process = pb.start();
+//
+//			
+//			OutputStream ffmpegIn = process.getOutputStream();
+//			byte[] buffer = new byte[65536]; 
+//			int bytesRead;
+//			while ((bytesRead = in.read(buffer)) != -1) {
+//				ffmpegIn.write(buffer, 0, bytesRead);
+//			}
+//			ffmpegIn.close();
+//			in.close();
+//
+//			
+//			InputStream ffmpegOut = process.getInputStream();
+//			while ((bytesRead = ffmpegOut.read(buffer)) != -1) {
+//				out.write(buffer, 0, bytesRead);
+//			}
+//			ffmpegOut.close();
+//			out.close();
+////
+////			
+//			int exitCode = process.waitFor();
+//			if (exitCode != 0) {
+//				return "FLAC encoding failed!";
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return "File upload failed!";
+//		}
+//
+//		return "File uploaded successfully";
 	}
 
 //	File delete
@@ -85,54 +138,50 @@ public class FileOperations {
 
 //	File download 
 	public static void DownloadFile(String folderId, String fileName, HttpServletResponse response) {
-	    Path path = new Path("/" + folderId + "/" + fileName);
+		Path path = new Path("/" + folderId + "/" + fileName);
 
-	    FSDataInputStream hdfsIn = null;
-	    OutputStream out = null;
+		FSDataInputStream hdfsIn = null;
+		ZstdInputStream in = null;
+		OutputStream out = null;
 
-	    try {
-	        hdfsIn = fs.open(path); // Open HDFS file
+		try {
+			hdfsIn = fs.open(path);
+			in = new ZstdInputStream(hdfsIn);
 
-	        // Set headers for browser download
-	        response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
-	        // Get file size and set content length
-	        FileStatus status = fs.getFileStatus(path);
-	        response.setContentLengthLong(status.getLen());
+			out = response.getOutputStream();
 
-	        out = response.getOutputStream();
+			byte[] buffer = new byte[65536];
+			int len;
 
-	        byte[] buffer = new byte[8192];
-	        int len;
+			while ((len = in.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
 
-	        // Stream file to browser
-	        while ((len = hdfsIn.read(buffer)) != -1) {
-	            out.write(buffer, 0, len);
-	        }
+			out.flush();
 
-	        out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			try {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().write("File download failed");
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		} finally {
+			try {
+				if (in != null)
+					in.close();
+				if (out != null)
+					out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        try {
-	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	            response.getWriter().write("File download failed: " + e.getMessage());
-	        } catch (IOException ex) {
-	            ex.printStackTrace();
-	        }
-	    } finally {
-	        try {
-	            if (hdfsIn != null) hdfsIn.close();
-	            if (out != null) out.close();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	    }
 	}
-
-
-
 
 //	File rename
 	public static String renameFile(String folderId, String olderFileName, String newFileName) throws IOException {
@@ -164,19 +213,23 @@ public class FileOperations {
 
 		Path file = new Path("/" + folderId);
 		FileStatus status = fs.getFileStatus(file);
-		float conversionVal = (float) 1024.0;
+		double conversionVal = 1024.0;
 
 		long fileSize = status.getLen();
+		double sizeVal = fileSize;
 		String size = fileSize + " B";
-		if (fileSize >= 1024) {
-			fileSize = (long) (fileSize / conversionVal);
-			size = fileSize + "KB";
-			if (fileSize >= 1024) {
-				fileSize = (long) (fileSize / conversionVal);
-				size = fileSize + " MB";
-				if (fileSize >= 1024) {
-					fileSize = (long) (fileSize / conversionVal);
-					size = fileSize + " GB";
+
+		if (sizeVal >= 1024) {
+			sizeVal = sizeVal / conversionVal;
+			size = String.format("%.2f KB", sizeVal);
+
+			if (sizeVal >= 1024) {
+				sizeVal = sizeVal / conversionVal;
+				size = String.format("%.2f MB", sizeVal);
+
+				if (sizeVal >= 1024) {
+					sizeVal = sizeVal / conversionVal;
+					size = String.format("%.2f GB", sizeVal);
 				}
 			}
 		}
@@ -190,19 +243,23 @@ public class FileOperations {
 
 		Path file = new Path("/" + filePath);
 		FileStatus status = fs.getFileStatus(file);
-		float conversionVal = (float) 1024.0;
+		double conversionVal = 1024.0;
 
 		long fileSize = status.getLen();
+		double sizeVal = fileSize;
 		String size = fileSize + " B";
-		if (fileSize >= 1024) {
-			fileSize = (long) (fileSize / conversionVal);
-			size = fileSize + "KB";
-			if (fileSize >= 1024) {
-				fileSize = (long) (fileSize / conversionVal);
-				size = fileSize + " MB";
-				if (fileSize >= 1024) {
-					fileSize = (long) (fileSize / conversionVal);
-					size = fileSize + " GB";
+
+		if (sizeVal >= 1024) {
+			sizeVal = sizeVal / conversionVal;
+			size = String.format("%.2f KB", sizeVal);
+
+			if (sizeVal >= 1024) {
+				sizeVal = sizeVal / conversionVal;
+				size = String.format("%.2f MB", sizeVal);
+
+				if (sizeVal >= 1024) {
+					sizeVal = sizeVal / conversionVal;
+					size = String.format("%.2f GB", sizeVal);
 				}
 			}
 		}
