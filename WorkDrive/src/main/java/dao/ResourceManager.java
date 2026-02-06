@@ -30,7 +30,6 @@ public class ResourceManager {
 
 		if(parentId!=null) {
 		    QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, resourceName, parentId, userId, currentTime, currentTime });
-
 		}else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT, new Object[] { id, resourceName, userId, currentTime, currentTime });
 		}
@@ -39,7 +38,7 @@ public class ResourceManager {
 		if (rs.next()) {
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
 					rs.getLong("CreatedTime"),
-					rs.getLong("LastModifiedTime"), rs.getLong("parentId"),rs.getString("TimeZone"));
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"));
 			return resource.toJson();
 		}
 		return null;
