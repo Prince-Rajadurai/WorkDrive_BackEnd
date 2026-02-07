@@ -195,17 +195,19 @@ public class FileOperations {
 	}
 
 // File copy operation
-	public static void copyFile(String oldFolderId, String newFolderId, String filename) {
+	public static boolean copyFile(String oldFolderId, String newFolderId, String filename) {
 
-		Path sourcePath = new Path(oldFolderId + "/" + filename);
+		Path sourcePath = new Path("/"+oldFolderId + "/" + filename);
 
-		Path destinationPath = new Path(newFolderId + "/" + filename);
+		Path destinationPath = new Path("/"+newFolderId + "/" + filename);
 
 		try {
 			FileUtil.copy(fs, sourcePath, fs, destinationPath, false, fs.getConf());
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 //	Folder size 
@@ -266,6 +268,14 @@ public class FileOperations {
 
 		return size;
 
+	}
+	
+	public static boolean moveFile(String oldFolder , String newFolder , String filename) throws IOException {
+
+		boolean copy = copyFile(oldFolder, newFolder, filename);
+		String delete = DeleteFile(oldFolder, filename);
+		
+		return copy&&delete.equals("File deleted successfully");
 	}
 
 }

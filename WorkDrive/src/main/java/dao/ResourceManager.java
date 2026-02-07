@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -153,6 +154,7 @@ public class ResourceManager {
 	}
 	
 	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException {
+		
 	    JSONObject folder = addResource(finalName, parentId, userId);
 	    long tempFolderId = Long.parseLong(folder.getString("resourceId"));
 
@@ -192,6 +194,41 @@ public class ResourceManager {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public static boolean fileCopy(long olderFolderId , long newFolderId , String filename) {
+		
+		boolean fileRes , res = false;
+		fileRes = FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),filename);	
+		if(fileRes) {
+			try {
+				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(olderFolderId)));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res && fileRes;
+		
+	}
+	
+	public static boolean fileMove(long fileId , long olderFolderId , long newFolderId , String filename) {
+		
+		try {
+			
+			boolean fileMoveHdfs = FileOperations.moveFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), filename);
+			int fileMoveDb = QueryHandler.executeUpdate(Queries.UPDATE_FILE_PARENT_ID, new Object[] {newFolderId , fileId});
+			
+			return fileMoveHdfs && fileMoveDb > 0;
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			
+		}
+		
+		return false;
+		
 	}
 
 

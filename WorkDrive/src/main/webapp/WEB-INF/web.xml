@@ -111,6 +111,20 @@
         <servlet-name>GetUserNameServlet</servlet-name>
         <servlet-class>servlets.GetUserNameServlet</servlet-class>
     </servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>CopyFileServlet</display-name>
+    	<servlet-name>CopyFileServlet</servlet-name>
+    	<servlet-class>servlets.CopyFileServlet</servlet-class>
+    </servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>MoveFileServlet</display-name>
+    	<servlet-name>MoveFileServlet</servlet-name>
+    	<servlet-class>servlets.MoveFileServlet</servlet-class>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -188,6 +202,14 @@
     <servlet-mapping>
         <servlet-name>GetUserNameServlet</servlet-name>
         <url-pattern>/GetUserNameServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>CopyFileServlet</servlet-name>
+    	<url-pattern>/CopyFileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>MoveFileServlet</servlet-name>
+    	<url-pattern>/MoveFileServlet</url-pattern>
     </servlet-mapping>
 
     <!-- Welcome Files -->
