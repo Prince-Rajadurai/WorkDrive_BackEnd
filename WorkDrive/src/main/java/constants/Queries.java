@@ -48,5 +48,6 @@ public class Queries {
 	public static final String GET_FILE_ID = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ?";
 	
 	public static final String UPDATE_FILE_PARENT_ID = "UPDATE "+FILES_TABLE+" SET "+FILE_PAREND_ID+" = ? WHERE "+FILE_ID+" = ? ";
+	public static final String GET_ALL_CONTAINS = "SELECT (SELECT COUNT(*) FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?) AS totalFiles, (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?) AS totalFolders "; 
 	
 }

@@ -211,7 +211,9 @@ public class FileOperations {
 	}
 
 //	Folder size 
-	public static String getFolderSize(String folderId) throws IOException {
+	public static String getFolderSize(long folderId){
+		String size;
+		try {
 
 		Path file = new Path("/" + folderId);
 		FileStatus status = fs.getFileStatus(file);
@@ -219,7 +221,7 @@ public class FileOperations {
 
 		long fileSize = status.getLen();
 		double sizeVal = fileSize;
-		String size = fileSize + " B";
+		size = fileSize + " B";
 
 		if (sizeVal >= 1024) {
 			sizeVal = sizeVal / conversionVal;
@@ -234,6 +236,9 @@ public class FileOperations {
 					size = String.format("%.2f GB", sizeVal);
 				}
 			}
+		}
+		}catch(Exception e){
+			size="0 KB";
 		}
 
 		return size;
