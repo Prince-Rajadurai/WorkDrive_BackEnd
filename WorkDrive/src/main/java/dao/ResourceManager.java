@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static JSONObject addResource(String resourceName, Long parentId, long userId) throws SQLException {
+	public static JSONObject addResource(String resourceName, Long parentId, long userId) throws SQLException, IOException {
 
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTime=System.currentTimeMillis();
@@ -36,9 +37,20 @@ public class ResourceManager {
 
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_RESOURCE, new Object[] { id });
 		if (rs.next()) {
+			ResultSet tempRs=QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS, new Object[] {rs.getLong("ResourceId"),rs.getLong("ResourceId")});
+			
+			int totalFiles = 0;
+		    int totalFolders = 0;
+		    
+		    if (tempRs != null && tempRs.next()) {
+		        totalFiles = tempRs.getInt("totalFiles");
+		        totalFolders = tempRs.getInt("totalFolders");
+		    }
+			String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
+
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
 					rs.getLong("CreatedTime"),
-					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"));
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"), totalFiles, totalFolders, size);
 			return resource.toJson();
 		}
 		return null;
@@ -51,17 +63,27 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	};
 
-	public static ArrayList<JSONObject> getResource(long parentId, long userId) throws SQLException {
+	public static ArrayList<JSONObject> getResource(long parentId, long userId) throws SQLException, IOException {
 		ArrayList<JSONObject> resources = new ArrayList<>();
 
 		ResultSet rs;
 			rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId });
 
 		while (rs.next()) {
+			ResultSet tempRs=QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS, new Object[] {rs.getLong("ResourceId"),rs.getLong("ResourceId")});
+			
+			int totalFiles = 0;
+		    int totalFolders = 0;
+		    
+		    if (tempRs != null && tempRs.next()) {
+		        totalFiles = tempRs.getInt("totalFiles");
+		        totalFolders = tempRs.getInt("totalFolders");
+		    }
+			String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
 
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
 					rs.getLong("CreatedTime"),
-					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"));
+					rs.getLong("LastModifiedTime"), rs.getLong("parentId"), rs.getString("TimeZone"), totalFiles, totalFolders, size);
 			resources.add(resource.toJson());
 		}
 
@@ -152,33 +174,36 @@ public class ResourceManager {
 		
 	}
 	
-	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException {
+	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException, IOException {
+		
 	    JSONObject folder = addResource(finalName, parentId, userId);
 	    long tempFolderId = Long.parseLong(folder.getString("resourceId"));
 
-	    Stack<Long> folderStack = new Stack<>();
-	    folderStack.push(resourceId);
+	    copyFile(resourceId, tempFolderId);
 
-	    while (!folderStack.isEmpty()) {
-	        long currentFolderId = folderStack.pop();
-
-	        copyFile(currentFolderId, tempFolderId);
-
-	        ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
-
-	        while (subfolders.next()) {
-	            long subfolderId = subfolders.getLong("resourceId");
-	            String subfolderName = subfolders.getString("resourceName");
-
-	            folderStack.push(subfolderId);
-
-	            addResource(subfolderName, tempFolderId, userId);
-	        }
-	    }
+	    copySubfolders(resourceId, tempFolderId, userId);
 
 	    return true;
 	}
+
 	
+	private static void copySubfolders(long currentFolderId, long parentFolderId, long userId) throws SQLException, IOException {
+
+	    ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
+
+	    while (subfolders.next()) {
+	        long subfolderId = subfolders.getLong("resourceId");
+	        String subfolderName = subfolders.getString("resourceName");
+
+	        JSONObject subfolder = addResource(subfolderName, parentFolderId, userId);
+	        long newSubfolderId = Long.parseLong(subfolder.getString("resourceId"));
+
+	        copyFile(subfolderId, newSubfolderId);
+	        copySubfolders(subfolderId, newSubfolderId, userId);
+	    }
+	}
+
+
 	public static long findFileId(long folderId , String filename) {
 		
 		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_ID, new Object[] {folderId , filename});
