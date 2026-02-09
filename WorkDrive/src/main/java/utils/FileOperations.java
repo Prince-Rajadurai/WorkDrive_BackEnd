@@ -212,6 +212,7 @@ public class FileOperations {
 
 //	Folder size 
 	public static String getFolderSize(long folderId){
+		
 		String size;
 		try {
 

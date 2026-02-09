@@ -125,6 +125,13 @@
     	<servlet-name>MoveFileServlet</servlet-name>
     	<servlet-class>servlets.MoveFileServlet</servlet-class>
     </servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>FolderUploadServlet</display-name>
+    	<servlet-name>FolderUploadServlet</servlet-name>
+    	<servlet-class>servlets.FolderUploadServlet</servlet-class>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -210,6 +217,10 @@
     <servlet-mapping>
     	<servlet-name>MoveFileServlet</servlet-name>
     	<url-pattern>/MoveFileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>FolderUploadServlet</servlet-name>
+    	<url-pattern>/FolderUploadServlet</url-pattern>
     </servlet-mapping>
 
     <!-- Welcome Files -->
