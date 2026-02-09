@@ -70,53 +70,6 @@ public class FileOperations {
 		}
 
 		return "File uploaded sucessfully";
-
-//		try {
-//			
-//			InputStream in = file.getInputStream();
-//
-//			
-//			Path hdfsPath = new Path("/" + folderId + "/" + filename + ".flac"); 
-//			FSDataOutputStream out = fs.create(hdfsPath, true);
-//
-//			
-//			ProcessBuilder pb = new ProcessBuilder("ffmpeg", "-i", "pipe:0", 
-//					"-f", "flac", 
-//					"pipe:1" 
-//			);
-//			pb.redirectError(ProcessBuilder.Redirect.INHERIT); 
-//			Process process = pb.start();
-//
-//			
-//			OutputStream ffmpegIn = process.getOutputStream();
-//			byte[] buffer = new byte[65536]; 
-//			int bytesRead;
-//			while ((bytesRead = in.read(buffer)) != -1) {
-//				ffmpegIn.write(buffer, 0, bytesRead);
-//			}
-//			ffmpegIn.close();
-//			in.close();
-//
-//			
-//			InputStream ffmpegOut = process.getInputStream();
-//			while ((bytesRead = ffmpegOut.read(buffer)) != -1) {
-//				out.write(buffer, 0, bytesRead);
-//			}
-//			ffmpegOut.close();
-//			out.close();
-////
-////			
-//			int exitCode = process.waitFor();
-//			if (exitCode != 0) {
-//				return "FLAC encoding failed!";
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return "File upload failed!";
-//		}
-//
-//		return "File uploaded successfully";
 	}
 
 //	File delete

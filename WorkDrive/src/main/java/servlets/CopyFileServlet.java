@@ -52,7 +52,6 @@ public class CopyFileServlet extends HttpServlet implements Servlet {
 		
 		long newFolderId = Long.parseLong(newFolderid);
 		
-		System.out.println("old ===> "+oldFolderid+" === new ===>"+newFolderid);
 		
 		boolean fileCopyResult = ResourceManager.fileCopy(oldFolderId, newFolderId, filename);
 		

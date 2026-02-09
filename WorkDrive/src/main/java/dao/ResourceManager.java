@@ -202,7 +202,7 @@ public class ResourceManager {
 		fileRes = FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),filename);	
 		if(fileRes) {
 			try {
-				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(olderFolderId)));
+				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(newFolderId+"/"+filename)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
