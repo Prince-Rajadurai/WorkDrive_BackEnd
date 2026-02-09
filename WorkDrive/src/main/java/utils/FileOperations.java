@@ -178,7 +178,7 @@ public class FileOperations {
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] {folderId});
 			
 			while(res.next()) {
 				filename = res.getString("filename");
