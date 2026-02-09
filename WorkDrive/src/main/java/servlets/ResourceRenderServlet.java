@@ -55,7 +55,7 @@ public class ResourceRenderServlet extends HttpServlet {
                 parentId = ResourceManager.getMyFolderId(userId);
             }
             ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
-            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId);
+            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId , userId);
             ArrayList<JSONObject> resources = new ArrayList<>();
             for (JSONObject folder : folders) {
                 folder.put("type", "FOLDER");

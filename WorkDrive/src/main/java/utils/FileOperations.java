@@ -1,10 +1,15 @@
 package utils;
 
+import databasemanager.QueryHandler;
+
+import java.awt.desktop.QuitHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.hadoop.conf.Configuration;
@@ -19,6 +24,8 @@ import org.apache.hadoop.io.IOUtils;
 import com.github.luben.zstd.ZstdInputStream;
 import com.github.luben.zstd.ZstdOutputStream;
 
+import constants.Queries;
+import dao.ResourceManager;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
@@ -150,9 +157,9 @@ public class FileOperations {
 // File copy operation
 	public static boolean copyFile(String oldFolderId, String newFolderId, String filename) {
 
-		Path sourcePath = new Path("/"+oldFolderId + "/" + filename);
+		Path sourcePath = new Path("/" + oldFolderId + "/" + filename);
 
-		Path destinationPath = new Path("/"+newFolderId + "/" + filename);
+		Path destinationPath = new Path("/" + newFolderId + "/" + filename);
 
 		try {
 			FileUtil.copy(fs, sourcePath, fs, destinationPath, false, fs.getConf());
@@ -164,34 +171,45 @@ public class FileOperations {
 	}
 
 //	Folder size 
-	public static String getFolderSize(long folderId){
-		String size;
+	public static String getFolderSize(long folderId) {
+		
+		String size , filename;
+		long fileSize = 0;
+
 		try {
 
-		Path file = new Path("/" + folderId);
-		FileStatus status = fs.getFileStatus(file);
-		double conversionVal = 1024.0;
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			
+			while(res.next()) {
+				filename = res.getString("filename");
+				Path file = new Path("/" + filename);
+				FileStatus status = fs.getFileStatus(file);
+				fileSize += status.getLen();
+			}
+			
+			System.out.println("Size ===> "+fileSize);
+			
+			double conversionVal = 1024.0;
 
-		long fileSize = status.getLen();
-		double sizeVal = fileSize;
-		size = fileSize + " B";
-
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
+			double sizeVal = fileSize;
+			size = fileSize + " B";
 
 			if (sizeVal >= 1024) {
 				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f MB", sizeVal);
+				size = String.format("%.2f KB", sizeVal);
 
 				if (sizeVal >= 1024) {
 					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f GB", sizeVal);
+					size = String.format("%.2f MB", sizeVal);
+
+					if (sizeVal >= 1024) {
+						sizeVal = sizeVal / conversionVal;
+						size = String.format("%.2f GB", sizeVal);
+					}
 				}
 			}
-		}
-		}catch(Exception e){
-			size="0 KB";
+		} catch (Exception e) {
+			size = "0 KB";
 		}
 
 		return size;
@@ -227,13 +245,13 @@ public class FileOperations {
 		return size;
 
 	}
-	
-	public static boolean moveFile(String oldFolder , String newFolder , String filename) throws IOException {
+
+	public static boolean moveFile(String oldFolder, String newFolder, String filename) throws IOException {
 
 		boolean copy = copyFile(oldFolder, newFolder, filename);
 		String delete = DeleteFile(oldFolder, filename);
-		
-		return copy&&delete.equals("File deleted successfully");
+
+		return copy && delete.equals("File deleted successfully");
 	}
 
 }

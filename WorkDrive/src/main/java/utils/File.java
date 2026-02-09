@@ -8,18 +8,20 @@ import org.json.JSONObject;
 public class File {
 	
 	private String filename;
-	private LocalDateTime createdTime;
-    private LocalDateTime modifiedTime;
+	private long createdTime;
+    private long modifiedTime;
     private String size;
     private Long fileId;
+    private String timeZone;
     
-    public File(String filename , LocalDateTime createdTime , LocalDateTime modifiedTime , String size , long fileId) {
+    public File(String filename , long createdTime , long modifiedTime , String size , long fileId , String timeZone) {
     	
     	this.filename = filename;
     	this.createdTime = createdTime;
     	this.modifiedTime = modifiedTime;
     	this.size = size;
     	this.fileId = fileId;
+    	this.timeZone = timeZone;
     	
     }
     
@@ -31,8 +33,8 @@ public class File {
     	JSONObject resObject = new JSONObject(); 	
     	
     	resObject.put("filename", filename);
-    	resObject.put("createTime", createdTime.format(formatter));
-    	resObject.put("modifiedTime", modifiedTime.format(formatter));
+    	resObject.put("createTime", TimeConversion.convertMillisToFormattedDate(createdTime, timeZone));
+    	resObject.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime, timeZone));
     	resObject.put("size", size);
     	resObject.put("id", fileId);
     	

@@ -105,8 +105,9 @@ public class ResourceManager {
 	public static boolean AddFile(long folderId, String fileName , String size) {// =====> my updates
 		
 		long id = SnowflakeIdGenerator.nextId();
+		long currentTimeMills = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName , size});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size});
 
 		return i > 0;
 
@@ -126,12 +127,20 @@ public class ResourceManager {
 		return res.next();
 	}
 
-	public static ArrayList<JSONObject> getAllFiles(long folderId) throws SQLException {
+	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId ) throws SQLException {
 	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
 	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
-
+	    
+	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
+	    
+	    String timeZone = "";
+	    
+	    if(userDetails.next()) {
+	    	timeZone = userDetails.getString("TimeZone");
+	    }
+	    
 	    while (result.next()) {
-	        files.add(new File(result.getString("filename"), result.getTimestamp("fileCreateTime").toLocalDateTime() , result.getTimestamp("fileEditTime").toLocalDateTime() , result.getString("Size") ,result.getLong("fileId")).getFileData());
+	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
 	    }
 
 	    return files;
@@ -146,9 +155,10 @@ public class ResourceManager {
 		return 0;
 	}
 
-	public static boolean renameFile(String filename, long folderId) {
+	public static boolean renameFile(String filename, long fileId) {
 
-		int res = QueryHandler.executeUpdate(Queries.UPDATE_FILENAME, new Object[] { filename, folderId});
+		long currentTimeMills = System.currentTimeMillis();
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_FILENAME, new Object[] { filename , currentTimeMills , fileId});
 		
 		return res > 0;
 	}
@@ -175,12 +185,23 @@ public class ResourceManager {
 	}
 	
 	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException {
-	    JSONObject folder = addResource(finalName, parentId, userId);
+	    JSONObject folder = null;
+		try {
+			folder = addResource(finalName, parentId, userId);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    long tempFolderId = Long.parseLong(folder.getString("resourceId"));
 
 	    copyFile(resourceId, tempFolderId);
 
-	    copySubfolders(resourceId, tempFolderId, userId);
+	    try {
+			copySubfolders(resourceId, tempFolderId, userId);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	    return true;
 	}
