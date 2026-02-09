@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.FileOperations;
+import utils.FileRename;
 import utils.RequestHandler;
 
 /**
@@ -49,11 +50,11 @@ public class UpdateFileName extends HttpServlet {
 		
 		long fileId = ResourceManager.findFileId(folderId, olderFileName);
 		
-		String res =  FileOperations.renameFile(folderid,olderFileName, newFileName);
+		String res =  FileOperations.renameFile( folderid , olderFileName, FileRename.getFileName(newFileName)+"."+FileRename.getFileExtension(olderFileName));
 		
 		if(res.equals("File renamed sucessfully")) {
 			
-			boolean result = ResourceManager.renameFile(newFileName, fileId);
+			boolean result = ResourceManager.renameFile(FileRename.getFileName(newFileName)+"."+FileRename.getFileExtension(olderFileName), fileId);
 			if(result) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File renamed"));
 			}
