@@ -54,4 +54,6 @@ public class Queries {
 	public static final String GET_ALL_CONTAINS = "SELECT (SELECT COUNT(*) FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?) AS totalFiles, (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?) AS totalFolders "; 
 	
 	public static final String GET_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? ";
+	
+	public static final String CHECK_FOLDER_EXISTS="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? ";
 }
