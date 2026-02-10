@@ -102,12 +102,12 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static boolean AddFile(long folderId, String fileName , String size) {// =====> my updates
+	public static boolean AddFile(long folderId, String fileName , String size , String CheckSum) {// =====> my updates
 		
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTimeMills = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size , CheckSum});
 
 		return i > 0;
 

@@ -48,8 +48,8 @@ public class UploadFileServlet extends HttpServlet {
 		
 		Part file1 = request.getPart("file");
 		try {
-			String result = FileOperations.UploadFile(file1 , folderid , filename);
-			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename));
+			String checkSum = FileOperations.UploadFile(file1 , folderid , filename);
+			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename),checkSum);
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
 			}
