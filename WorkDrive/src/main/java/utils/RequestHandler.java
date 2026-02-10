@@ -41,23 +41,14 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
-	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resource, String parentId) {
+	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resource, String parentId, long nextCursor) {
 		JSONObject responseObject=new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
-		responseObject.put("resource", resource);
+		responseObject.put("resources", resource);
 		responseObject.put("folderId", parentId);
+		responseObject.put("nextCursor", nextCursor);
 		return responseObject.toString();
-	}
-	
-	public static String sendResponse(int status, String message, ArrayList<JSONObject> data, String parentId, long nextCursor) {
-	    JSONObject response = new JSONObject();
-	    response.put("status", status);
-	    response.put("message", message);
-	    response.put("data", data);
-	    response.put("parentId", parentId);
-	    response.put("nextCursor", nextCursor);
-	    return response.toString();
 	}
 	
 	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resources) {
