@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.zip.GZIPOutputStream;
@@ -56,6 +58,7 @@ public class FileOperations {
 //	File upload -> change
 	public static String UploadFile(Part file, String folderId, String filename) {
 
+		String checkSumValue = "";
 		try {
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
@@ -63,20 +66,24 @@ public class FileOperations {
 			ZstdOutputStream zOut = new ZstdOutputStream(out);
 //			GZIPOutputStream zOut = new GZIPOutputStream(out);
 
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			byte[] buffer = new byte[65536];
 			int bytesRead;
 			while ((bytesRead = in.read(buffer)) != -1) {
+				md.update(buffer , 0 , bytesRead);
 				zOut.write(buffer, 0, bytesRead);
 			}
 			zOut.close();
 			in.close();
+			checkSumValue = ConverByteToString.convertByteToString(md);
 
-		} catch (IOException e) {
+		} catch (IOException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return "File uploaded failed";
 		}
+		
 
-		return "File uploaded sucessfully";
+		return checkSumValue;
 	}
 
 //	File delete
