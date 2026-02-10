@@ -184,14 +184,8 @@ public class ResourceManager {
 		
 	}
 	
-	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException {
-	    JSONObject folder = null;
-		try {
-			folder = addResource(finalName, parentId, userId);
-		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static boolean copyFolder(long parentId, long resourceId, String finalName, long userId) throws SQLException, IOException {
+	    JSONObject folder = addResource(finalName, parentId, userId);
 	    long tempFolderId = Long.parseLong(folder.getString("resourceId"));
 
 	    copyFile(resourceId, tempFolderId);
