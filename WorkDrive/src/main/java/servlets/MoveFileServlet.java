@@ -54,7 +54,7 @@ public class MoveFileServlet extends HttpServlet {
 		long fileId = ResourceManager.findFileId(oldFolderId, filename);
 		
 		
-		System.out.println("new folder = "+oldFolderId);
+//		System.out.println("new folder = "+oldFolderId);
 		
 		boolean moveFileResult = ResourceManager.fileMove(fileId, oldFolderId, newFolderId, filename);
 		

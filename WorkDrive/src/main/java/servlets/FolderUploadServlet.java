@@ -1,23 +1,19 @@
 package servlets;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
-
-import org.json.JSONObject;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import utils.RequestHandler;
 
 /**
  * Servlet implementation class FolderUploadServlet
  */
-
+@MultipartConfig
 public class FolderUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -41,41 +37,24 @@ public class FolderUploadServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        
-        
-        
-        System.out.println("hello");
-        
-        String parentId = request.getParameter("parentId");
-        
-        System.out.println(request.getParts());
-        
-        System.out.println("Received parentId: " + parentId);
-        
-        Collection<Part> parts = request.getParts();
-        Iterator<Part> partIterator = parts.iterator();
+		String parentId = request.getParameter("parentId");
+		
+		System.out.println(parentId);
+		Collection<Part> parts = request.getParts();
 
-        while (partIterator.hasNext()) {
-            Part part = partIterator.next();
-            
-            // Only handle file parts (skip other parts like "parentId")
-            if (part.getName().equals("files")) {
-            	String relativePath = part.getSubmittedFileName();
-                String fileName = relativePath.substring(relativePath.lastIndexOf("/") + 1);
+		for (Part part : parts) {
+		    if (part.getName().equals("files")) {
+		        String fileName = part.getSubmittedFileName();
+		        long size = part.getSize();
 
-                // Print out the file info (filename and relative path)
-                System.out.println("Received file: " + fileName);
-                System.out.println("Relative path: " + relativePath);
+		        System.out.println("File name: " + fileName);
+		        System.out.println("Size: " + size);
 
-                // Print out the content-disposition header to see the form data
-                System.out.println("Content-Disposition: " + part.getHeader("Content-Disposition"));
-            }
-        }
-        
-        
+		        // InputStream is = part.getInputStream();
+		        // save file logic here
+		    }
+		}
+
 	}
-	
 
 }
