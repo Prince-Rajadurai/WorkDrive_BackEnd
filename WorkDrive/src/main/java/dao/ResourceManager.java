@@ -69,11 +69,11 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	};
 
-	public static ArrayList<JSONObject> getResource(long parentId, long userId) throws SQLException, IOException {
+	public static ArrayList<JSONObject> getResource(long parentId, long userId, long cursor, int limit) throws SQLException, IOException {
 		ArrayList<JSONObject> resources = new ArrayList<>();
 
 		ResultSet rs;
-		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId });
+			rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId, cursor, limit });
 
 		while (rs.next()) {
 			ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
@@ -93,6 +93,8 @@ public class ResourceManager {
 					rs.getString("TimeZone"), totalFiles, totalFolders, size);
 			resources.add(resource.toJson());
 		}
+		
+		System.out.println(resources);
 
 		return resources;
 	}
@@ -135,9 +137,23 @@ public class ResourceManager {
 		return res.next();
 	}
 
-	public static ArrayList<JSONObject> getAllFiles(long folderId, long userId) throws SQLException {
-		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-		ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
+	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId, long cursor, int limit ) throws SQLException {
+	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId, cursor, limit });
+	    
+	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
+	    
+	    String timeZone = "";
+	    
+	    if(userDetails.next()) {
+	    	timeZone = userDetails.getString("TimeZone");
+	    }
+	    
+	    while (result.next()) {
+	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
+	    }
+	    
+	    System.out.println(files);
 
 		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
 

@@ -49,27 +49,41 @@ public class ResourceRenderServlet extends HttpServlet {
                 }
             }
             String parentIdParam = request.getParameter("parentId");
-            if (parentIdParam != null) {
-                parentId = Long.parseLong(parentIdParam);
+            if (parentIdParam == null || parentIdParam.equals("null")) {
+            	parentId = ResourceManager.getMyFolderId(userId);
             } else {
-                parentId = ResourceManager.getMyFolderId(userId);
+                parentId = Long.parseLong(parentIdParam);
             }
-            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
-            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId , userId);
+            String cursorParam = request.getParameter("cursor");
+            String limitParam = request.getParameter("limit");
+            long cursor = cursorParam != null ? Long.parseLong(cursorParam) : 0L;
+            int limit = limitParam != null ? Integer.parseInt(limitParam) : 20;
+            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId, cursor, limit);
+            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId , userId, cursor, limit);
             ArrayList<JSONObject> resources = new ArrayList<>();
             for (JSONObject folder : folders) {
                 folder.put("type", "FOLDER");
-                folder.put("id", String.valueOf(folder.getLong("resourceId")));
+                folder.put("id", folder.getLong("resourceId"));
+                folder.put("cursorId", folder.getLong("resourceId"));
                 resources.add(folder);
             }
             for (JSONObject file : files) {
                 file.put("type", "FILE");
-                file.put("id", file.getString("filename"));
+                file.put("id", file.getLong("id"));
+                file.put("cursorId", file.getLong("id"));
                 resources.add(file);
             }
+            long nextCursor = 0;
+            if (!resources.isEmpty()) {
+            	JSONObject lastResource = resources.get(resources.size() - 1);
+            	nextCursor = lastResource.getLong("CreatedTime");
+            }
+            resources.sort((a, b) ->
+            	Long.compare(a.getLong("cursorId"), b.getLong("cursorId"))
+            );
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources , String.valueOf(parentId)));
+            response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources , String.valueOf(parentId), nextCursor));
         } catch (Exception e) {
         	e.printStackTrace();
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));
