@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import utils.CheckDuplicateFile;
 import utils.File;
 import utils.FileOperations;
 
@@ -107,7 +108,7 @@ public class ResourceManager {
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTimeMills = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size , CheckSum});
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size , CheckSum , "#1"});
 
 		return i > 0;
 
@@ -176,7 +177,7 @@ public class ResourceManager {
 		while(res.next()) {
 			
 			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), res.getString("filename"));
-			ResourceManager.AddFile(newFolderId, res.getString("filename") , res.getString("Size"));
+			ResourceManager.AddFile(newFolderId, res.getString("filename") , res.getString("Size") ,res.getString("checksum"));
 			
 		}
 		
@@ -233,13 +234,29 @@ public class ResourceManager {
 		return 0;
 	}
 	
+	public static long findFileIdUsingCheckSum(long folderId , String checkSum) {
+		
+		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_ID_USING_CHECKSUM, new Object[] {folderId , checkSum});
+		
+		try {
+			if(result.next()) {
+				return result.getLong("fileId");
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public static boolean fileCopy(long olderFolderId , long newFolderId , String filename) {
 		
 		boolean fileRes , res = false;
 		fileRes = FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),filename);	
+		filename = CheckDuplicateFile.getFileName(newFolderId, filename);
 		if(fileRes) {
 			try {
-				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(newFolderId+"/"+filename)));
+				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(newFolderId+"/"+filename)) , "#1");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -267,6 +284,57 @@ public class ResourceManager {
 		return false;
 		
 	}
+	
+	public static String checkExsistingFile(String checkSum , long folderId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] {checkSum , folderId});
+		try {
+			if(res.next()) {
+				return res.getString("checksum");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public static boolean getExsistingFileVersion(long fileId , String version) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] {fileId});
+		try {
+			if(res.next()) {
+				if(res.getString("version").equals(version))
+					return true;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean updateFileVersion( long fileId, String version) {
+		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.UPDATE_FILE_VERSION, new Object[] {version , fileId});
+		
+		return updateFileVersionResult > 0 ? true : false;
+	}
+	
+	public static boolean checkExsistingFileName(long folderId , String fileName) {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_EXIST_FILE, new Object[] {folderId , fileName});
+		
+		try {
+			if(res.next()) {
+				return true;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
+	}
+	
 
 
 }

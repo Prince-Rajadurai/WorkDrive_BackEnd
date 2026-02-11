@@ -65,25 +65,22 @@ public class FileOperations {
 			FSDataOutputStream out = fs.create(hdfsPath, true);
 			ZstdOutputStream zOut = new ZstdOutputStream(out);
 //			GZIPOutputStream zOut = new GZIPOutputStream(out);
-
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			byte[] buffer = new byte[65536];
+			
+			byte[] buffer = new byte[16384];
 			int bytesRead;
 			while ((bytesRead = in.read(buffer)) != -1) {
-				md.update(buffer , 0 , bytesRead);
 				zOut.write(buffer, 0, bytesRead);
 			}
 			zOut.close();
 			in.close();
-			checkSumValue = ConverByteToString.convertByteToString(md);
 
-		} catch (IOException | NoSuchAlgorithmException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return "File uploaded failed";
 		}
 		
 
-		return checkSumValue;
+		return "File upload successfully";
 	}
 
 //	File delete
@@ -165,6 +162,8 @@ public class FileOperations {
 	public static boolean copyFile(String oldFolderId, String newFolderId, String filename) {
 
 		Path sourcePath = new Path("/" + oldFolderId + "/" + filename);
+		
+		filename = CheckDuplicateFile.getFileName(Long.parseLong(newFolderId), filename);
 
 		Path destinationPath = new Path("/" + newFolderId + "/" + filename);
 
@@ -194,7 +193,6 @@ public class FileOperations {
 				fileSize += status.getLen();
 			}
 			
-			System.out.println("Size ===> "+fileSize);
 			
 			double conversionVal = 1024.0;
 

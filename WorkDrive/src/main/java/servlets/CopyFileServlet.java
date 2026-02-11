@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.CheckDuplicateFile;
 import utils.FileOperations;
 import utils.RequestHandler;
 
@@ -51,7 +52,6 @@ public class CopyFileServlet extends HttpServlet implements Servlet {
 		long oldFolderId = Long.parseLong(oldFolderid);
 		
 		long newFolderId = Long.parseLong(newFolderid);
-		
 		
 		boolean fileCopyResult = ResourceManager.fileCopy(oldFolderId, newFolderId, filename);
 		

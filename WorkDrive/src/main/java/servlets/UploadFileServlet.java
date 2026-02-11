@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.MessageDigest;
 
 import org.json.JSONObject;
 
@@ -12,7 +13,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import utils.CheckDuplicateFile;
+import utils.ConverByteToString;
 import utils.FileOperations;
+import utils.FileRename;
+import utils.GetFileCheckSum;
 import utils.RequestHandler;
 
 /**
@@ -46,9 +51,13 @@ public class UploadFileServlet extends HttpServlet {
 		String folderid = request.getParameter("folderId");
 		long folderId = Long.parseLong(folderid);
 		
+		String newFileName = CheckDuplicateFile.getFileName(folderId, filename);
+		filename = newFileName;
 		Part file1 = request.getPart("file");
 		try {
-			String checkSum = FileOperations.UploadFile(file1 , folderid , filename);
+			String fileUploadResult = FileOperations.UploadFile(file1 , folderid , filename);
+			MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file1);
+			String checkSum = ConverByteToString.convertByteToString(md);
 			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename),checkSum);
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));

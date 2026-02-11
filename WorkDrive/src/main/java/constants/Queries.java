@@ -31,7 +31,7 @@ public class Queries {
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	
-	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , ? , ? , ? , ?)";
+	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , ? , ? , ? , ? , ?)";
 	
 	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = ? WHERE "+FILE_ID+" = ? ";
 	
@@ -47,6 +47,8 @@ public class Queries {
 	
 	public static final String GET_FILE_ID = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ?";
 	
+	public static final String GET_FILE_ID_USING_CHECKSUM = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND checksum = ?";
+	
 	public static final String UPDATE_FILE_PARENT_ID = "UPDATE "+FILES_TABLE+" SET "+FILE_PAREND_ID+" = ? WHERE "+FILE_ID+" = ? ";
 	
 	public static final String GET_TIME_ZONE = "SELECT * FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ?";
@@ -54,4 +56,11 @@ public class Queries {
 	public static final String GET_ALL_CONTAINS = "SELECT (SELECT COUNT(*) FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?) AS totalFiles, (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?) AS totalFolders "; 
 	
 	public static final String GET_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? ";
+	
+	public static final String GET_FILE_CHECKSUM = "SELECT * FROM "+FILES_TABLE+" WHERE checksum = ? AND "+FILE_PAREND_ID+" = ?";
+	
+	public static final String UPDATE_FILE_VERSION = "UPDATE "+FILES_TABLE+" SET version = ? WHERE "+FILE_ID+" = ?";
+	
+	public static final String GET_EXIST_FILE = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ? ";
+	
 }

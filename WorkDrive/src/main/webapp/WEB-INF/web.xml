@@ -29,9 +29,20 @@
         <filter-name>DuplicateFileCheck</filter-name>
         <filter-class>filter.DuplicateFileCheck</filter-class>
     </filter>
+    <filter>
+    	<description>
+    	</description>
+    	<display-name>CheckExsistFile</display-name>
+    	<filter-name>CheckExsistFile</filter-name>
+    	<filter-class>filter.CheckExsistFile</filter-class>
+    </filter>
     <filter-mapping>
         <filter-name>DuplicateFileCheck</filter-name>
         <url-pattern>/creation/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+    	<filter-name>CheckExsistFile</filter-name>
+    	<url-pattern>/secure/*</url-pattern>
     </filter-mapping>
 
     <!-- Servlets -->
@@ -176,7 +187,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UploadFileServlet</servlet-name>
-        <url-pattern>/UploadFileServlet</url-pattern>
+        <url-pattern>/secure/UploadFileServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DownloadFileServlet</servlet-name>
