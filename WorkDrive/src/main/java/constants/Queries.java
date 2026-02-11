@@ -59,6 +59,8 @@ public class Queries {
 	
 	public static final String GET_FILE_CHECKSUM = "SELECT * FROM "+FILES_TABLE+" WHERE checksum = ? AND "+FILE_PAREND_ID+" = ?";
 	
+	public static final String GET_FILE_VERSION = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_ID+" = ?";
+	
 	public static final String UPDATE_FILE_VERSION = "UPDATE "+FILES_TABLE+" SET version = ? WHERE "+FILE_ID+" = ?";
 	
 	public static final String GET_EXIST_FILE = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ? ";

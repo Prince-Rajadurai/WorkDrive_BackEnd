@@ -36,6 +36,16 @@
         <filter-name>DuplicateFileCheck</filter-name>
         <url-pattern>/creation/*</url-pattern>
     </filter-mapping>
+    
+     <filter>
+        <display-name>CheckExsistFile</display-name>
+        <filter-name>CheckExsistFile</filter-name>
+        <filter-class>filter.CheckExsistFile</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CheckExsistFile</filter-name>
+        <url-pattern>/secure/*</url-pattern>
+    </filter-mapping>
 
 	<!-- Servlets -->
 	<servlet>
@@ -138,22 +148,6 @@
         <url-pattern>/SessionCheck</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>FolderAddServlet</servlet-name>
-        <url-pattern>/FolderAddServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FolderDeleteServlet</servlet-name>
-        <url-pattern>/FolderDeleteServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FolderGetServlet</servlet-name>
-        <url-pattern>/FolderGetServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FolderUpdateServlet</servlet-name>
-        <url-pattern>/FolderUpdateServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>CreateFileServlet</servlet-name>
         <url-pattern>/creation/CreateFileServlet</url-pattern>
     </servlet-mapping>
@@ -163,7 +157,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UploadFileServlet</servlet-name>
-        <url-pattern>/UploadFileServlet</url-pattern>
+        <url-pattern>/secure/UploadFileServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DownloadFileServlet</servlet-name>

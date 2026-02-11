@@ -71,7 +71,7 @@ public class ResourceRenderServlet extends HttpServlet {
 
             for (JSONObject folder : folders) {
                 JSONObject obj = new JSONObject();
-                obj.put("id", folder.getLong("resourceId"));
+                obj.put("id", String.valueOf(folder.getLong("resourceId")));
                 obj.put("name", folder.getString("resourceName"));
                 obj.put("type", "FOLDER");
                 obj.put("createdTime", folder.getString("createdTime"));
@@ -83,7 +83,7 @@ public class ResourceRenderServlet extends HttpServlet {
 
             for (JSONObject file : files) {
                 JSONObject obj = new JSONObject();
-                obj.put("id", file.getLong("id"));
+                obj.put("id", String.valueOf(file.getLong("id")));
                 obj.put("name", file.getString("filename"));
                 obj.put("type", "FILE");
                 obj.put("createdTime", file.getString("createTime"));

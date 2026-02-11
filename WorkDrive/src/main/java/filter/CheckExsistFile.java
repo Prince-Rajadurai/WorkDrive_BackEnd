@@ -23,7 +23,7 @@ import jakarta.servlet.annotation.WebFilter;
 /**
  * Servlet Filter implementation class CheckExsistFile
  */
-//@WebFilter("/CheckExsistFile")
+//@WebFilter("/secure/*")
 public class CheckExsistFile extends HttpFilter implements Filter {
        
     /**

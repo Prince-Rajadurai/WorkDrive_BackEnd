@@ -36,7 +36,7 @@ public class File {
     	resObject.put("createTime", TimeConversion.convertMillisToFormattedDate(createdTime, timeZone));
     	resObject.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime, timeZone));
     	resObject.put("size", size);
-    	resObject.put("id", fileId);
+    	resObject.put("id", String.valueOf(fileId));
     	
     	return resObject;
     	
