@@ -31,7 +31,11 @@ public class Queries {
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	
+<<<<<<< Updated upstream
 	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , ? , ? , ? , ? , ?)";
+=======
+	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" (fileId, folderId, filename, fileCreateTime, fileEditTime, Size, checksum) VALUES ( ? , ? , ? , ? , ? , ? , ?)";
+>>>>>>> Stashed changes
 	
 	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = ? WHERE "+FILE_ID+" = ? ";
 	

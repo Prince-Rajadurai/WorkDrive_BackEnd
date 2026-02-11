@@ -71,7 +71,11 @@ public class ResourceRenderServlet extends HttpServlet {
 
             for (JSONObject folder : folders) {
                 JSONObject obj = new JSONObject();
+<<<<<<< Updated upstream
                 obj.put("id", String.valueOf(folder.getLong("resourceId")));
+=======
+                obj.put("id", folder.getString("resourceId"));
+>>>>>>> Stashed changes
                 obj.put("name", folder.getString("resourceName"));
                 obj.put("type", "FOLDER");
                 obj.put("createdTime", folder.getString("createdTime"));

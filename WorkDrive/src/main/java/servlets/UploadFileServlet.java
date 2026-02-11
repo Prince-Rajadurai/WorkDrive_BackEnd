@@ -46,21 +46,34 @@ public class UploadFileServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		String filename = request.getParameter("filename");
 		String folderid = request.getParameter("folderId");
 		long folderId = Long.parseLong(folderid);
+		
+<<<<<<< Updated upstream
+		String filename = request.getParameter("filename");
+		String folderid = request.getParameter("folderId");
+		long folderId = Long.parseLong(folderid);
+=======
+		Part file1 = request.getPart("file");
+>>>>>>> Stashed changes
 		
 		String newFileName = CheckDuplicateFile.getFileName(folderId, filename);
 		filename = newFileName;
 		Part file1 = request.getPart("file");
 		try {
+<<<<<<< Updated upstream
 			String fileUploadResult = FileOperations.UploadFile(file1 , folderid , filename);
 			MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file1);
 			String checkSum = ConverByteToString.convertByteToString(md);
 			
 			String result = FileOperations.UploadFile(file1 , folderid , filename);
 			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename), checkSum);
+=======
+			String checkSum = FileOperations.UploadFile(file1 , folderid , filename);
+			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename),checkSum);
+			
+>>>>>>> Stashed changes
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
 			}

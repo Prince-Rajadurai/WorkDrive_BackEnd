@@ -18,7 +18,6 @@ import utils.Resource;
 import utils.SnowflakeIdGenerator;
 
 public class ResourceManager {
-
 	public static boolean deleteResource(long resourceId) {
 
 		int rowsAffected = QueryHandler.executeUpdate(Queries.DELETE_RESOURCE, new Object[] { resourceId });
@@ -145,6 +144,10 @@ public class ResourceManager {
 	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
 	    }
 	    
+<<<<<<< Updated upstream
+=======
+	    System.out.println(files);
+>>>>>>> Stashed changes
 
 		return files;
 	}
@@ -350,5 +353,28 @@ public class ResourceManager {
 	}
 	
 
+<<<<<<< Updated upstream
 
+=======
+	public static boolean fileMove(long fileId, long olderFolderId, long newFolderId, String filename) {
+
+		try {
+
+			boolean fileMoveHdfs = FileOperations.moveFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),
+					filename);
+			int fileMoveDb = QueryHandler.executeUpdate(Queries.UPDATE_FILE_PARENT_ID,
+					new Object[] { newFolderId, fileId });
+
+			return fileMoveHdfs && fileMoveDb > 0;
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+
+		return false;
+
+	}
+>>>>>>> Stashed changes
 }
