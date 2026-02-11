@@ -143,11 +143,8 @@ public class ResourceManager {
 	    while (result.next()) {
 	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
 	    }
-	    
-<<<<<<< Updated upstream
-=======
+	   
 	    System.out.println(files);
->>>>>>> Stashed changes
 
 		return files;
 	}
@@ -353,9 +350,6 @@ public class ResourceManager {
 	}
 	
 
-<<<<<<< Updated upstream
-
-=======
 	public static boolean fileMove(long fileId, long olderFolderId, long newFolderId, String filename) {
 
 		try {
@@ -376,5 +370,4 @@ public class ResourceManager {
 		return false;
 
 	}
->>>>>>> Stashed changes
 }
