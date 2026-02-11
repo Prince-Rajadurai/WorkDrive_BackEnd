@@ -73,7 +73,6 @@ public class FolderUploadServlet extends HttpServlet {
 				if (part.getName().equals("files")) {
 					
 					String path = part.getSubmittedFileName();
-					path = path.replace("\\", "/");
 					String[] nestedPaths = path.split("/");
 
 					for (int i = 0; i < nestedPaths.length; i++) {
@@ -89,7 +88,6 @@ public class FolderUploadServlet extends HttpServlet {
 						}
 					}
 
-					System.out.println("File name: " + path);
 				}
 			}
 			
