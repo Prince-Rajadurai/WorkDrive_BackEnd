@@ -13,7 +13,7 @@ public class Queries {
 	
 	public static final String VALIDATE_USER = "SELECT COUNT(*) FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+" = ? AND "+USER_PASSWORD+" = ?";
 
-	public static final String GET_RESOURCES="SELECT r.*, u."+USER_TIMEZONE+" FROM "+RESOURCE_TABLE+" r JOIN Users u ON r.UserId = u.UserId WHERE r."+USER_ID+" = ? AND r."+PARENT_ID+" = ?";
+	public static final String GET_RESOURCES="SELECT r.*, u."+USER_TIMEZONE+" FROM "+RESOURCE_TABLE+" r JOIN Users u ON r.UserId = u.UserId WHERE r."+USER_ID+" = ? AND r."+PARENT_ID+" = ? AND r."+RESOURCE_ID+" > ? ORDER BY r."+RESOURCE_ID+" ASC LIMIT ?";
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	
@@ -31,7 +31,7 @@ public class Queries {
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	
-	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , ? , ? , ? , ?)";
+	public static final String ADD_NEW_FILE = "INSERT INTO "+FILES_TABLE+" VALUES ( ? , ? , ? , ? , ? , ? , ? , ?)";
 	
 	public static final String UPDATE_FILENAME = "UPDATE "+FILES_TABLE+" SET "+FILE_NAME+" = ? , "+FILE_EDIT+" = ? WHERE "+FILE_ID+" = ? ";
 	
@@ -39,13 +39,15 @@ public class Queries {
 	
 	public static final String DUPLICATE_FILE_CHECK = "SELECT * FROM "+FILES_TABLE+" where "+FILE_NAME+" = ? and "+FILE_PAREND_ID+" = ?"; // my update
 	
-	public static final String SHOW_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ?"; // my update
+	public static final String SHOW_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_ID+" > ? ORDER BY "+FILE_ID+" ASC LIMIT ?"; // my update
 		
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
 	public static final String EXIST_NAME = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? AND "+USER_ID+"= ? ;";
 	
 	public static final String GET_FILE_ID = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ?";
+	
+	public static final String GET_FILE_ID_USING_CHECKSUM = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND checksum = ?";
 	
 	public static final String UPDATE_FILE_PARENT_ID = "UPDATE "+FILES_TABLE+" SET "+FILE_PAREND_ID+" = ? WHERE "+FILE_ID+" = ? ";
 	
@@ -55,5 +57,10 @@ public class Queries {
 	
 	public static final String GET_ALL_FILES = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? ";
 	
-	public static final String CHECK_FOLDER_EXISTS="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? ";
+	public static final String GET_FILE_CHECKSUM = "SELECT * FROM "+FILES_TABLE+" WHERE checksum = ? AND "+FILE_PAREND_ID+" = ?";
+	
+	public static final String UPDATE_FILE_VERSION = "UPDATE "+FILES_TABLE+" SET version = ? WHERE "+FILE_ID+" = ?";
+	
+	public static final String GET_EXIST_FILE = "SELECT * FROM "+FILES_TABLE+" WHERE "+FILE_PAREND_ID+" = ? AND "+FILE_NAME+" = ? ";
+	
 }

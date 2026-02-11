@@ -47,7 +47,12 @@ public class FolderServlet extends HttpServlet {
 			String resourceName = requestObject.getString("resourceName");
 
 			
-			long parentId = Long.parseLong(requestObject.getString("parentId"));
+//			long parentId = Long.parseLong(requestObject.getString("parentId"));
+			Long parentId = null;
+
+			if (requestObject.has("parentId") && !requestObject.isNull("parentId")) {
+			    parentId = requestObject.getLong("parentId");
+			}
 
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
@@ -63,7 +68,8 @@ public class FolderServlet extends HttpServlet {
 			    userId = AccountsManager.getUserId(cookieValue);
 			}
 			
-			if (!ResourceManager.existResourceName(userId, parentId, resourceName)) {
+//			if (!ResourceManager.existResourceName(userId, parentId, resourceName)) {
+			if (parentId == null || !ResourceManager.existResourceName(userId, parentId, resourceName)) {
 				JSONObject resource = ResourceManager.addResource(resourceName, parentId, userId);
 
 				if (resource != null) {

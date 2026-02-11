@@ -26,20 +26,18 @@ public class RenderUserMail extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		Cookie[] cookies = request.getCookies();
-		String cookieValue = null;
-		String userMail = null;
-		if (cookies != null) {
-		    for (Cookie cookie : cookies) {
-		        if ("cookie".equals(cookie.getName())) {
-		            cookieValue = cookie.getValue();
-		            break;
-		        }
-		    }
-		}
-		
 		try {
+			Cookie[] cookies = request.getCookies();
+			String cookieValue = null;
+			String userMail = null;
+			if (cookies != null) {
+			    for (Cookie cookie : cookies) {
+			        if ("cookie".equals(cookie.getName())) {
+			            cookieValue = cookie.getValue();
+			            break;
+			        }
+			    }
+			}
 			userMail = new AESEncryption().decrypt(cookieValue);
 			response.getWriter().write(RequestHandler.sendResponse(200, userMail));
 		} catch (Exception e) {

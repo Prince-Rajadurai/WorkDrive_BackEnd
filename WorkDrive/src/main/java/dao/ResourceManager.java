@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import utils.CheckDuplicateFile;
 import utils.File;
 import utils.FileOperations;
 import utils.RequestHandler;
@@ -69,11 +70,11 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	};
 
-	public static ArrayList<JSONObject> getResource(long parentId, long userId) throws SQLException, IOException {
+	public static ArrayList<JSONObject> getResource(long parentId, long userId, long cursor, int limit) throws SQLException, IOException {
 		ArrayList<JSONObject> resources = new ArrayList<>();
 
 		ResultSet rs;
-		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId });
+			rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { userId, parentId, cursor, limit });
 
 		while (rs.next()) {
 			ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
@@ -93,6 +94,8 @@ public class ResourceManager {
 					rs.getString("TimeZone"), totalFiles, totalFolders, size);
 			resources.add(resource.toJson());
 		}
+		
+		System.out.println(resources);
 
 		return resources;
 	}
@@ -114,8 +117,7 @@ public class ResourceManager {
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTimeMills = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE,
-				new Object[] { id, folderId, fileName, currentTimeMills, currentTimeMills, size, CheckSum });
+		int i = QueryHandler.executeUpdate(Queries.ADD_NEW_FILE, new Object[] { id , folderId, fileName,currentTimeMills,currentTimeMills, size , CheckSum});
 
 		return i > 0;
 
@@ -135,9 +137,23 @@ public class ResourceManager {
 		return res.next();
 	}
 
-	public static ArrayList<JSONObject> getAllFiles(long folderId, long userId) throws SQLException {
-		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-		ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId });
+	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId, long cursor, int limit ) throws SQLException {
+	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId, cursor, limit });
+	    
+	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
+	    
+	    String timeZone = "";
+	    
+	    if(userDetails.next()) {
+	    	timeZone = userDetails.getString("TimeZone");
+	    }
+	    
+	    while (result.next()) {
+	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
+	    }
+	    
+	    System.out.println(files);
 
 		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
 
@@ -178,17 +194,16 @@ public class ResourceManager {
 		rs.next();
 		return parentId == rs.getLong(1);
 	}
-
-	public static boolean copyFile(long olderFolderId, long newFolderId) throws SQLException {
-
-		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { olderFolderId });
-
-		while (res.next()) {
-
-			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),
-					res.getString("filename"));
-			ResourceManager.AddFile(newFolderId, res.getString("filename"), res.getString("Size"));
-
+	
+	public static boolean copyFile(long olderFolderId , long newFolderId) throws SQLException {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] {olderFolderId});
+		
+		while(res.next()) {
+			
+			FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), res.getString("filename"));
+			ResourceManager.AddFile(newFolderId, res.getString("filename") , res.getString("Size"));
+			
 		}
 
 		return res != null ? true : false;
@@ -242,15 +257,14 @@ public class ResourceManager {
 		}
 		return 0;
 	}
-
-	public static boolean fileCopy(long olderFolderId, long newFolderId, String filename) {
-
-		boolean fileRes, res = false;
-		fileRes = FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId), filename);
-		if (fileRes) {
+	
+	public static boolean fileCopy(long olderFolderId , long newFolderId , String filename) {
+		
+		boolean fileRes , res = false;
+		fileRes = FileOperations.copyFile(String.valueOf(olderFolderId), String.valueOf(newFolderId),filename);	
+		if(fileRes) {
 			try {
-				res = AddFile(newFolderId, filename,
-						FileOperations.getFileSize(String.valueOf(newFolderId + "/" + filename)));
+				res = AddFile(newFolderId, filename, FileOperations.getFileSize(String.valueOf(newFolderId+"/"+filename)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -291,5 +305,56 @@ public class ResourceManager {
 		return false;
 
 	}
+	
+	public static String checkExsistingFile(String checkSum , long folderId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] {checkSum , folderId});
+		try {
+			if(res.next()) {
+				return res.getString("checksum");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public static boolean getExsistingFileVersion(long fileId , String version) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] {fileId});
+		try {
+			if(res.next()) {
+				if(res.getString("version").equals(version))
+					return true;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean updateFileVersion( long fileId, String version) {
+		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.UPDATE_FILE_VERSION, new Object[] {version , fileId});
+		
+		return updateFileVersionResult > 0 ? true : false;
+	}
+	
+	public static boolean checkExsistingFileName(long folderId , String fileName) {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_EXIST_FILE, new Object[] {folderId , fileName});
+		
+		try {
+			if(res.next()) {
+				return true;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
+	}
+	
 
 }
