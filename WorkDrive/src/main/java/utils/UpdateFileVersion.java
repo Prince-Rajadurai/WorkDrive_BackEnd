@@ -4,7 +4,7 @@ import dao.ResourceManager;
 
 public class UpdateFileVersion {
 	
-	public static String getUpdatedFileVersion(long fileId) {
+public static String getUpdatedFileVersion(long fileId) {
 		
 		int versionCount = 1;
 		int brk = 0;
@@ -21,5 +21,6 @@ public class UpdateFileVersion {
 		
 		return value ? 0 : 1;
 	}
+	
 
 }
