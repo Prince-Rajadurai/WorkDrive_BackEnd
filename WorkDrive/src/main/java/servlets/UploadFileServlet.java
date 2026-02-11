@@ -47,9 +47,6 @@ public class UploadFileServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String filename = request.getParameter("filename");
-		String folderid = request.getParameter("folderId");
-		long folderId = Long.parseLong(folderid);
 		
 		String newFileName = CheckDuplicateFile.getFileName(folderId, filename);
 		filename = newFileName;
@@ -59,6 +56,17 @@ public class UploadFileServlet extends HttpServlet {
 			MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file1);
 			String checkSum = ConverByteToString.convertByteToString(md);
 			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename),checkSum);
+			String filename = request.getParameter("filename");
+			String folderid = request.getParameter("folderId");
+			long folderId = Long.parseLong(folderid);
+			
+			Part file1 = request.getPart("file");
+			if(file1 == null) {
+				response.getWriter().write(RequestHandler.sendResponse(400, "No file uploaded"));
+                return;
+			}
+			String result = FileOperations.UploadFile(file1 , folderid , filename);
+			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename));
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
 			}

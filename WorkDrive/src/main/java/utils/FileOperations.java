@@ -181,15 +181,16 @@ public class FileOperations {
 		
 		String size , filename;
 		long fileSize = 0;
+		Path file = null;
+		FileStatus status = null;
 
 		try {
 
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
-			
 			while(res.next()) {
 				filename = res.getString("filename");
-				Path file = new Path("/" + filename);
-				FileStatus status = fs.getFileStatus(file);
+				file = new Path("/" + folderId + "/" + filename);
+				status = fs.getFileStatus(file);
 				fileSize += status.getLen();
 			}
 			

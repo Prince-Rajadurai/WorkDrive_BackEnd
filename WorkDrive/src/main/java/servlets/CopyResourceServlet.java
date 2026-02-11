@@ -79,7 +79,6 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 					finalName = resourceName + "(" + counter + ")";
 					counter++;
 				}
-				System.out.println(userId);
 				ResourceManager.copyFolder(parentId, resourceId, finalName, userId);
 
 				response.getWriter().write(RequestHandler.sendResponse(200, "Folder moved as " + finalName));

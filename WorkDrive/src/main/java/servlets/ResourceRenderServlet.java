@@ -36,10 +36,9 @@ public class ResourceRenderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-        try {
-        	Long parentId;
-        	long userId = 0;
-        	Cookie[] cookies = request.getCookies();
+    	try {
+            long userId = 0;
+            Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if ("cookie".equals(cookie.getName())) {
@@ -48,30 +47,62 @@ public class ResourceRenderServlet extends HttpServlet {
                     }
                 }
             }
+
             String parentIdParam = request.getParameter("parentId");
-            if (parentIdParam != null) {
-                parentId = Long.parseLong(parentIdParam);
-            } else {
-                parentId = ResourceManager.getMyFolderId(userId);
-            }
-            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId);
-            ArrayList<JSONObject> files = ResourceManager.getAllFiles(parentId , userId);
+            long parentId = (parentIdParam == null || parentIdParam.equals("null")) ? ResourceManager.getMyFolderId(userId) : Long.parseLong(parentIdParam);
+
+            String cursorParam = request.getParameter("cursor");
+            long cursor = (cursorParam == null) ? 0 : Long.parseLong(cursorParam);
+
+            String limitParam = request.getParameter("limit");
+            int limit = (limitParam == null || limitParam.equals("0")) ? 20 : Integer.parseInt(limitParam);
+
             ArrayList<JSONObject> resources = new ArrayList<>();
+            long lastCursor = cursor;
+
+            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId, cursor, limit);
+
+            int remainingLimit = limit - folders.size();
+
+            ArrayList<JSONObject> files = new ArrayList<>();
+            if (remainingLimit > 0) {
+                files = ResourceManager.getAllFiles(parentId, userId, cursor, remainingLimit);
+            }
+
             for (JSONObject folder : folders) {
-                folder.put("type", "FOLDER");
-                folder.put("id", String.valueOf(folder.getLong("resourceId")));
-                resources.add(folder);
+                JSONObject obj = new JSONObject();
+                obj.put("id", folder.getLong("resourceId"));
+                obj.put("name", folder.getString("resourceName"));
+                obj.put("type", "FOLDER");
+                obj.put("createdTime", folder.getString("createdTime"));
+                obj.put("modifiedTime", folder.getString("modifiedTime"));
+                obj.put("size", folder.getString("size"));
+                resources.add(obj);
+                lastCursor = folder.getLong("resourceId");
             }
+
             for (JSONObject file : files) {
-                file.put("type", "FILE");
-                file.put("id", file.getString("filename"));
-                resources.add(file);
+                JSONObject obj = new JSONObject();
+                obj.put("id", file.getLong("id"));
+                obj.put("name", file.getString("filename"));
+                obj.put("type", "FILE");
+                obj.put("createdTime", file.getString("createTime"));
+                obj.put("modifiedTime", file.getString("modifiedTime"));
+                obj.put("size", file.getString("size"));
+                resources.add(obj);
+                lastCursor = file.getLong("id");
             }
+
+            long nextCursor = (resources.size() < limit) ? 0 : lastCursor;
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(RequestHandler.sendResponse(200, "Resources rendered successfully", resources , String.valueOf(parentId)));
+            response.getWriter().write(
+                RequestHandler.sendResponse(200, "Resources rendered successfully", resources, String.valueOf(parentId), nextCursor)
+            );
+
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));
         }
     }
