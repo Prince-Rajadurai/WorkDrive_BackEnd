@@ -44,15 +44,19 @@ public class DeleteFileServlet extends HttpServlet {
 		String fileName = requestObject.getString("filename");
 		String folderid = requestObject.getString("folderId");
 		long folderId = Long.parseLong(folderid);
-		String result = FileOperations.DeleteFile(folderid , fileName);
 		
-		if(result.equals("File deleted successfully")) {
+		long fileId = ResourceManager.findFileIdUsingFilename(folderId, fileName);
+		String path = ResourceManager.getFilePath(fileId);
+		
+		int pathCount = ResourceManager.checkExistPaths(path);
+		
+		if(pathCount==1) {
+			String result = FileOperations.DeleteFile(path);
+		}
 			
-			boolean res = ResourceManager.deleteFile(folderId, fileName);
-			if(res) {
-				response.getWriter().write(RequestHandler.sendResponse(200, "file deleted"));
-			}
-			
+		boolean res = ResourceManager.deleteFile(fileId);
+		if(res) {
+			response.getWriter().write(RequestHandler.sendResponse(200, "file deleted"));
 		}
 		else {
 			response.getWriter().write(RequestHandler.sendResponse(400, "file deleted failed"));

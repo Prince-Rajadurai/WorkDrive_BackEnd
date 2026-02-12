@@ -18,6 +18,7 @@ import utils.ConverByteToString;
 import utils.FileOperations;
 import utils.FileRename;
 import utils.GetFileCheckSum;
+import utils.GetUserId;
 import utils.RequestHandler;
 
 /**
@@ -55,12 +56,22 @@ public class UploadFileServlet extends HttpServlet {
 		filename = newFileName;
 		Part file1 = request.getPart("file");
 		try {
-			String fileUploadResult = FileOperations.UploadFile(file1 , folderid , filename);
 			MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file1);
 			String checkSum = ConverByteToString.convertByteToString(md);
 			
-			String result = FileOperations.UploadFile(file1 , folderid , filename);
-			boolean res = ResourceManager.AddFile( folderId, filename, FileOperations.getFileSize(folderid+"/"+filename), checkSum);
+			long userId = GetUserId.getUserId(request);
+			
+			String filepath = ResourceManager.getFilePathUsingCheckSum(checkSum);
+			
+			if(filepath == null || filepath.isEmpty()) {
+				String result = FileOperations.UploadFile(file1 , folderid , filename);
+				filepath = "/"+folderid+"/"+filename;
+			}
+			
+			long fileId = ResourceManager.AddFile( folderId, filename,  userId); // Add file
+			long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , folderId); // Add file to dfs
+			boolean res = ResourceManager.addFileVersion(dfsId); // Add file version
+			
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
 			}

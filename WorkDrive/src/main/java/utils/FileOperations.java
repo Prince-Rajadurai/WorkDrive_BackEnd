@@ -63,7 +63,7 @@ public class FileOperations {
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
 			FSDataOutputStream out = fs.create(hdfsPath, true);
-			ZstdOutputStream zOut = new ZstdOutputStream(out);
+			ZstdOutputStream zOut = new ZstdOutputStream(out , 3);
 //			GZIPOutputStream zOut = new GZIPOutputStream(out);
 			
 			byte[] buffer = new byte[16384];
@@ -84,15 +84,12 @@ public class FileOperations {
 	}
 
 //	File delete
-	public static String DeleteFile(String folderId, String fileName) {
+	public static String DeleteFile(String filePath) {
 
-		Path file = new Path("/" + folderId + "/" + fileName);
+		Path file = new Path(filePath);
 		try {
 			if (fs.exists(file))
 				fs.delete(file, false);
-			else {
-				System.out.println(false);
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,8 +98,9 @@ public class FileOperations {
 	}
 
 //	File download 
-	public static void DownloadFile(String folderId, String fileName, HttpServletResponse response) {
-		Path path = new Path("/" + folderId + "/" + fileName);
+	public static void DownloadFile(String filepath, String fileName, HttpServletResponse response) {
+		
+		Path path = new Path(filepath);
 
 		FSDataInputStream hdfsIn = null;
 		ZstdInputStream in = null;
@@ -148,15 +146,15 @@ public class FileOperations {
 	}
 
 //	File rename
-	public static String renameFile(String folderId, String olderFileName, String newFileName) throws IOException {
-
-		Path olderName = new Path("/" + folderId + "/" + olderFileName);
-		Path newName = new Path("/" + folderId + "/" + newFileName);
-
-		fs.rename(olderName, newName);
-
-		return "File renamed sucessfully";
-	}
+//	public static String renameFile(String folderId, String olderFileName, String newFileName) throws IOException {
+//
+//		Path olderName = new Path("/" + folderId + "/" + olderFileName);
+//		Path newName = new Path("/" + folderId + "/" + newFileName);
+//
+//		fs.rename(olderName, newName);
+//
+//		return "File renamed sucessfully";
+//	}
 
 // File copy operation
 	public static boolean copyFile(String oldFolderId, String newFolderId, String filename) {
@@ -225,7 +223,7 @@ public class FileOperations {
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
 
-		Path file = new Path("/" + filePath);
+		Path file = new Path(filePath);
 		FileStatus status = fs.getFileStatus(file);
 		double conversionVal = 1024.0;
 
@@ -252,12 +250,13 @@ public class FileOperations {
 
 	}
 
-	public static boolean moveFile(String oldFolder, String newFolder, String filename) throws IOException {
-
-		boolean copy = copyFile(oldFolder, newFolder, filename);
-		String delete = DeleteFile(oldFolder, filename);
-
-		return copy && delete.equals("File deleted successfully");
-	}
+//	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {
+//
+//		boolean copy = copyFile(oldFolder, newFolder, filename);
+//		String filePath = ResourceManager.getFilePath(fileId);
+//		String delete = DeleteFile(filePath);
+//
+//		return copy && delete.equals("File deleted successfully");
+//	}
 
 }

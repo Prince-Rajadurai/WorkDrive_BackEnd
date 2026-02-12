@@ -6,10 +6,10 @@ public class ColumnNames {
 	
 	public static final String RESOURCE_ID = "ResourceId";
 	public static final String RESOURCE_NAME="ResourceName";
-	public static final String TYPE = "Type";
 	public static final String CREATED_TIME = "CreatedTime";
 	public static final String MODIFIED_TIME = "LastModifiedTime";
 	public static final String PARENT_ID = "ParentId";
+	public static final String RESOURCE_TYPE = "type";
 	
 	public static final String USERS_TABLE = "Users";
 	public static final String USER_ID = "UserId";
@@ -17,13 +17,17 @@ public class ColumnNames {
 	public static final String USER_PASSWORD= "Password";
 	public static final String USER_TIMEZONE="TimeZone";
 	
-	public static final String FILES_TABLE = "Files";
-	public static final String FILE_PATH = "filepath";
-	public static final String FILE_PAREND_ID = "folderId";
-	public static final String FILE_NAME = "filename";
-	public static final String FILE_EDIT = "fileEditTime";
-	public static final String FILE_ID = "fileId";
-	public static final String FILE_SIZE = "Size";
+	public static final String DFS_TABLE_NAME = "DfsFiles";
+	public static final String DFS_ID = "dfsId";
+	public static final String DFS_PATH = "dfspath";
+	public static final String FILE_CHECKSUM = "checksum";
+	public static final String DFS_FILE_ID = "fileid";
+	public static final String DFS_FOLDER_ID = "folderId";
+	
+	public static final String VERSION_TABLE_NAME = "version";
+	public static final String VERSION_ID = "versionid";
+	public static final String VERSION_NUMBER = "version";
+	public static final String VERSION_DFS_ID = "dfsId";
 	
 
 }

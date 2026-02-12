@@ -51,24 +51,34 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 		String updateFile = request.getParameter("replaceFile");
 		long folderId = Long.parseLong(folderid);
 		boolean checkReplace = Boolean.parseBoolean(updateFile);
+		
+		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 	    Part file = httpRequest.getPart("file");
 	    
+	    long fileId = ResourceManager.findFileIdUsingFilename(folderId, filename); 
+	    
 	    MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file);
 		String checkSum = ConverByteToString.convertByteToString(md);
-		long fileId = ResourceManager.findFileIdUsingCheckSum(folderId, checkSum); 
 		String checkDuplicate = ResourceManager.checkExsistingFile(checkSum , folderId);
 		
-		
 		if(checkReplace) {
-			String updateVersion = UpdateFileVersion.getUpdatedFileVersion(fileId);
-			boolean updateFileVersionResult = ResourceManager.updateFileVersion(fileId,updateVersion);
+			
+			fileId = ResourceManager.getFileIdUsingCheckSum(checkSum , folderId);
+			
+			long dfsId = ResourceManager.findDfsId(fileId);
+			
+			int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
+			
+			boolean updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId ,updateVersion);
+			
 			if(updateFileVersionResult) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File version updated"));
 			}
 			else {
 				response.getWriter().write(RequestHandler.sendResponse(400, "File version updated failed"));
 			}
+			
 		}
 		else if(checkDuplicate.equals(checkSum)) {
 			response.getWriter().write(RequestHandler.sendResponse(400,"File already exists"));

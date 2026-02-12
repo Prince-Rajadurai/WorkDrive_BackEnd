@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.Collection;
 
 import dao.AccountsManager;
@@ -12,7 +13,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import utils.ConverByteToString;
 import utils.FileOperations;
+import utils.GetFileCheckSum;
+import utils.GetUserId;
 import utils.RequestHandler;
 
 /**
@@ -79,9 +83,21 @@ public class FolderUploadServlet extends HttpServlet {
 					
 						if (i == nestedPaths.length - 1) {
 					
-							String checkSum = FileOperations.UploadFile(part, folderId, nestedPaths[i]);
-							boolean res = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],
-									FileOperations.getFileSize(folderId + "/" + nestedPaths[i]), checkSum);
+							String upload = FileOperations.UploadFile(part, folderId, nestedPaths[i]);
+							
+							MessageDigest md = GetFileCheckSum.getFileCheckSumValue(part);
+							String checkSum = ConverByteToString.convertByteToString(md);
+							
+							String filepath = ResourceManager.getFilePathUsingCheckSum(checkSum);
+							
+							if(filepath == null || filepath.isEmpty()) {
+								String result = FileOperations.UploadFile(part, folderId, nestedPaths[i]);
+								filepath = "/"+folderId+"/"+nestedPaths[i];
+							}
+							
+							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId); // Add file
+							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId)); // Add file to dfs
+							boolean res = ResourceManager.addFileVersion(dfsId);
 						
 						} else {
 							folderId=String.valueOf(ResourceManager.findOrCreateFolder(folderId,nestedPaths[i],userId));

@@ -95,7 +95,7 @@ public class SignupServlet extends HttpServlet {
 
 			// inserting valid user
 			if (AccountsManager.addUser(email,fullName,password,timeZone)) {
-				ResourceManager.addResource("MYFOLDER", null, AccountsManager.getUserId(new AESEncryption().encrypt(email)) );
+				ResourceManager.addResource("MYFOLDER", null, AccountsManager.getUserId(new AESEncryption().encrypt(email)));
 				response.getWriter().write(RequestHandler.sendResponse(200, "Signup successful"));
 			} else {
 				response.getWriter()

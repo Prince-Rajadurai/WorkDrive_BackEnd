@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+import dao.ResourceManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,12 @@ public class DownloadFileServlet extends HttpServlet {
 				
 		String folderid = requestObject.getString("folderId");
 		String fileName = requestObject.getString("filename");
-		FileOperations.DownloadFile(folderid, fileName , response);
+		
+		long fileId = ResourceManager.findFileIdUsingFilename(Long.parseLong(folderid), fileName);
+		
+		String filePath = ResourceManager.getFilePath(fileId);
+		
+		FileOperations.DownloadFile(filePath , fileName , response);
 		
 //		if(result.equals("File deleted successfully")) {
 //			

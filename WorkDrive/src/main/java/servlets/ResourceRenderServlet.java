@@ -80,7 +80,7 @@ public class ResourceRenderServlet extends HttpServlet {
                 resources.add(obj);
                 lastCursor = folder.getLong("resourceId");
             }
-
+            
             for (JSONObject file : files) {
                 JSONObject obj = new JSONObject();
                 obj.put("id", String.valueOf(file.getLong("id")));
