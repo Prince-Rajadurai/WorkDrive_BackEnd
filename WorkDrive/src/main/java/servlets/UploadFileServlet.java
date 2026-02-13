@@ -51,9 +51,6 @@ public class UploadFileServlet extends HttpServlet {
 		String folderid = request.getParameter("folderId");
 		long folderId = Long.parseLong(folderid);
 		
-		String filename = request.getParameter("filename");
-		String folderid = request.getParameter("folderId");
-		long folderId = Long.parseLong(folderid);
 		
 		String newFileName = CheckDuplicateFile.getFileName(folderId, filename);
 		filename = newFileName;

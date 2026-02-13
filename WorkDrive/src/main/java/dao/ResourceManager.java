@@ -184,8 +184,9 @@ public class ResourceManager {
 	}
 
 	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId, long cursor, int limit ) throws SQLException {
+		
 	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId, cursor, limit });
+	    ResultSet result = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { folderId,"FILE", cursor, limit });
 	    
 	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
 	    
@@ -196,7 +197,7 @@ public class ResourceManager {
 	    }
 	    
 	    while (result.next()) {
-	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
+	        files.add(new File(result.getString(ColumnNames.RESOURCE_NAME), result.getLong(ColumnNames.CREATED_TIME) , result.getLong(ColumnNames.MODIFIED_TIME)  ,result.getLong(ColumnNames.RESOURCE_ID), timeZone).getFileData());
 	    }
 	    
 
@@ -228,7 +229,7 @@ public class ResourceManager {
 
 	public static boolean copyFile(long olderFolderId, long newFolderId , long userId) throws SQLException {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { olderFolderId  , "FILE" });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId  , "FILE" });
 		String filename;
 		boolean result = false;
 
