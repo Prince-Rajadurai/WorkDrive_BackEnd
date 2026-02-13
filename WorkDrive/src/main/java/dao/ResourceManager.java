@@ -22,7 +22,6 @@ import utils.SnowflakeIdGenerator;
 import utils.Versions;
 
 public class ResourceManager {
-
 	public static boolean deleteResource(long resourceId) {
 
 		int rowsAffected = QueryHandler.executeUpdate(Queries.DELETE_RESOURCE, new Object[] { resourceId });
@@ -184,27 +183,22 @@ public class ResourceManager {
 		return res.next();
 	}
 
-	public static ArrayList<JSONObject> getAllFiles(long parentId, long userId, long cursor, int limit)
-			throws SQLException {
-		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-		
-		ResultSet result = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId , "FILE" , cursor, limit });
-
-		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
-
-		String timeZone = "";
-
-		if (userDetails.next()) {
-			timeZone = userDetails.getString("TimeZone");
-		}
-
-		while (result.next()) {
-			files.add(new File(result.getString(ColumnNames.RESOURCE_NAME), result.getLong(ColumnNames.CREATED_TIME),
-					result.getLong(ColumnNames.MODIFIED_TIME), result.getLong(ColumnNames.RESOURCE_ID), timeZone)
-					.getFileData());
-		}
-		
-		
+	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId, long cursor, int limit ) throws SQLException {
+	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+	    ResultSet result = QueryHandler.executeQuerry(Queries.SHOW_ALL_FILES, new Object[] { folderId, cursor, limit });
+	    
+	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
+	    
+	    String timeZone = "";
+	    
+	    if(userDetails.next()) {
+	    	timeZone = userDetails.getString("TimeZone");
+	    }
+	    
+	    while (result.next()) {
+	        files.add(new File(result.getString("filename"), result.getLong("fileCreateTime") , result.getLong("fileEditTime") , result.getString("Size") ,result.getLong("fileId"), timeZone).getFileData());
+	    }
+	    
 
 		return files;
 	}
@@ -559,5 +553,7 @@ public class ResourceManager {
 			return resource.getLong("resourceId");
 		}
 	}
+	
+
 
 }
