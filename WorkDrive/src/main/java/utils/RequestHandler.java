@@ -67,6 +67,15 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
+	public static String sendResponse(int statusCode,String storage,String size,ArrayList<JSONObject> versions) {
+		JSONObject responseObject=new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("storage", storage);
+		responseObject.put("size", size);
+		responseObject.put("versions", versions);
+		return responseObject.toString();
+	}
+	
 	
 	public static Cookie setCookie(String email) throws Exception {
 		String encryptMail = new AESEncryption().encrypt(email);

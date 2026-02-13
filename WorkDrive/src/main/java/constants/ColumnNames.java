@@ -23,11 +23,13 @@ public class ColumnNames {
 	public static final String FILE_CHECKSUM = "checksum";
 	public static final String DFS_FILE_ID = "fileid";
 	public static final String DFS_FOLDER_ID = "folderId";
+	public static final String DFS_FILE_SIZE = "size";
 	
 	public static final String VERSION_TABLE_NAME = "version";
 	public static final String VERSION_ID = "versionid";
 	public static final String VERSION_NUMBER = "version";
 	public static final String VERSION_DFS_ID = "dfsId";
+	public static final String VERSION_CREATE_TIME = "time";
 	
 
 }

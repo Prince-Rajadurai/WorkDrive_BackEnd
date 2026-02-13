@@ -57,9 +57,7 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
 			if (cookies != null) {
-				System.out.println("Hello");
 				for (Cookie cookie : cookies) {
-					System.out.println("Cookie name: " + cookie.getName() + " | Cookie value: " + cookie.getValue());
 					if ("cookie".equals(cookie.getName())) {
 						cookieValue = cookie.getValue();
 						break;

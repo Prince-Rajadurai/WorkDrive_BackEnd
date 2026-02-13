@@ -129,6 +129,13 @@
 		<servlet-name>FolderUploadServlet</servlet-name>
 		<servlet-class>servlets.FolderUploadServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>ShowFileVersions</display-name>
+		<servlet-name>ShowFileVersions</servlet-name>
+		<servlet-class>servlets.ShowFileVersions</servlet-class>
+	</servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -202,6 +209,10 @@
     <servlet-mapping>
     	<servlet-name>FolderUploadServlet</servlet-name>
     	<url-pattern>/FolderUploadServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>ShowFileVersions</servlet-name>
+    	<url-pattern>/ShowFileVersions</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->

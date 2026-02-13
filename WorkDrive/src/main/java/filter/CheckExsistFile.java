@@ -68,6 +68,12 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 			
 			long dfsId = ResourceManager.findDfsId(fileId);
 			
+			long size = ResourceManager.getFileSize(fileId);
+			
+			System.out.println(size);
+			
+			boolean updateFileSize = ResourceManager.updateFileSize(checkSum , size);
+			
 			int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
 			
 			boolean updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId ,updateVersion);

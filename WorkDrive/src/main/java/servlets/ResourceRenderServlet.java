@@ -77,6 +77,8 @@ public class ResourceRenderServlet extends HttpServlet {
                 obj.put("createdTime", folder.getString("createdTime"));
                 obj.put("modifiedTime", folder.getString("modifiedTime"));
                 obj.put("size", folder.getString("size"));
+                obj.put("files", folder.getInt("files"));
+                obj.put("folders", folder.getInt("folders"));
                 resources.add(obj);
                 lastCursor = folder.getLong("resourceId");
             }
@@ -92,7 +94,7 @@ public class ResourceRenderServlet extends HttpServlet {
                 resources.add(obj);
                 lastCursor = file.getLong("id");
             }
-
+            
             long nextCursor = (resources.size() < limit) ? 0 : lastCursor;
 
             response.setContentType("application/json");

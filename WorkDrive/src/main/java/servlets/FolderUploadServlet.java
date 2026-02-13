@@ -96,7 +96,7 @@ public class FolderUploadServlet extends HttpServlet {
 							}
 							
 							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId); // Add file
-							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId)); // Add file to dfs
+							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId) , FileOperations.getSize(filepath)); // Add file to dfs
 							boolean res = ResourceManager.addFileVersion(dfsId);
 						
 						} else {

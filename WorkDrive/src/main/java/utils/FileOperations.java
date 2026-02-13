@@ -26,6 +26,7 @@ import org.apache.hadoop.io.IOUtils;
 import com.github.luben.zstd.ZstdInputStream;
 import com.github.luben.zstd.ZstdOutputStream;
 
+import constants.ColumnNames;
 import constants.Queries;
 import dao.ResourceManager;
 import jakarta.servlet.http.HttpServletResponse;
@@ -181,13 +182,16 @@ public class FileOperations {
 		long fileSize = 0;
 		Path file = null;
 		FileStatus status = null;
+		
+		
 
 		try {
 
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			String filePath = "";
 			while(res.next()) {
-				filename = res.getString("filename");
-				file = new Path("/" + folderId + "/" + filename);
+				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
+				file = new Path(filePath);
 				status = fs.getFileStatus(file);
 				fileSize += status.getLen();
 			}
@@ -213,6 +217,7 @@ public class FileOperations {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			size = "0 KB";
 		}
 
@@ -248,6 +253,48 @@ public class FileOperations {
 
 		return size;
 
+	}
+	
+//	Get file byte size
+	public static long getSize(String filePath) {
+		
+		long fileSize = 0;
+		
+		try {
+			Path file = new Path(filePath);
+			FileStatus status = fs.getFileStatus(file);
+			fileSize = status.getLen();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return fileSize;
+	}
+	
+	public static String converFileSizeToString(long fileSize) {
+		
+		double conversionVal = 1024.0;
+		double sizeVal = fileSize;
+		String size = fileSize + " B";
+
+		if (sizeVal >= 1024) {
+			sizeVal = sizeVal / conversionVal;
+			size = String.format("%.2f KB", sizeVal);
+
+			if (sizeVal >= 1024) {
+				sizeVal = sizeVal / conversionVal;
+				size = String.format("%.2f MB", sizeVal);
+
+				if (sizeVal >= 1024) {
+					sizeVal = sizeVal / conversionVal;
+					size = String.format("%.2f GB", sizeVal);
+				}
+			}
+		}
+
+		return size;
+		
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {

@@ -9,6 +9,8 @@ public class Queries {
 	
 	public static final String CHECK_DUPLICATE_USER = "SELECT "+USER_EMAIL+" FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+"=?";
 	
+	public static final String GET_USER_TIME_ZONE = "SELECT * FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ?";
+	
 	public static final String ADD_USER = "INSERT INTO "+USERS_TABLE+" ("+USER_ID+", "+USER_EMAIL+", FullName, "+USER_PASSWORD+", "+USER_TIMEZONE+") VALUES (?, ?, ?, ?, ?)";
 	
 	public static final String VALIDATE_USER = "SELECT COUNT(*) FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+" = ? AND "+USER_PASSWORD+" = ?";
@@ -31,7 +33,7 @@ public class Queries {
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
 	
-	public static final String SHOW_ALL_FILES = "SELECT r.* FROM "+RESOURCE_TABLE+" r WHERE r.type = 'FILE' AND r."+PARENT_ID+" = ? AND r."+RESOURCE_ID+" > ? ORDER BY r."+RESOURCE_ID+" ASC LIMIT ?"; // my update
+	public static final String SHOW_ALL_FILES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? "; // my update
 		
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
@@ -39,11 +41,11 @@ public class Queries {
 	
 	public static final String GET_TIME_ZONE = "SELECT * FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ?";
 	
-	public static final String GET_ALL_CONTAINS = "SELECT (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?) AS totalFiles, (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?) AS totalFolders "; 
+	public static final String GET_ALL_CONTAINS = "SELECT (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? ) AS totalFiles, (SELECT COUNT(*) FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? ) AS totalFolders "; 
 	
-	public static final String ADD_DFS_FILES = "INSERT INTO "+DFS_TABLE_NAME+" VALUES ( ? , ? , ? , ? ,? )";
+	public static final String ADD_DFS_FILES = "INSERT INTO "+DFS_TABLE_NAME+" VALUES ( ? , ? , ? , ? ,? , ?)";
 	
-	public static final String ADD_VERSION = "INSERT INTO "+VERSION_TABLE_NAME+" VALUES ( ? , ? , ? )";
+	public static final String ADD_VERSION = "INSERT INTO "+VERSION_TABLE_NAME+" VALUES ( ? , ? , ? , ?)";
 	
 	public static final String CHECK_FOLDER_EXISTS="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? ";
 	
@@ -63,7 +65,7 @@ public class Queries {
 	
 	public static final String UPDATE_FILE_VERSION = "UPDATE "+VERSION_TABLE_NAME+" SET "+VERSION_NUMBER+" = ? WHERE "+VERSION_DFS_ID+" = ?";
 	
-	public static final String GET_FILE_VERSION = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
+	public static final String GET_FILE_VERSION = "SELECT MAX(" + VERSION_NUMBER + ") AS max_version FROM " + VERSION_TABLE_NAME +" WHERE " + VERSION_DFS_ID + " = ?";
 	
 	public static final String GET_ALL_FILES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? ";
 	
@@ -72,5 +74,9 @@ public class Queries {
 	public static final String CHECK_EXIST_FILE_PATHS = "SELECT * FROM "+DFS_TABLE_NAME+" WHERE "+DFS_PATH+" = ? ";
 	
 	public static final String GET_FILE_PATHS = "SELECT * FROM "+DFS_TABLE_NAME+" WHERE "+FILE_CHECKSUM+" = ? ";
+	
+	public static final String UPDATE_FILE_SIZE = "UPDATE "+DFS_TABLE_NAME+" SET "+DFS_FILE_SIZE+" = "+DFS_FILE_SIZE+" + ? WHERE "+FILE_CHECKSUM+" = ?";
+	
+	public static final String GET_ALL_FILE_VERSIONS = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
 	
 }

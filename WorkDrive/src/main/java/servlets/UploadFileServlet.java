@@ -69,7 +69,7 @@ public class UploadFileServlet extends HttpServlet {
 			}
 			
 			long fileId = ResourceManager.AddFile( folderId, filename,  userId); // Add file
-			long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , folderId); // Add file to dfs
+			long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , folderId , FileOperations.getSize(filepath)); // Add file to dfs
 			boolean res = ResourceManager.addFileVersion(dfsId); // Add file version
 			
 			if(res) {
