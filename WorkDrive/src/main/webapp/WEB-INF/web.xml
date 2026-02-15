@@ -136,6 +136,13 @@
 		<servlet-name>ShowFileVersions</servlet-name>
 		<servlet-class>servlets.ShowFileVersions</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>ProfileEditServlet</display-name>
+		<servlet-name>ProfileEditServlet</servlet-name>
+		<servlet-class>servlets.ProfileEditServlet</servlet-class>
+	</servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -213,6 +220,10 @@
     <servlet-mapping>
     	<servlet-name>ShowFileVersions</servlet-name>
     	<url-pattern>/ShowFileVersions</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>ProfileEditServlet</servlet-name>
+    	<url-pattern>/ProfileEditServlet</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->
