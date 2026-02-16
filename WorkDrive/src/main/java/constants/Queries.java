@@ -78,4 +78,9 @@ public class Queries {
 	
 	public static final String GET_ALL_FILE_VERSIONS = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
 	
+	public static final String GET_USER_DETAILS = "SELECT * FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ? ";
+	
+	public static final String UPDATE_PROFILE = "UPDATE "+USERS_TABLE+" SET "+USER_NAME+" = ?, "+USER_TIMEZONE+" = ? WHERE "+USER_ID+" = ?";
+	
+	public static final String UPDATE_PROFILE_WITH_PASSWORD="UPDATE "+USERS_TABLE+" SET "+USER_NAME+" = ?, "+USER_TIMEZONE+" = ?, "+USER_PASSWORD+" = ? WHERE "+USER_ID+" = ?";
 }

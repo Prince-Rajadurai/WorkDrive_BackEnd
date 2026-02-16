@@ -44,6 +44,10 @@ public class MoveResourceServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 
 			long parentId = requestObject.getLong("parentId");
