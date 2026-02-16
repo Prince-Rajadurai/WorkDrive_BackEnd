@@ -47,8 +47,12 @@ public class UploadFileServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		String filename = request.getParameter("filename");
 		String folderid = request.getParameter("folderId");
+		String originalSize = request.getParameter("size");
+		
+		long original_size = Long.parseLong(originalSize);
 		long folderId = Long.parseLong(folderid);
 		
 		
@@ -68,7 +72,7 @@ public class UploadFileServlet extends HttpServlet {
 				filepath = "/"+folderid+"/"+filename;
 			}
 			
-			long fileId = ResourceManager.AddFile( folderId, filename,  userId); // Add file
+			long fileId = ResourceManager.AddFile( folderId, filename,  userId , original_size); // Add file
 			long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , folderId , FileOperations.getSize(filepath)); // Add file to dfs
 			boolean res = ResourceManager.addFileVersion(dfsId); // Add file version
 			

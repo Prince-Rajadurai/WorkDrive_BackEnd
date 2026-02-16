@@ -69,13 +69,16 @@ public class FolderUploadServlet extends HttpServlet {
 			String parentId = request.getParameter("parentId");
 
 			Collection<Part> parts = request.getParts();
+			long size = 0;
 
 			for (Part part : parts) {
 				
 				String folderId = parentId;
+			
 				
 				if (part.getName().equals("files")) {
 					
+					size=part.getSize();
 					String path = part.getSubmittedFileName();
 					String[] nestedPaths = path.split("/");
 
@@ -95,7 +98,7 @@ public class FolderUploadServlet extends HttpServlet {
 								filepath = "/"+folderId+"/"+nestedPaths[i];
 							}
 							
-							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId); // Add file
+							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId , size); // Add file
 							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId) , FileOperations.getSize(filepath)); // Add file to dfs
 							boolean res = ResourceManager.addFileVersion(dfsId);
 						

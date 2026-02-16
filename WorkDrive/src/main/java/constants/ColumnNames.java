@@ -10,6 +10,7 @@ public class ColumnNames {
 	public static final String MODIFIED_TIME = "LastModifiedTime";
 	public static final String PARENT_ID = "ParentId";
 	public static final String RESOURCE_TYPE = "type";
+	public static final String RESOURCE_ORIGINAL_SIZE = "originalSize";
 	
 	public static final String USERS_TABLE = "Users";
 	public static final String USER_ID = "UserId";

@@ -23,7 +23,7 @@ public class Queries {
 	
 	public static final String DELETE_RESOURCE = "DELETE FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?;";
 		
-	public static final String ADD_RESOURCE = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+PARENT_ID+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+" , type) VALUES (?,?,?,?,?,?,?)";
+	public static final String ADD_RESOURCE = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+PARENT_ID+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+" , "+RESOURCE_TYPE+" , "+RESOURCE_ORIGINAL_SIZE+" ) VALUES (?,?,?,?,?,?,?,?)";
 		
 	public static final String ADD_RESOURCE_ROOT = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+", type) VALUES (?,?,?,?,?,?)";
 	
@@ -77,5 +77,15 @@ public class Queries {
 	public static final String UPDATE_FILE_SIZE = "UPDATE "+DFS_TABLE_NAME+" SET "+DFS_FILE_SIZE+" = "+DFS_FILE_SIZE+" + ? WHERE "+FILE_CHECKSUM+" = ?";
 	
 	public static final String GET_ALL_FILE_VERSIONS = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
+	
+	public static final String GET_ALL_FILES_ORIGINAL_SIZE = "SELECT SUM("+RESOURCE_ORIGINAL_SIZE+") AS total_original_size FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ?";
+	
+	public static final String GET_ALL_FILES_COMPRESSED_SIZE = "SELECT SUM(D."+DFS_FILE_SIZE+") AS total_compress_size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+"=D."+DFS_FILE_ID+" WHERE R."+USER_ID+"= ?";
+	
+	public static final String GET_ALL_DEDUPLICATE_FILES ="SELECT COUNT(DISTINCT D." + DFS_PATH + ") AS unique_paths_count " +"FROM " + DFS_TABLE_NAME + " D " +"JOIN " + RESOURCE_TABLE + " R ON R." + RESOURCE_ID + " = D." + DFS_FILE_ID + " " +"WHERE R." + USER_ID + " = ?";
+
+	public static final String FIND_ALL_FILES ="SELECT COUNT(" + RESOURCE_NAME + ") AS total_files " +"FROM " + RESOURCE_TABLE + " " +"WHERE " + USER_ID + " = ? AND " + RESOURCE_TYPE + " = ?";
+
+
 	
 }

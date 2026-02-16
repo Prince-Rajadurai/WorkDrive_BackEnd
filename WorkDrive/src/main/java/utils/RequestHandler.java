@@ -76,6 +76,18 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
+	public static String sendResponse(int statusCode , String total_size , String compress_size , long total_files , long deduplicate_files , long storage_precentage , long deduplicate_precentage) {
+		JSONObject responseObject=new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("compress_size", total_size);
+		responseObject.put("total_size", compress_size);
+		responseObject.put("total_files", total_files);
+		responseObject.put("deduplicate_files", deduplicate_files);
+		responseObject.put("storage_size", storage_precentage);
+		responseObject.put("deduplicate_size", deduplicate_precentage);
+		return responseObject.toString();
+	}
+	
 	
 	public static Cookie setCookie(String email) throws Exception {
 		String encryptMail = new AESEncryption().encrypt(email);

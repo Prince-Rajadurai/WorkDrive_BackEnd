@@ -36,16 +36,16 @@ public class ResourceManager {
 
 		if (parentId != null) {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE,
-					new Object[] { id, resourceName, parentId, userId, currentTime, currentTime , "FOLDER"});
+					new Object[] { id, resourceName, parentId, userId, currentTime, currentTime, "FOLDER", 0 });
 		} else {
 			QueryHandler.executeUpdate(Queries.ADD_RESOURCE_ROOT,
-					new Object[] { id, resourceName, userId, currentTime, currentTime, "FOLDER" });
+					new Object[] { id, resourceName, userId, currentTime, currentTime, "FOLDER", 0 });
 		}
 
 		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_RESOURCE, new Object[] { id });
 		if (rs.next()) {
 			ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
-					new Object[] { rs.getLong("ResourceId"),"FILE", rs.getLong("ResourceId"),"FOLDER" });
+					new Object[] { rs.getLong("ResourceId"), "FILE", rs.getLong("ResourceId"), "FOLDER" });
 
 			int totalFiles = 0;
 			int totalFolders = 0;
@@ -77,8 +77,8 @@ public class ResourceManager {
 		ArrayList<JSONObject> resources = new ArrayList<>();
 
 		ResultSet rs;
-		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId , "FOLDER" , cursor, limit });
-		
+		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
+
 		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
 
 		String timeZone = "";
@@ -89,7 +89,7 @@ public class ResourceManager {
 
 		while (rs.next()) {
 			ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
-					new Object[] { rs.getLong("ResourceId") , "FILE" , rs.getLong("ResourceId") , "FOLDER" });
+					new Object[] { rs.getLong("ResourceId"), "FILE", rs.getLong("ResourceId"), "FOLDER" });
 
 			int totalFiles = 0;
 			int totalFolders = 0;
@@ -101,8 +101,8 @@ public class ResourceManager {
 			String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
 
 			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
-					rs.getLong("CreatedTime"), rs.getLong("LastModifiedTime"), rs.getLong("parentId"),
-					timeZone,totalFiles, totalFolders, size);
+					rs.getLong("CreatedTime"), rs.getLong("LastModifiedTime"), rs.getLong("parentId"), timeZone,
+					totalFiles, totalFolders, size);
 			resources.add(resource.toJson());
 		}
 
@@ -121,23 +121,24 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	}
 
-	public static long AddFile(long folderId, String fileName , long userId) {// =====> my updates
+	public static long AddFile(long folderId, String fileName, long userId, long original_size) {// =====> my updates
 
 		long id = SnowflakeIdGenerator.nextId();
 		long currentTimeMills = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_RESOURCE,
-				new Object[] { id, fileName, folderId, userId, currentTimeMills, currentTimeMills , "FILE"});
+		int i = QueryHandler.executeUpdate(Queries.ADD_RESOURCE, new Object[] { id, fileName, folderId, userId,
+				currentTimeMills, currentTimeMills, "FILE", original_size });
 
 		return id;
 
 	}
 
-	public static long addDFSFiles(String dfspath, String checksum, long fileid , long folderId , long size) {
+	public static long addDFSFiles(String dfspath, String checksum, long fileid, long folderId, long size) {
 
 		long id = SnowflakeIdGenerator.nextId();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_DFS_FILES, new Object[] { id, dfspath, checksum, fileid , folderId , size});
+		int i = QueryHandler.executeUpdate(Queries.ADD_DFS_FILES,
+				new Object[] { id, dfspath, checksum, fileid, folderId, size });
 
 		return id;
 
@@ -148,7 +149,7 @@ public class ResourceManager {
 		long id = SnowflakeIdGenerator.nextId();
 		long time = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_VERSION, new Object[] { id, 1, dfsId ,time});
+		int i = QueryHandler.executeUpdate(Queries.ADD_VERSION, new Object[] { id, 1, dfsId, time });
 
 		return i > 0;
 	}
@@ -183,23 +184,26 @@ public class ResourceManager {
 		return res.next();
 	}
 
-	public static ArrayList<JSONObject> getAllFiles(long folderId , long userId, long cursor, int limit ) throws SQLException {
-		
-	    ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-	    ResultSet result = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { folderId,"FILE", cursor, limit });
-	    
-	    ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] {userId});
-	    
-	    String timeZone = "";
-	    
-	    if(userDetails.next()) {
-	    	timeZone = userDetails.getString("TimeZone");
-	    }
-	    
-	    while (result.next()) {
-	        files.add(new File(result.getString(ColumnNames.RESOURCE_NAME), result.getLong(ColumnNames.CREATED_TIME) , result.getLong(ColumnNames.MODIFIED_TIME)  ,result.getLong(ColumnNames.RESOURCE_ID), timeZone).getFileData());
-	    }
-	    
+	public static ArrayList<JSONObject> getAllFiles(long folderId, long userId, long cursor, int limit)
+			throws SQLException {
+
+		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+		ResultSet result = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
+				new Object[] { folderId, "FILE", cursor, limit });
+
+		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
+
+		String timeZone = "";
+
+		if (userDetails.next()) {
+			timeZone = userDetails.getString("TimeZone");
+		}
+
+		while (result.next()) {
+			files.add(new File(result.getString(ColumnNames.RESOURCE_NAME), result.getLong(ColumnNames.CREATED_TIME),
+					result.getLong(ColumnNames.MODIFIED_TIME), result.getLong(ColumnNames.RESOURCE_ID), timeZone)
+					.getFileData());
+		}
 
 		return files;
 	}
@@ -216,7 +220,8 @@ public class ResourceManager {
 
 		long currentTimeMills = System.currentTimeMillis();
 
-		int updateFileNameResult = QueryHandler.executeUpdate(Queries.UPDATE_FILE_NAME,new Object[] { filename, currentTimeMills, fileId });
+		int updateFileNameResult = QueryHandler.executeUpdate(Queries.UPDATE_FILE_NAME,
+				new Object[] { filename, currentTimeMills, fileId });
 
 		return updateFileNameResult > 0;
 	}
@@ -227,24 +232,24 @@ public class ResourceManager {
 		return parentId == rs.getLong(1);
 	}
 
-	public static boolean copyFile(long olderFolderId, long newFolderId , long userId) throws SQLException {
+	public static boolean copyFile(long olderFolderId, long newFolderId, long userId) throws SQLException {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId  , "FILE" });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId, "FILE" });
 		String filename;
 		boolean result = false;
 
 		while (res.next()) {
-			
+
 			filename = res.getString(ColumnNames.RESOURCE_NAME);
 
-			long newFileId,dfsId;
-			
+			long newFileId, dfsId;
+
 			String filePath = getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
 			String fileChecksum = getFileChecksum(res.getLong(ColumnNames.RESOURCE_ID));
-			
+
 			filename = CheckDuplicateFile.getFileName(newFolderId, filename);
-			newFileId = AddFile(newFolderId, filename , userId);
-			dfsId = addDFSFiles(filePath, fileChecksum, newFileId , newFolderId , FileOperations.getSize(filePath));
+			newFileId = AddFile(newFolderId, filename, userId);
+			dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
 			result = addFileVersion(dfsId);
 
 		}
@@ -258,7 +263,7 @@ public class ResourceManager {
 		JSONObject folder = addResource(finalName, parentId, userId);
 		long tempFolderId = Long.parseLong(folder.getString("resourceId"));
 
-		copyFile(resourceId, tempFolderId , userId);
+		copyFile(resourceId, tempFolderId, userId);
 
 		try {
 			copySubfolders(resourceId, tempFolderId, userId);
@@ -282,7 +287,7 @@ public class ResourceManager {
 			JSONObject subfolder = addResource(subfolderName, parentFolderId, userId);
 			long newSubfolderId = Long.parseLong(subfolder.getString("resourceId"));
 
-			copyFile(subfolderId, newSubfolderId , userId);
+			copyFile(subfolderId, newSubfolderId, userId);
 			copySubfolders(subfolderId, newSubfolderId, userId);
 		}
 	}
@@ -303,7 +308,7 @@ public class ResourceManager {
 
 	public static long findFileIdUsingFilename(long folderId, String filename) {
 
-		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_ID, new Object[] { filename , folderId });
+		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_ID, new Object[] { filename, folderId });
 
 		try {
 			if (result.next()) {
@@ -315,74 +320,71 @@ public class ResourceManager {
 		return 0;
 	}
 
-	public static boolean fileCopy(long olderFolderId, long newFolderId, String filename , long userId , long fileid) {
+	public static boolean fileCopy(long olderFolderId, long newFolderId, String filename, long userId, long fileid) {
 
-		long newFileId,dfsId;
+		long newFileId, dfsId;
 		boolean res;
-		
+
 		String filePath = getFilePath(fileid);
 		String fileChecksum = getFileChecksum(fileid);
-		
+
 		filename = CheckDuplicateFile.getFileName(newFolderId, filename);
-		newFileId = AddFile(newFolderId, filename , userId);
-		dfsId = addDFSFiles(filePath, fileChecksum, newFileId , newFolderId , FileOperations.getSize(filePath));
+		newFileId = AddFile(newFolderId, filename, userId);
+		dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
 		res = addFileVersion(dfsId);
 
 		return res;
 
 	}
-	
+
 	public static long getFileSize(long fileId) {
-		
-		ResultSet result = QueryHandler.executeQuerry(Queries.FIND_DFS_ID, new Object[] {fileId});
-		
+
+		ResultSet result = QueryHandler.executeQuerry(Queries.FIND_DFS_ID, new Object[] { fileId });
+
 		try {
-			if(result.next()) {
+			if (result.next()) {
 				return result.getLong(ColumnNames.DFS_FILE_SIZE);
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return 0;
 	}
-	
+
 	public static String getUserTimeZone(long userId) {
-		
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_USER_TIME_ZONE, new Object[] {userId});
-		
+
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_USER_TIME_ZONE, new Object[] { userId });
+
 		try {
-			if(res.next()) {
+			if (res.next()) {
 				return res.getString(ColumnNames.USER_TIMEZONE);
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return "";
-		
+
 	}
-	
-	public static boolean updateFileSize(String checkSum , long size) {
-		
-		int res = QueryHandler.executeUpdate(Queries.UPDATE_FILE_SIZE, new Object[] {size , checkSum});
-		
-		return res>0;
-		
+
+	public static boolean updateFileSize(String checkSum, long size) {
+
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_FILE_SIZE, new Object[] { size, checkSum });
+
+		return res > 0;
+
 	}
-	
+
 	public static String getFileChecksum(long fileid) {
-		
-		ResultSet res = QueryHandler.executeQuerry(Queries.FIND_DFS_ID, new Object[] {fileid});
-		
+
+		ResultSet res = QueryHandler.executeQuerry(Queries.FIND_DFS_ID, new Object[] { fileid });
+
 		try {
-			if(res.next()) {
+			if (res.next()) {
 				return res.getString(ColumnNames.FILE_CHECKSUM);
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
@@ -391,9 +393,9 @@ public class ResourceManager {
 	public static boolean fileMove(long fileId, long olderFolderId, long newFolderId, String filename) {
 
 		try {
-			
+
 			filename = CheckDuplicateFile.getFileName(newFolderId, filename);
-			
+
 			int fileMoveDb = QueryHandler.executeUpdate(Queries.UPDATE_FILE_PARENT_ID,
 					new Object[] { newFolderId, filename, fileId });
 
@@ -408,29 +410,28 @@ public class ResourceManager {
 		return false;
 
 	}
-	
+
 	public static int checkExistPaths(String filePath) {
-		
+
 		int count = 0;
-		ResultSet res = QueryHandler.executeQuerry(Queries.CHECK_EXIST_FILE_PATHS, new Object[] {filePath});
-		
+		ResultSet res = QueryHandler.executeQuerry(Queries.CHECK_EXIST_FILE_PATHS, new Object[] { filePath });
+
 		try {
-			while(res.next()) {
+			while (res.next()) {
 				count++;
-				if(count == 2) {
+				if (count == 2) {
 					break;
 				}
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return count;
 	}
 
-	public static String checkExsistingFile(String checkSum , long folderId) {
-		
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum , folderId});
+	public static String checkExsistingFile(String checkSum, long folderId) {
+
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId });
 		try {
 			if (res.next()) {
 				return res.getString(ColumnNames.FILE_CHECKSUM);
@@ -440,9 +441,9 @@ public class ResourceManager {
 		}
 		return "";
 	}
-	
+
 	public static String getFilePathUsingCheckSum(String checksum) {
-		
+
 		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_PATHS, new Object[] { checksum });
 		try {
 			if (res.next()) {
@@ -452,11 +453,11 @@ public class ResourceManager {
 			e.printStackTrace();
 		}
 		return "";
-		
+
 	}
-	
-	public static long getFileIdUsingCheckSum(String checkSum , long folderId) {
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum , folderId});
+
+	public static long getFileIdUsingCheckSum(String checkSum, long folderId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId });
 		try {
 			if (res.next()) {
 				return res.getLong(ColumnNames.DFS_FILE_ID);
@@ -484,7 +485,7 @@ public class ResourceManager {
 	}
 
 	public static int getFileVersion(long dfsId) {
-		
+
 		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_VERSION, new Object[] { dfsId });
 
 		try {
@@ -499,11 +500,12 @@ public class ResourceManager {
 	}
 
 	public static boolean addNewFileVersion(long dfsId, int version) {
-		
+
 		long id = SnowflakeIdGenerator.nextId();
 		long time = System.currentTimeMillis();
-		
-		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.ADD_VERSION,new Object[] { id, version, dfsId , time });
+
+		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.ADD_VERSION,
+				new Object[] { id, version, dfsId, time });
 
 		return updateFileVersionResult > 0 ? true : false;
 	}
@@ -523,25 +525,23 @@ public class ResourceManager {
 		return false;
 
 	}
-	
-	public static ArrayList<JSONObject> getAllVersions(long dfsId , String timeZone){
-		
+
+	public static ArrayList<JSONObject> getAllVersions(long dfsId, String timeZone) {
+
 		ArrayList<JSONObject> version = new ArrayList<JSONObject>();
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILE_VERSIONS, new Object[] {dfsId});
-		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILE_VERSIONS, new Object[] { dfsId });
+
 		try {
-			while(res.next()) {
-				version.add(new Versions(res.getInt(ColumnNames.VERSION_NUMBER),res.getLong(ColumnNames.VERSION_CREATE_TIME),timeZone).getVersionData());
+			while (res.next()) {
+				version.add(new Versions(res.getInt(ColumnNames.VERSION_NUMBER),
+						res.getLong(ColumnNames.VERSION_CREATE_TIME), timeZone).getVersionData());
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return version;
 	}
-	
-	
 
 	public static long findOrCreateFolder(String parentId, String folderName, long userId)
 			throws SQLException, NumberFormatException, IOException {
@@ -554,7 +554,70 @@ public class ResourceManager {
 			return resource.getLong("resourceId");
 		}
 	}
-	
 
+	public static long getOriginalSize(long userId) {
+
+		try {
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_ORIGINAL_SIZE, new Object[] { userId });
+			if (res.next()) {
+				return res.getLong("total_original_size");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return 0;
+
+	}
+
+	public static long getCompressedSize(long userId) {
+
+		try {
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_COMPRESSED_SIZE, new Object[] { userId });
+			if (res.next()) {
+				return res.getLong("total_compress_size");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return 0;
+
+	}
+	
+	public static long getDeduplicateFiles(long userId) {
+
+		try {
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_DEDUPLICATE_FILES, new Object[] { userId });
+			if (res.next()) {
+				return res.getLong("unique_paths_count");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return 0;
+
+	}
+	
+	
+	public static long getTotalFiles(long userId) {
+
+		try {
+			ResultSet res = QueryHandler.executeQuerry(Queries.FIND_ALL_FILES, new Object[] { userId , "FILE" });
+			if (res.next()) {
+				return res.getLong("total_files");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return 0;
+
+	}
+	
+	
+	
+	
 
 }
