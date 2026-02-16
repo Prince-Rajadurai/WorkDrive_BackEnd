@@ -86,7 +86,7 @@ public class Queries {
 
 	public static final String FIND_ALL_FILES ="SELECT COUNT(" + RESOURCE_NAME + ") AS total_files " +"FROM " + RESOURCE_TABLE + " " +"WHERE " + USER_ID + " = ? AND " + RESOURCE_TYPE + " = ?";
 
-
+	public static final String FILE_ORIGINAL_SIZE = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";
 	
 	public static final String GET_USER_DETAILS = "SELECT * FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ? ";
 	
