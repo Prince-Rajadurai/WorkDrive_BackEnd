@@ -25,7 +25,7 @@ public class Queries {
 		
 	public static final String ADD_RESOURCE = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+PARENT_ID+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+" , "+RESOURCE_TYPE+" , "+RESOURCE_ORIGINAL_SIZE+" ) VALUES (?,?,?,?,?,?,?,?)";
 		
-	public static final String ADD_RESOURCE_ROOT = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+", type) VALUES (?,?,?,?,?,?)";
+	public static final String ADD_RESOURCE_ROOT = "INSERT INTO "+RESOURCE_TABLE+" ("+RESOURCE_ID+", "+RESOURCE_NAME+", "+USER_ID+", "+CREATED_TIME+", "+MODIFIED_TIME+", "+RESOURCE_TYPE+", "+RESOURCE_ORIGINAL_SIZE+") VALUES (?,?,?,?,?,?,?)";
 	
 	public static final String UPDATE_RESOURCE="UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_NAME+" = ?, "+MODIFIED_TIME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
