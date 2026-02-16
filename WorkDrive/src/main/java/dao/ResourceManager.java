@@ -246,9 +246,9 @@ public class ResourceManager {
 
 			String filePath = getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
 			String fileChecksum = getFileChecksum(res.getLong(ColumnNames.RESOURCE_ID));
-
+		
 			filename = CheckDuplicateFile.getFileName(newFolderId, filename);
-			newFileId = AddFile(newFolderId, filename, userId);
+			newFileId = AddFile(newFolderId, filename, userId , res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE));
 			dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
 			result = addFileVersion(dfsId);
 
@@ -327,9 +327,10 @@ public class ResourceManager {
 
 		String filePath = getFilePath(fileid);
 		String fileChecksum = getFileChecksum(fileid);
-
+		long size = ResourceManager.getFileOriginalSize(fileid);
+		
 		filename = CheckDuplicateFile.getFileName(newFolderId, filename);
-		newFileId = AddFile(newFolderId, filename, userId);
+		newFileId = AddFile(newFolderId, filename, userId , size);
 		dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
 		res = addFileVersion(dfsId);
 
@@ -616,7 +617,22 @@ public class ResourceManager {
 
 	}
 	
-	
+	public static long getFileOriginalSize(long fileId) {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.FILE_ORIGINAL_SIZE, new Object[] {fileId});
+		
+		try {
+			if(res.next()) {
+				return res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
+	}
 	
 	
 

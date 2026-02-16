@@ -3,7 +3,6 @@ package constants;
 public class ColumnNames {
 	
 	public static final String RESOURCE_TABLE = "Resources";
-	
 	public static final String RESOURCE_ID = "ResourceId";
 	public static final String RESOURCE_NAME="ResourceName";
 	public static final String CREATED_TIME = "CreatedTime";

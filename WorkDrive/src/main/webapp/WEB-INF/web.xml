@@ -142,6 +142,10 @@
 		<display-name>ShowDashBoard</display-name>
 		<servlet-name>ShowDashBoard</servlet-name>
 		<servlet-class>servlets.ShowDashBoard</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
 		<display-name>ProfileEditServlet</display-name>
 		<servlet-name>ProfileEditServlet</servlet-name>
 		<servlet-class>servlets.ProfileEditServlet</servlet-class>
@@ -234,6 +238,8 @@
     <servlet-mapping>
     	<servlet-name>ShowDashBoard</servlet-name>
     	<url-pattern>/ShowDashBoard</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
     	<servlet-name>ProfileEditServlet</servlet-name>
     	<url-pattern>/ProfileEditServlet</url-pattern>
     </servlet-mapping>
