@@ -3,6 +3,9 @@ package dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import constants.Queries;
 import databasemanager.QueryHandler;
 import hashing.AESEncryption;
@@ -43,6 +46,36 @@ public class AccountsManager {
 			userId = rs.getLong("UserId");
 		}
 		return userId;
+	}
+	
+	public static JSONObject getUserDetails(long userId) throws JSONException, SQLException {
+		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_USER_DETAILS, new Object[] { userId });
+		
+		if (rs.next()) {
+			JSONObject responseObject = new JSONObject();
+			responseObject.put("FullName", rs.getString("FullName"));
+			responseObject.put("Email", rs.getString("Email"));
+			responseObject.put("TimeZone", rs.getString("TimeZone"));
+			
+			return responseObject;
+		}
+		return null;
+	}
+	
+	public static boolean updateUser(String name,String timeZone,String encryptedPassword,long userId) {
+		int result;
+
+		if (encryptedPassword != null) {
+
+			result = QueryHandler.executeUpdate(Queries.UPDATE_PROFILE_WITH_PASSWORD,
+					new Object[] { name, timeZone, encryptedPassword, userId });
+
+		} else {
+
+			result = QueryHandler.executeUpdate(Queries.UPDATE_PROFILE,new Object[] {name, timeZone, userId});
+		}
+		
+		return result>0;
 	}
 
 }

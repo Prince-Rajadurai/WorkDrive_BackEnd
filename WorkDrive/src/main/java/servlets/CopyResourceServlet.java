@@ -46,6 +46,10 @@ public class CopyResourceServlet extends HttpServlet implements Servlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
+			
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 
 			long parentId = requestObject.getLong("parentId");

@@ -52,6 +52,9 @@ public class FolderUploadServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		try {
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
 			long userId = 0;

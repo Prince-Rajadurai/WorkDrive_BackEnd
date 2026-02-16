@@ -142,6 +142,16 @@
 		<display-name>ShowDashBoard</display-name>
 		<servlet-name>ShowDashBoard</servlet-name>
 		<servlet-class>servlets.ShowDashBoard</servlet-class>
+		<display-name>ProfileEditServlet</display-name>
+		<servlet-name>ProfileEditServlet</servlet-name>
+		<servlet-class>servlets.ProfileEditServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>LogoutServlet</display-name>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>servlets.LogoutServlet</servlet-class>
 	</servlet>
 
     <!-- Servlet Mappings -->
@@ -224,6 +234,12 @@
     <servlet-mapping>
     	<servlet-name>ShowDashBoard</servlet-name>
     	<url-pattern>/ShowDashBoard</url-pattern>
+    	<servlet-name>ProfileEditServlet</servlet-name>
+    	<url-pattern>/ProfileEditServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>LogoutServlet</servlet-name>
+    	<url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->

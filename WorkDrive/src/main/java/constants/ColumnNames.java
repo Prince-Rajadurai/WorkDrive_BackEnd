@@ -14,6 +14,7 @@ public class ColumnNames {
 	
 	public static final String USERS_TABLE = "Users";
 	public static final String USER_ID = "UserId";
+	public static final String USER_NAME = "FullName";
 	public static final String USER_EMAIL= "Email";
 	public static final String USER_PASSWORD= "Password";
 	public static final String USER_TIMEZONE="TimeZone";
