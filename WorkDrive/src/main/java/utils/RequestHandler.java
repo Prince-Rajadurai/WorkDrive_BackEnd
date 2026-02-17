@@ -10,6 +10,7 @@ import hashing.AESEncryption;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class RequestHandler {
 
@@ -22,7 +23,7 @@ public class RequestHandler {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String getRequestObjectString(ServletRequest request) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = request.getReader();
@@ -32,17 +33,17 @@ public class RequestHandler {
 		}
 		return sb.toString();
 	}
-	
-	
-	public static String sendResponse(int statusCode,String message) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String message) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resource, String parentId, long nextCursor) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String message, ArrayList<JSONObject> resource, String parentId,
+			long nextCursor) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
 		responseObject.put("resources", resource);
@@ -50,9 +51,10 @@ public class RequestHandler {
 		responseObject.put("nextCursor", nextCursor);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resource, String parentId, JSONObject cursors) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String message, ArrayList<JSONObject> resource, String parentId,
+			JSONObject cursors) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
 		responseObject.put("resources", resource);
@@ -60,34 +62,35 @@ public class RequestHandler {
 		responseObject.put("cursors", cursors);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resources) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String message, ArrayList<JSONObject> resources) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
 		responseObject.put("resources", resources);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode,String message,JSONObject resource) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String message, JSONObject resource) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("message", message);
 		responseObject.put("resource", resource);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode,String storage,String size,ArrayList<JSONObject> versions) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String storage, String size, ArrayList<JSONObject> versions) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("storage", storage);
 		responseObject.put("size", size);
 		responseObject.put("versions", versions);
 		return responseObject.toString();
 	}
-	
-	public static String sendResponse(int statusCode , String total_size , String compress_size , long total_files , long deduplicate_files , long storage_precentage , long deduplicate_precentage) {
-		JSONObject responseObject=new JSONObject();
+
+	public static String sendResponse(int statusCode, String total_size, String compress_size, long total_files,
+			long deduplicate_files, long storage_precentage, long deduplicate_precentage) {
+		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("compress_size", total_size);
 		responseObject.put("total_size", compress_size);
@@ -97,8 +100,7 @@ public class RequestHandler {
 		responseObject.put("deduplicate_size", deduplicate_precentage);
 		return responseObject.toString();
 	}
-	
-	
+
 	public static Cookie setCookie(String email) throws Exception {
 		String encryptMail = new AESEncryption().encrypt(email);
 		Cookie cookie = new Cookie("cookie", encryptMail);
@@ -108,6 +110,15 @@ public class RequestHandler {
 		cookie.setHttpOnly(true);
 		cookie.setSecure(true);
 		return cookie;
+	}
+
+	public static boolean deleteCookie(HttpServletResponse response) {
+			Cookie cookie = new Cookie("cookie", "");
+			cookie.setMaxAge(0);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+			return true;
+
 	}
 
 }

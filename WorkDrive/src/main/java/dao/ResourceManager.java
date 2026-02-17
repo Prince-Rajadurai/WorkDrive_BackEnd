@@ -97,13 +97,14 @@ public class ResourceManager {
 			if (tempRs != null && tempRs.next()) {
 				totalFiles = tempRs.getInt("totalFiles");
 				totalFolders = tempRs.getInt("totalFolders");
-			}
-			String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
+				String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
 
-			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
-					rs.getLong("CreatedTime"), rs.getLong("LastModifiedTime"), rs.getLong("parentId"), timeZone,
-					totalFiles, totalFolders, size);
-			resources.add(resource.toJson());
+				Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
+						rs.getLong("CreatedTime"), rs.getLong("LastModifiedTime"), rs.getLong("parentId"), timeZone,
+						totalFiles, totalFolders, size);
+				resources.add(resource.toJson());
+			}
+			
 		}
 
 		return resources;
