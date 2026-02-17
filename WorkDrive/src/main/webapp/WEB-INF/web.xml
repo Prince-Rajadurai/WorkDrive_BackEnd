@@ -157,6 +157,13 @@
 		<servlet-name>LogoutServlet</servlet-name>
 		<servlet-class>servlets.LogoutServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>ShowTrash</display-name>
+		<servlet-name>ShowTrash</servlet-name>
+		<servlet-class>servlets.ShowTrash</servlet-class>
+	</servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -246,6 +253,10 @@
     <servlet-mapping>
     	<servlet-name>LogoutServlet</servlet-name>
     	<url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>ShowTrash</servlet-name>
+    	<url-pattern>/ShowTrash</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->

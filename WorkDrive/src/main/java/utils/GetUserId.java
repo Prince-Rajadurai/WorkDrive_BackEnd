@@ -21,7 +21,6 @@ public class GetUserId {
 		}
 		try {
 			userId = AccountsManager.getUserId(cookieValue);
-			System.out.print(userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

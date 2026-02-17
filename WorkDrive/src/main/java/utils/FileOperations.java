@@ -59,12 +59,11 @@ public class FileOperations {
 //	File upload -> change
 	public static String UploadFile(Part file, String folderId, String filename) {
 
-		String checkSumValue = "";
 		try {
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
 			FSDataOutputStream out = fs.create(hdfsPath, true);
-			ZstdOutputStream zOut = new ZstdOutputStream(out , 3);
+			ZstdOutputStream zOut = new ZstdOutputStream(out , 12);
 //			GZIPOutputStream zOut = new GZIPOutputStream(out);
 			
 			byte[] buffer = new byte[16384];

@@ -44,7 +44,7 @@ public class Queries {
 	
 	public static final String ADD_DFS_FILES = "INSERT INTO "+DFS_TABLE_NAME+" VALUES ( ? , ? , ? , ? ,? , ?)";
 	
-	public static final String ADD_VERSION = "INSERT INTO "+VERSION_TABLE_NAME+" VALUES ( ? , ? , ? , ?)";
+	public static final String ADD_VERSION = "INSERT INTO "+VERSION_TABLE_NAME+" VALUES ( ? , ? , ? , ? , ?)";
 	
 	public static final String CHECK_FOLDER_EXISTS="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ? ";
 	
@@ -93,4 +93,10 @@ public class Queries {
 	public static final String UPDATE_PROFILE = "UPDATE "+USERS_TABLE+" SET "+USER_NAME+" = ?, "+USER_TIMEZONE+" = ? WHERE "+USER_ID+" = ?";
 	
 	public static final String UPDATE_PROFILE_WITH_PASSWORD="UPDATE "+USERS_TABLE+" SET "+USER_NAME+" = ?, "+USER_TIMEZONE+" = ?, "+USER_PASSWORD+" = ? WHERE "+USER_ID+" = ?";
+	
+	public static final String UPDATE_DFS_PATH = "UPDATE "+DFS_TABLE_NAME+" SET "+DFS_PATH+" = ? , "+FILE_CHECKSUM+" = ? , "+DFS_FILE_SIZE+"= ? WHERE "+DFS_FILE_ID+" = ?";
+	
+	public static final String GET_FILE_ID_USING_FILE_NAME = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_NAME+" = ?";
+	
+	public static final String GET_FILE_VERSIONS_SIZE = "SELECT SUM("+VERSION_SIZE+") As total_size FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ?";
 }

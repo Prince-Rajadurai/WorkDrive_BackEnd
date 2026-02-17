@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import utils.ConverByteToString;
+import utils.FileOperations;
 import utils.GetFileCheckSum;
 import utils.RequestHandler;
 import utils.UpdateFileVersion;
@@ -25,14 +26,14 @@ import jakarta.servlet.annotation.WebFilter;
  */
 //@WebFilter("/secure/*")
 public class CheckExsistFile extends HttpFilter implements Filter {
-       
-    /**
-     * @see HttpFilter#HttpFilter()
-     */
-    public CheckExsistFile() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpFilter#HttpFilter()
+	 */
+	public CheckExsistFile() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
@@ -44,55 +45,76 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+
 		String filename = request.getParameter("filename");
 		String folderid = request.getParameter("folderId");
 		String updateFile = request.getParameter("replaceFile");
+		String originalSize = request.getParameter("size");
+
+		long original_size = Long.parseLong(originalSize);
 		long folderId = Long.parseLong(folderid);
 		boolean checkReplace = Boolean.parseBoolean(updateFile);
-		
-		
+
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-	    Part file = httpRequest.getPart("file");
-	    
-	    long fileId = ResourceManager.findFileIdUsingFilename(folderId, filename); 
-	    
-	    MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file);
+		Part file = httpRequest.getPart("file");
+
+		long fileId = ResourceManager.findFileIdUsingFilename(folderId, filename);
+
+		MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file);
 		String checkSum = ConverByteToString.convertByteToString(md);
-		String checkDuplicate = ResourceManager.checkExsistingFile(checkSum , folderId);
-		
-		if(checkReplace) {
-			
-			fileId = ResourceManager.getFileIdUsingCheckSum(checkSum , folderId);
-			
+		String checkDuplicate = ResourceManager.checkExsistingFile(checkSum, folderId);
+		boolean existFileName = ResourceManager.checkExsistingFileName(folderId, filename);
+		boolean updateFileVersionResult = false;
+
+		if (checkReplace) {
+
+			fileId = ResourceManager.getFileIdUsingCheckSum(checkSum, folderId);
+
 			long dfsId = ResourceManager.findDfsId(fileId);
-			
+
 			long size = ResourceManager.getFileSize(fileId);
-			
-			System.out.println(size);
-			
-			boolean updateFileSize = ResourceManager.updateFileSize(checkSum , size);
-			
-			int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
-			
-			boolean updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId ,updateVersion);
-			
-			if(updateFileVersionResult) {
-				response.getWriter().write(RequestHandler.sendResponse(200, "File version updated"));
+
+			if (checkSum.equals(checkDuplicate)) {
+
+				boolean updateFileSize = ResourceManager.updateFileSize(checkSum, size);
+				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
+				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion , "/" + folderId + "/" + filename);
+
+			} else {
+
+				fileId = ResourceManager.getFileIdUsingFileName(folderId, filename);
+				String filePath = ResourceManager.getFilePath(fileId);
+				int pathCount = ResourceManager.checkExistPaths(filePath);
+				String deleteResult = "";
+				if (pathCount != 2) {
+					deleteResult = FileOperations.DeleteFile(filePath);
+				}
+
+				FileOperations.UploadFile(file, folderid, filename);
+
+				boolean updatePath = ResourceManager.updateDfsPath("/" + folderId + "/" + filename, checkSum, fileId);
+
+				dfsId = ResourceManager.findDfsId(fileId);
+				size = ResourceManager.getFileSize(fileId);
+				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
+				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion , "/" + folderId + "/" + filename);
+
 			}
-			else {
+
+			if (updateFileVersionResult) {
+				response.getWriter().write(RequestHandler.sendResponse(200, "File version updated"));
+			} else {
 				response.getWriter().write(RequestHandler.sendResponse(400, "File version updated failed"));
 			}
-			
-		}
-		else if(checkDuplicate.equals(checkSum)) {
-			response.getWriter().write(RequestHandler.sendResponse(400,"File already exists"));
-		}
-		else {
+
+		} else if ((checkDuplicate.equals(checkSum)) || existFileName) {
+			response.getWriter().write(RequestHandler.sendResponse(400, "File already exists"));
+		} else {
 			chain.doFilter(request, response);
 		}
-		
+
 	}
 
 	/**
