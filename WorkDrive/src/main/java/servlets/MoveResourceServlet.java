@@ -50,8 +50,8 @@ public class MoveResourceServlet extends HttpServlet {
 			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 
-			long parentId = requestObject.getLong("parentId");
-			long resourceId = requestObject.getLong("resourceId");
+			long parentId = Long.parseLong(requestObject.getString("parentId"));
+			long resourceId = Long.parseLong(requestObject.getString("resourceId"));
 			String resourceName = requestObject.getString("resourceName");
 
 			long userId = 0;
