@@ -65,35 +65,35 @@ public class ResourceRenderServlet extends HttpServlet {
             long lastFolderCursor = folderCursor;
             long lastFileCursor = fileCursor;
 
-//            ArrayList<JSONObject> folders = ResourceManager.getResource(parentId, userId, folderCursor, fetchLimit);
             ArrayList<JSONObject> folders = new ArrayList<>();
-            if (folderCursor != -1) {
-            	folders = ResourceManager.getResource(parentId, userId, folderCursor, fetchLimit);
-            }
+            ArrayList<JSONObject> files = new ArrayList<>();
             
             boolean hasMoreFolders = false;
-            if (folders.size() > limit) {
-            	hasMoreFolders = true;
-            	folders.remove(folders.size() - 1);
-            }
-
-            int remainingLimit = limit - folders.size();
-
-            ArrayList<JSONObject> files = new ArrayList<>();
             boolean hasMoreFiles = false;
+            
+            boolean fetchingFolders = folderCursor != -1;
+            
+            if (fetchingFolders) {
+            	folders = ResourceManager.getResource(parentId, userId, folderCursor, fetchLimit);
+            	if (folders.size() > limit) {
+            		hasMoreFolders = true;
+            		folders.remove(folders.size() - 1);
+            	}
+            }
+            
+            int remainingLimit = limit - folders.size();
+            
             if (remainingLimit > 0) {
-            	int fileLimit = remainingLimit > 0 ? remainingLimit : limit;
-                files = ResourceManager.getAllFiles(parentId, userId, fileCursor, fileLimit + 1);
-                if (files.size() > fileLimit) {
-                	hasMoreFiles = true;
-                	files.remove(files.size() - 1);
-                }
+            	files = ResourceManager.getAllFiles(parentId, userId, fileCursor, remainingLimit + 1);
+            	if (files.size() > remainingLimit) {
+            		hasMoreFiles = true;
+            		files.remove(files.size() - 1);
+            	}
             }
 
             for (JSONObject folder : folders) {
                 JSONObject obj = new JSONObject();
                 obj.put("id", String.valueOf(folder.getLong("resourceId")));
-//                obj.put("id", folder.getString("resourceId"));
                 obj.put("name", folder.getString("resourceName"));
                 obj.put("type", "FOLDER");
                 obj.put("createdTime", folder.getString("createdTime"));
@@ -122,10 +122,11 @@ public class ResourceRenderServlet extends HttpServlet {
             if(!files.isEmpty()) {
             	lastFileCursor = files.get(files.size() - 1).getLong("id");
             }
+            int totalReturned = folders.size() + files.size();
+            boolean hasMore = totalReturned == limit;
             JSONObject cursors = new JSONObject();
             cursors.put("folderCursor", hasMoreFolders ? lastFolderCursor : -1);
             cursors.put("fileCursor", hasMoreFiles ? lastFileCursor : -1);
-            boolean hasMore = hasMoreFolders || (folderCursor == -1 && hasMoreFiles);
             cursors.put("hasMore", hasMore);
 
             response.setContentType("application/json");
