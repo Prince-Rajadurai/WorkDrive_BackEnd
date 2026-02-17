@@ -51,6 +51,16 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
+	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resource, String parentId, JSONObject cursors) {
+		JSONObject responseObject=new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("message", message);
+		responseObject.put("resources", resource);
+		responseObject.put("folderId", parentId);
+		responseObject.put("cursors", cursors);
+		return responseObject.toString();
+	}
+	
 	public static String sendResponse(int statusCode,String message,ArrayList<JSONObject> resources) {
 		JSONObject responseObject=new JSONObject();
 		responseObject.put("StatusCode", statusCode);
