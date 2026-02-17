@@ -144,12 +144,12 @@ public class ResourceManager {
 
 	}
 
-	public static boolean addFileVersion(long dfsId) {
+	public static boolean addFileVersion(long dfsId , long size) {
 
 		long id = SnowflakeIdGenerator.nextId();
 		long time = System.currentTimeMillis();
 
-		int i = QueryHandler.executeUpdate(Queries.ADD_VERSION, new Object[] { id, 1, dfsId, time });
+		int i = QueryHandler.executeUpdate(Queries.ADD_VERSION, new Object[] { id, 1, dfsId, time , size });
 
 		return i > 0;
 	}
@@ -250,7 +250,7 @@ public class ResourceManager {
 			filename = CheckDuplicateFile.getFileName(newFolderId, filename);
 			newFileId = AddFile(newFolderId, filename, userId , res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE));
 			dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
-			result = addFileVersion(dfsId);
+			result = addFileVersion(dfsId , FileOperations.getSize(filePath));
 
 		}
 
@@ -332,7 +332,7 @@ public class ResourceManager {
 		filename = CheckDuplicateFile.getFileName(newFolderId, filename);
 		newFileId = AddFile(newFolderId, filename, userId , size);
 		dfsId = addDFSFiles(filePath, fileChecksum, newFileId, newFolderId, FileOperations.getSize(filePath));
-		res = addFileVersion(dfsId);
+		res = addFileVersion(dfsId , FileOperations.getSize(filePath));
 
 		return res;
 
@@ -500,13 +500,12 @@ public class ResourceManager {
 		return 0;
 	}
 
-	public static boolean addNewFileVersion(long dfsId, int version) {
+	public static boolean addNewFileVersion(long dfsId, int version , String path) {
 
 		long id = SnowflakeIdGenerator.nextId();
 		long time = System.currentTimeMillis();
 
-		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.ADD_VERSION,
-				new Object[] { id, version, dfsId, time });
+		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.ADD_VERSION,new Object[] { id, version, dfsId, time , FileOperations.getSize(path) });
 
 		return updateFileVersionResult > 0 ? true : false;
 	}
@@ -534,8 +533,7 @@ public class ResourceManager {
 
 		try {
 			while (res.next()) {
-				version.add(new Versions(res.getInt(ColumnNames.VERSION_NUMBER),
-						res.getLong(ColumnNames.VERSION_CREATE_TIME), timeZone).getVersionData());
+				version.add(new Versions(res.getInt(ColumnNames.VERSION_NUMBER),res.getLong(ColumnNames.VERSION_CREATE_TIME) ,res.getLong(ColumnNames.VERSION_SIZE), timeZone).getVersionData());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -634,6 +632,40 @@ public class ResourceManager {
 		
 	}
 	
+	public static boolean updateDfsPath(String path , String checkSum , long fileId) {
+		int i = QueryHandler.executeUpdate(Queries.UPDATE_DFS_PATH, new Object[] {path , checkSum ,FileOperations.getSize(path), fileId});
+		return i>0;
+	}
+	
+	public static long getFileIdUsingFileName(long folderId , String filename) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_ID_USING_FILE_NAME, new Object[] {folderId , filename});
+		try {
+			if(res.next()) {
+				return res.getLong(ColumnNames.RESOURCE_ID);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static long getVersionSize(long dfsId) {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_VERSIONS_SIZE, new Object[] {dfsId});
+		
+		try {
+			if(res.next()) {
+				return res.getLong("total_size");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
+	}
 	
 
 }

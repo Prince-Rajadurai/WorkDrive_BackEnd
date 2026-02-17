@@ -39,13 +39,14 @@ public class ShowFileVersions extends HttpServlet {
 		long dfsId = ResourceManager.findDfsId(fileId);
 		long StorageSize = ResourceManager.getFileSize(fileId);
 		long userId = GetUserId.getUserId(request);
-		
 		String filePath = ResourceManager.getFilePath(fileId);
+		long size = ResourceManager.getVersionSize(dfsId);
+		
 		
 		String timeZone = ResourceManager.getUserTimeZone(userId);
 		ArrayList<JSONObject> fileVersions = ResourceManager.getAllVersions(dfsId , timeZone);
 		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(StorageSize),FileOperations.getFileSize(filePath),fileVersions));
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(StorageSize),FileOperations.converFileSizeToString(size),fileVersions));
 		
 	}
 

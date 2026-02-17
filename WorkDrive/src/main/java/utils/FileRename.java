@@ -4,10 +4,14 @@ public class FileRename {
 	
 	public static String getFileExtension(String fileName) {
 		
-		String[] separateFileName = fileName.split("\\.");
-		
-		return separateFileName[1];
-		
+		if(fileName.contains(".")) {
+			String[] separateFileName = fileName.split("\\.");
+			
+			return separateFileName[1];
+		}
+		else {
+			return "";
+		}
 	}
 	
 	public static String getFileName(String fileName) {
@@ -17,6 +21,9 @@ public class FileRename {
 			if(fileName.indexOf(".")==-1) {
 				return fileName;
 			}
+		}
+		else if(!fileName.contains(".")) {
+			return fileName;
 		}
 		
 		String[] separateFileName = fileName.split("\\.");

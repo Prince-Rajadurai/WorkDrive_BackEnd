@@ -34,7 +34,7 @@ public class CheckDuplicateFile {
 
 		}
 
-		return filename + " (" + fileNumber + ")." + extension;
+		return extension!=""?filename + " (" + fileNumber + ")." + extension:filename + " (" + fileNumber + ")" + extension;
 	}
 	
 	public static int checkDuplicateFileName(long folderId , String fileName) {

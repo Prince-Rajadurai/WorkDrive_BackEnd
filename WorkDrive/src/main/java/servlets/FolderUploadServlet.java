@@ -103,7 +103,7 @@ public class FolderUploadServlet extends HttpServlet {
 							
 							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId , size); // Add file
 							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId) , FileOperations.getSize(filepath)); // Add file to dfs
-							boolean res = ResourceManager.addFileVersion(dfsId);
+							boolean res = ResourceManager.addFileVersion(dfsId , FileOperations.getSize(filepath));
 						
 						} else {
 							folderId=String.valueOf(ResourceManager.findOrCreateFolder(folderId,nestedPaths[i],userId));
