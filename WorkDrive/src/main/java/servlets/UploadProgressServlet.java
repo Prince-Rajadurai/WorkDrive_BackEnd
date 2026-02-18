@@ -2,6 +2,9 @@ package servlets;
 
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
+
+import org.json.JSONObject;
+
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,15 +13,15 @@ import utils.RedisHandler;
 import utils.RequestHandler;
 
 /**
- * Servlet implementation class LogoutServlet
+ * Servlet implementation class UploadProgressServlet
  */
-public class LogoutServlet extends HttpServlet implements Servlet {
+public class UploadProgressServlet extends HttpServlet implements Servlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LogoutServlet() {
+    public UploadProgressServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,7 +31,15 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		String uploadId=request.getParameter("uploadId");
+		String progress=RedisHandler.getKey(uploadId);
+		
+		if(progress == "100") {
+			RedisHandler.delKey(uploadId);
+			response.getWriter().write(RequestHandler.sendResponse(200, "Successfully Uploaded"));
+		}else {
+			response.getWriter().write(RequestHandler.sendResponse(200, "In-Progress",progress));
+		}
 	}
 
 	/**
@@ -36,16 +47,7 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		
-		if(RequestHandler.deleteCookie(response)) {
-			RedisHandler.redisTest();
-
-		    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
-		}else{
-			 response.getWriter().write(RequestHandler.sendResponse(400, "Log out failed"));
-		};
-		
+		doGet(request, response);
 	}
 
 }

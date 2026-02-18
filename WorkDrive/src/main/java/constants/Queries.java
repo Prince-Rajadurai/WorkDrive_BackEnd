@@ -15,7 +15,7 @@ public class Queries {
 	
 	public static final String VALIDATE_USER = "SELECT COUNT(*) FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+" = ? AND "+USER_PASSWORD+" = ?";
 
-	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_ID+" > ? ORDER BY "+RESOURCE_ID+" ASC LIMIT ?";
+	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_ID+" > ? ORDER BY "+RESOURCE_NAME+" ASC LIMIT ?";
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	

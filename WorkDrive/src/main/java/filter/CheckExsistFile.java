@@ -52,6 +52,7 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 		String folderid = request.getParameter("folderId");
 		String updateFile = request.getParameter("replaceFile");
 		String originalSize = request.getParameter("size");
+		String uploadId = request.getParameter("uploadId");
 
 		long original_size = Long.parseLong(originalSize);
 		long folderId = Long.parseLong(folderid);
@@ -80,7 +81,8 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 
 				boolean updateFileSize = ResourceManager.updateFileSize(checkSum, size);
 				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
-				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion , "/" + folderId + "/" + filename);
+				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion,
+						"/" + folderId + "/" + filename);
 
 			} else {
 
@@ -92,14 +94,15 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 					deleteResult = FileOperations.DeleteFile(filePath);
 				}
 
-				FileOperations.UploadFile(file, folderid, filename);
+				FileOperations.UploadFile(file, folderid, filename, uploadId);
 
 				boolean updatePath = ResourceManager.updateDfsPath("/" + folderId + "/" + filename, checkSum, fileId);
 
 				dfsId = ResourceManager.findDfsId(fileId);
 				size = ResourceManager.getFileSize(fileId);
 				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
-				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion , "/" + folderId + "/" + filename);
+				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion,
+						"/" + folderId + "/" + filename);
 
 			}
 

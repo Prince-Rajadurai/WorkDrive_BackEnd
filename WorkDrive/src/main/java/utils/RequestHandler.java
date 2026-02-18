@@ -70,6 +70,14 @@ public class RequestHandler {
 		responseObject.put("resources", resources);
 		return responseObject.toString();
 	}
+	
+	public static String sendResponse(int statusCode, String message, String value) {
+		JSONObject responseObject = new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("message", message);
+		responseObject.put("value", value);
+		return responseObject.toString();
+	}
 
 	public static String sendResponse(int statusCode, String message, JSONObject resource) {
 		JSONObject responseObject = new JSONObject();

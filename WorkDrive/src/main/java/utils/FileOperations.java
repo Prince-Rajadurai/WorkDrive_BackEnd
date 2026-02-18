@@ -57,9 +57,10 @@ public class FileOperations {
 	}
 
 //	File upload -> change
-	public static String UploadFile(Part file, String folderId, String filename) {
+	public static String UploadFile(Part file, String folderId, String filename, String uploadId) {
 
 		try {
+			RedisHandler.setKey(uploadId,"0");
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
 			FSDataOutputStream out = fs.create(hdfsPath, true);
@@ -68,9 +69,26 @@ public class FileOperations {
 			
 			byte[] buffer = new byte[16384];
 			int bytesRead;
+			
+			long totalBytes = file.getSize();
+			long processed = 0;
+			long lastUpdate = 0;
+			
 			while ((bytesRead = in.read(buffer)) != -1) {
 				zOut.write(buffer, 0, bytesRead);
+				
+				processed += bytesRead;
+
+			    if (processed - lastUpdate >= 10L * 1024 * 1024 || processed == totalBytes) {
+
+			        int percent = (int)((processed * 100) / totalBytes);
+			        RedisHandler.setKey(uploadId, String.valueOf(percent));
+
+			        lastUpdate = processed;
+			    }
 			}
+			
+			RedisHandler.delKey(uploadId);
 			zOut.close();
 			in.close();
 

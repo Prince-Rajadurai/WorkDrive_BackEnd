@@ -129,8 +129,6 @@ public class ResourceRenderServlet extends HttpServlet {
             cursors.put("fileCursor", hasMoreFiles ? lastFileCursor : -1);
             cursors.put("hasMore", hasMore);
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(
                 RequestHandler.sendResponse(200, "Resources rendered successfully", resources, String.valueOf(parentId), cursors)
             );

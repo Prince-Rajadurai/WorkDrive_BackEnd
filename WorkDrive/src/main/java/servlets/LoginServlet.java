@@ -82,8 +82,7 @@ public class LoginServlet extends HttpServlet {
 				return;
 			}
 			
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
+			
 
 			response.addCookie(RequestHandler.setCookie(email));
 			response.getWriter().write(RequestHandler.sendResponse(200, "Login successful"));

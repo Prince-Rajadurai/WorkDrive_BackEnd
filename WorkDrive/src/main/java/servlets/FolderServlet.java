@@ -40,9 +40,6 @@ public class FolderServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String resourceName = requestObject.getString("resourceName");
 
@@ -92,9 +89,6 @@ public class FolderServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			long resourceId = Long.parseLong(requestObject.getString("resourceId"));
 			if (ResourceManager.deleteResource(resourceId)) {
@@ -112,8 +106,6 @@ public class FolderServlet extends HttpServlet {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
 			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String newResourceName = requestObject.getString("newName");
