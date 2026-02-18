@@ -86,15 +86,16 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
-	public static String sendResponse(int statusCode , String total_size , String compress_size , long total_files , long deduplicate_files , long storage_precentage , long deduplicate_precentage) {
+	public static String sendResponse(int statusCode , String total_size , String compress_size , long total_files , long deduplicate_files , float storage_precentage , float deduplicate_files_precentage , float deduplicate_size_percentage) {
 		JSONObject responseObject=new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("compress_size", total_size);
 		responseObject.put("total_size", compress_size);
 		responseObject.put("total_files", total_files);
 		responseObject.put("deduplicate_files", deduplicate_files);
-		responseObject.put("storage_size", storage_precentage);
-		responseObject.put("deduplicate_size", deduplicate_precentage);
+		responseObject.put("storage_precentage", 100-Math.floor(storage_precentage));
+		responseObject.put("deduplicate_files_precentage", 100-Math.floor(deduplicate_files_precentage));
+		responseObject.put("deduplicate_size_percentage", Math.floor(deduplicate_size_percentage));
 		return responseObject.toString();
 	}
 	

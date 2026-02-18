@@ -40,8 +40,25 @@ public class ShowDashBoard extends HttpServlet {
 		
 		long files = ResourceManager.getTotalFiles(userId);
 		
+		long deduplicateSize = ResourceManager.getDuplicateFilesSize(userId);
 		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(compress) , files , files-dFiles, storage , compress));
+		float storagePercentage = 0.0f , duplicateSizePercentage = 0.0f , duplicateFilePercentage = 0.0f;
+		
+		if(storage-compress>deduplicateSize) {
+			 storagePercentage = (float) ((storage-compress)-deduplicateSize)/storage * 100;
+		}
+		else {
+			storagePercentage = (float) (deduplicateSize-(storage-compress))/storage * 100;
+		}
+		
+		
+		
+		duplicateSizePercentage = (float) deduplicateSize/storage*100;
+		
+		duplicateFilePercentage = (float) dFiles/files*100;
+		
+		
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(compress) , files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage));
 		
 	}
 

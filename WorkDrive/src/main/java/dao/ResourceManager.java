@@ -557,7 +557,7 @@ public class ResourceManager {
 	public static long getOriginalSize(long userId) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_ORIGINAL_SIZE, new Object[] { userId });
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_ORIGINAL_SIZE, new Object[] { userId , "FILE"});
 			if (res.next()) {
 				return res.getLong("total_original_size");
 			}
@@ -665,6 +665,21 @@ public class ResourceManager {
 		
 		return 0;
 		
+	}
+	
+	public static long getDuplicateFilesSize(long userId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_DEDUPLICATE_FILES_SIZES, new Object[] {userId});
+		long size = 0;
+		try {
+			while(res.next()) {
+				size += res.getLong("size");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return size;
 	}
 	
 
