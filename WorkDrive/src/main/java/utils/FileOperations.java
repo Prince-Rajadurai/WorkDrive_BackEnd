@@ -177,7 +177,7 @@ public class FileOperations {
 //	Folder size 
 	public static String getFolderSize(long folderId) {
 		
-		String size , filename;
+		String size;
 		long fileSize = 0;
 		Path file = null;
 		FileStatus status = null;

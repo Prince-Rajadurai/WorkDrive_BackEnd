@@ -1,12 +1,12 @@
 package servlets;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.RedisHandler;
 import utils.RequestHandler;
 
 /**
@@ -40,10 +40,8 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		
-		Cookie cookie = new Cookie("cookie", "");
-	    cookie.setMaxAge(0);
-	    cookie.setPath("/");
-	    response.addCookie(cookie);
+		RequestHandler.deleteCookie(response);
+		RedisHandler.redisTest();
 
 	    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
 	}

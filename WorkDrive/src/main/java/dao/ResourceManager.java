@@ -71,50 +71,46 @@ public class ResourceManager {
 				new Object[] { newName, currentTime, resourceId });
 		return rowsAffected > 0;
 	};
-
-	public static ArrayList<JSONObject> getResource(long parentId, long userId, long cursor, int limit)
-			throws SQLException, IOException {
+	
+	public static ArrayList<JSONObject> getResources(String type, long parentId, long userId, long cursor, int limit) throws SQLException {
 		ArrayList<JSONObject> resources = new ArrayList<>();
-
-		ResultSet rs;
-		rs = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
-
 		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
-
 		String timeZone = "";
-
 		if (userDetails.next()) {
 			timeZone = userDetails.getString("TimeZone");
 		}
-
-		while (rs.next()) {
-			ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
-					new Object[] { rs.getLong("ResourceId"), "FILE", rs.getLong("ResourceId"), "FOLDER" });
-
-			int totalFiles = 0;
-			int totalFolders = 0;
-
-			if (tempRs != null && tempRs.next()) {
-				totalFiles = tempRs.getInt("totalFiles");
-				totalFolders = tempRs.getInt("totalFolders");
+		if (type.equalsIgnoreCase("Folder")) {
+			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
+			while (folderResultSet.next()) {
+				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS, new Object[] { folderResultSet.getLong("ResourceId"), "FILE", folderResultSet.getLong("ResourceId"), "FOLDER"});
+				int totalFiles = 0;
+				int totalFolders = 0;
+				if (tempRs != null && tempRs.next()) {
+					totalFiles = tempRs.getInt("totalFiles");
+					totalFolders = tempRs.getInt("totalFolders");
+				}
+				String size = FileOperations.getFolderSize(folderResultSet.getLong("ResourceId"));
+				Resource resource = new Resource(folderResultSet.getLong("ResourceId"), folderResultSet.getString("ResourceName"), folderResultSet.getLong("CreatedTime"), folderResultSet.getLong("LastModifiedTime"), folderResultSet.getLong("parentId"), timeZone, totalFiles, totalFolders, size);
+				resources.add(resource.toJson());
 			}
-			String size = FileOperations.getFolderSize(rs.getLong("ResourceId"));
-
-			Resource resource = new Resource(rs.getLong("ResourceId"), rs.getString("ResourceName"),
-					rs.getLong("CreatedTime"), rs.getLong("LastModifiedTime"), rs.getLong("parentId"), timeZone,
-					totalFiles, totalFolders, size);
-			resources.add(resource.toJson());
+		} else if (type.equalsIgnoreCase("File")) {
+			ResultSet fileResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FILE", cursor, limit});
+			while (fileResultSet.next()) {
+				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"), fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"), timeZone);
+				resources.add(file.getFileData());
+			}	
 		}
-
 		return resources;
 	}
-
+	
 	public static boolean existResourceName(long userId, long parentId, String resourceName) throws SQLException {
 		ResultSet rs = QueryHandler.executeQuerry(Queries.EXIST_NAME, new Object[] { parentId, resourceName, userId });
 		return rs.next();
 	}
 
 	public static boolean moveResource(long parentId, long resourceId, String finalName) {
+		
+		System.out.println(parentId+"=="+resourceId+"=="+finalName);
 		int rowsAffected = QueryHandler.executeUpdate(Queries.UPDATE_PARENT,
 				new Object[] { parentId, finalName, resourceId });
 
@@ -182,30 +178,6 @@ public class ResourceManager {
 		ResultSet res = QueryHandler.executeQuerry(Queries.GET_EXISTING_FILE, new Object[] { filename, folderId });
 
 		return res.next();
-	}
-
-	public static ArrayList<JSONObject> getAllFiles(long folderId, long userId, long cursor, int limit)
-			throws SQLException {
-
-		ArrayList<JSONObject> files = new ArrayList<JSONObject>();
-		ResultSet result = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
-				new Object[] { folderId, "FILE", cursor, limit });
-
-		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
-
-		String timeZone = "";
-
-		if (userDetails.next()) {
-			timeZone = userDetails.getString("TimeZone");
-		}
-
-		while (result.next()) {
-			files.add(new File(result.getString(ColumnNames.RESOURCE_NAME), result.getLong(ColumnNames.CREATED_TIME),
-					result.getLong(ColumnNames.MODIFIED_TIME), result.getLong(ColumnNames.RESOURCE_ID), timeZone)
-					.getFileData());
-		}
-
-		return files;
 	}
 
 	public static long getMyFolderId(long userId) throws SQLException {
