@@ -113,7 +113,7 @@ public class Queries {
 	
 	public static final String CHECK_RESOURCES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
 	
-	public static final String UPDATE_PARENT_ID = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ? WHERE "+USER_ID+" = ?";
+	public static final String UPDATE_PARENT_ID = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ? WHERE "+RESOURCE_ID+" = ? AND "+USER_ID+" = ?";
 	
 	public static final String UPDATE_FOLDER_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+RESOURCE_ID+" = ?";
 	

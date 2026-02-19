@@ -50,7 +50,6 @@ public class ResourceRenderServlet extends HttpServlet {
 
             String parentIdParam = request.getParameter("parentId");
             long parentId = (parentIdParam == null || parentIdParam.equals("null")) ? ResourceManager.getMyFolderId(userId) : Long.parseLong(parentIdParam);
-            
             String folderCursorParam = request.getParameter("folderCursor");
             long folderCursor = (folderCursorParam == null) ? 0 : Long.parseLong(folderCursorParam);
             
@@ -120,7 +119,6 @@ public class ResourceRenderServlet extends HttpServlet {
             cursors.put("folderCursor", hasMoreFolders ? lastFolderCursor : -1);
             cursors.put("fileCursor", hasMoreFiles ? lastFileCursor : -1);
             cursors.put("hasMore", hasMore);
-
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(

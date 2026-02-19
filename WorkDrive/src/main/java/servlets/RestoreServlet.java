@@ -54,7 +54,7 @@ public class RestoreServlet extends HttpServlet {
 			long userId = GetUserId.getUserId(request);
 			try {
 				long rootId = ResourceManager.getMyFolderId(userId);
-				boolean updateParent = ResourceManager.updateParent(folderId, userId);
+				boolean updateParent = ResourceManager.updateParent(fileId,rootId, userId);
 				
 				if(updateParent) {
 					
