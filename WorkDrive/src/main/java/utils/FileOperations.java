@@ -82,6 +82,7 @@ public class FileOperations {
 			    if (processed - lastUpdate >= 10L * 1024 * 1024 || processed == totalBytes) {
 
 			        int percent = (int)((processed * 100) / totalBytes);
+			        
 			        RedisHandler.setKey(uploadId, String.valueOf(percent));
 
 			        lastUpdate = processed;

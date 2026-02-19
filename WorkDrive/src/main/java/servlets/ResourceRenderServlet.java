@@ -127,6 +127,7 @@ public class ResourceRenderServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("hello");
             response.getWriter().write(RequestHandler.sendResponse(500, "Failed to render resource"));
         }
     }
