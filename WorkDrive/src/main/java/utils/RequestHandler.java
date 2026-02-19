@@ -70,6 +70,18 @@ public class RequestHandler {
 		responseObject.put("resources", resources);
 		return responseObject.toString();
 	}
+	
+	public static String sendResponse(int statusCode, String message, long items , long files , long folders , long size , ArrayList<JSONObject> resources) {
+		JSONObject responseObject = new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("message", message);
+		responseObject.put("resources", resources);
+		responseObject.put("totalItems", items);
+		responseObject.put("files", files);
+		responseObject.put("folders", folders);
+		responseObject.put("size", FileOperations.converFileSizeToString(size));
+		return responseObject.toString();
+	}
 
 	public static String sendResponse(int statusCode, String message, JSONObject resource) {
 		JSONObject responseObject = new JSONObject();
@@ -95,7 +107,7 @@ public class RequestHandler {
 		responseObject.put("total_size", compress_size);
 		responseObject.put("total_files", total_files);
 		responseObject.put("deduplicate_files", deduplicate_files);
-		responseObject.put("storage_precentage", 100-Math.floor(storage_precentage));
+		responseObject.put("storage_precentage", Math.floor(storage_precentage));
 		responseObject.put("deduplicate_files_precentage", 100-Math.floor(deduplicate_files_precentage));
 		responseObject.put("deduplicate_size_percentage", Math.floor(deduplicate_size_percentage));
 		return responseObject.toString();

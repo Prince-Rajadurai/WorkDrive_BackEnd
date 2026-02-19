@@ -10,6 +10,7 @@ public class ColumnNames {
 	public static final String PARENT_ID = "ParentId";
 	public static final String RESOURCE_TYPE = "type";
 	public static final String RESOURCE_ORIGINAL_SIZE = "originalSize";
+	public static final String RESOURCE_STATUS = "status";
 	
 	public static final String USERS_TABLE = "Users";
 	public static final String USER_ID = "UserId";
@@ -32,12 +33,6 @@ public class ColumnNames {
 	public static final String VERSION_DFS_ID = "dfsId";
 	public static final String VERSION_CREATE_TIME = "time";
 	public static final String VERSION_SIZE = "size";
-	
-	public static final String TRASH_ID = "TrashId";
-	public static final String TRASH_FILE_ID = "TrashFileId";
-	public static final String TRASH_FILE_NAME = "TrashFileName";
-	public static final String TRASH_FILE_PATH = "TrashFilePath";
-	public static final String TRASH_FILE_ORIGINAL_SIZE = "TrashFileOriginalSize";
 	
 
 }

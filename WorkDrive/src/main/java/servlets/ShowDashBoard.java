@@ -58,7 +58,7 @@ public class ShowDashBoard extends HttpServlet {
 		duplicateFilePercentage = (float) dFiles/files*100;
 		
 		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(compress) , files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage));
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(storage-compress) , files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage));
 		
 	}
 

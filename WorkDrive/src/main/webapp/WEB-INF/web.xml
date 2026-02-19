@@ -164,6 +164,20 @@
 		<servlet-name>ShowTrash</servlet-name>
 		<servlet-class>servlets.ShowTrash</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>TrashFile</display-name>
+		<servlet-name>TrashFile</servlet-name>
+		<servlet-class>servlets.TrashFile</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>RestoreServlet</display-name>
+		<servlet-name>RestoreServlet</servlet-name>
+		<servlet-class>servlets.RestoreServlet</servlet-class>
+	</servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -257,6 +271,14 @@
     <servlet-mapping>
     	<servlet-name>ShowTrash</servlet-name>
     	<url-pattern>/ShowTrash</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>TrashFile</servlet-name>
+    	<url-pattern>/TrashFile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>RestoreServlet</servlet-name>
+    	<url-pattern>/RestoreServlet</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->

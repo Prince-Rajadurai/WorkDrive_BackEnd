@@ -18,6 +18,7 @@ import constants.ColumnNames;
 import constants.Queries;
 import databasemanager.QueryHandler;
 import utils.Resource;
+import utils.Resources;
 import utils.SnowflakeIdGenerator;
 import utils.Versions;
 
@@ -80,7 +81,7 @@ public class ResourceManager {
 			timeZone = userDetails.getString("TimeZone");
 		}
 		if (type.equalsIgnoreCase("Folder")) {
-			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
+			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER","active", cursor, limit });
 			while (folderResultSet.next()) {
 				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS, new Object[] { folderResultSet.getLong("ResourceId"), "FILE", folderResultSet.getLong("ResourceId"), "FOLDER"});
 				int totalFiles = 0;
@@ -94,7 +95,7 @@ public class ResourceManager {
 				resources.add(resource.toJson());
 			}
 		} else if (type.equalsIgnoreCase("File")) {
-			ResultSet fileResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FILE", cursor, limit});
+			ResultSet fileResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FILE", "active" , cursor, limit});
 			while (fileResultSet.next()) {
 				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"), fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"), timeZone);
 				resources.add(file.getFileData());
@@ -654,5 +655,97 @@ public class ResourceManager {
 		return size;
 	}
 	
+	public static boolean updateFileStatus(long fileid , String status) {
+		
+		int result = 0;
+		try {
+			result = QueryHandler.executeUpdate(Queries.UPDATE_FILE_STATUS, new Object[] {status , fileid , fileid});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result>0;
+		
+	}
+	
+	public static ArrayList<JSONObject> showTrashItems(long userId , String timezone) {
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.SELECT_ALL_TRASH_FILES, new Object[] {userId , "inactive"});
+		ArrayList<JSONObject> trashResources = new ArrayList<JSONObject>();
+		
+		try {
+			while(res.next()) {
+				trashResources.add(new Resources(res.getString(ColumnNames.RESOURCE_NAME),res.getLong(ColumnNames.PARENT_ID) , res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE),res.getLong(ColumnNames.RESOURCE_ID),res.getLong(ColumnNames.MODIFIED_TIME) , timezone).getJsonData());
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return trashResources;
+	}
+	
+	public static long getTrashItems(long userId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.TOTAL_TRASH_RESOURCES, new Object[] {userId , "inactive"});
+		try {
+			if(res.next()) {
+				return res.getLong("count");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static long getParticularResource(long userId , String type) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.FIND_PARTCULAR_RESOURCE_COUNT, new Object[] {userId , "inactive" , type});
+		try {
+			if(res.next()) {
+				return res.getLong("count");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static long getTrashSize(long userId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_TRASH_SIZE, new Object[] {userId , "inactive"});
+		try {
+			if(res.next()) {
+				return res.getLong("size");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static boolean checkResource(long id , String status) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.CHECK_RESOURCES, new Object[] {id , status});
+		try {
+			if(res.next()) {
+				return true;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean updateParent(long folderId , long userId) {
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_PARENT_ID, new Object[] {folderId , userId});
+		return res>0;
+	}
+	
+	public static boolean updateFolderStatus(long folderId) {
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_STATUS, new Object[] { "inactive",folderId});
+		int res1 = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_FILES_STATUS, new Object[] { "ParentInactive",folderId , "active"});
+		return res>0&&res1>0;
+	}
 
 }
