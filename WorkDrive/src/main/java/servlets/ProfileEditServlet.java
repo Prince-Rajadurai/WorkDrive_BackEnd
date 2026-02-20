@@ -100,12 +100,12 @@ public class ProfileEditServlet extends HttpServlet implements Servlet {
 				String confirmPassword = requestObject.getString("confirmPassword").trim();
 				String timeZone = requestObject.getString("timeZone").trim();
 
-				if (Validations.lengthValidation(name, 3)) {
+				if (!Validations.lengthValidation(name, 3)) {
 					response.getWriter().write(RequestHandler.sendResponse(400, "Invalid name length"));
 					return;
 				}
 
-				if (Validations.passwordValidation(password)) {
+				if (password != "" && Validations.passwordValidation(password)) {
 					response.getWriter().write(RequestHandler.sendResponse(400,
 							"Password must be strong (8 chars, upper, lower, special)"));
 					return;

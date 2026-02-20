@@ -26,17 +26,6 @@
 		<filter-name>SessionCheckFilter</filter-name>
 		<url-pattern>/SessionCheckFilter</url-pattern>
 	</filter-mapping>
-
-    <filter>
-        <display-name>DuplicateFileCheck</display-name>
-        <filter-name>DuplicateFileCheck</filter-name>
-        <filter-class>filter.DuplicateFileCheck</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>DuplicateFileCheck</filter-name>
-        <url-pattern>/creation/*</url-pattern>
-    </filter-mapping>
-    
      <filter>
         <display-name>CheckExsistFile</display-name>
         <filter-name>CheckExsistFile</filter-name>

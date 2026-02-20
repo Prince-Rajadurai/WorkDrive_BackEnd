@@ -35,4 +35,11 @@ public class RedisHandler {
             return jedis.del(key) > 0;
         }
     }
+    
+    public static boolean expireKey(String key,int seconds) {
+    	try (Jedis jedis = new Jedis(HOST, PORT)) {
+            jedis.expire(key,seconds);
+            return true;
+        }
+    }
 }

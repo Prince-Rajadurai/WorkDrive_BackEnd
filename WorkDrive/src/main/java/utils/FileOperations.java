@@ -60,36 +60,29 @@ public class FileOperations {
 	public static String UploadFile(Part file, String folderId, String filename, String uploadId) {
 
 		try {
-			RedisHandler.setKey(uploadId,"0");
+
+			long uploadedBytes = 0;
+
+			RedisHandler.setKey(uploadId, "0");
+
 			InputStream in = file.getInputStream();
 			Path hdfsPath = new Path("/" + folderId + "/" + filename);
 			FSDataOutputStream out = fs.create(hdfsPath, true);
-			ZstdOutputStream zOut = new ZstdOutputStream(out , 12);
+			ZstdOutputStream zOut = new ZstdOutputStream(out, 10);
 //			GZIPOutputStream zOut = new GZIPOutputStream(out);
-			
+
 			byte[] buffer = new byte[16384];
 			int bytesRead;
-			
-			long totalBytes = file.getSize();
-			long processed = 0;
-			long lastUpdate = 0;
-			
+
 			while ((bytesRead = in.read(buffer)) != -1) {
 				zOut.write(buffer, 0, bytesRead);
-				
-				processed += bytesRead;
-
-			    if (processed - lastUpdate >= 10L * 1024 * 1024 || processed == totalBytes) {
-
-			        int percent = (int)((processed * 100) / totalBytes);
-			        
-			        RedisHandler.setKey(uploadId, String.valueOf(percent));
-
-			        lastUpdate = processed;
-			    }
+				uploadedBytes += bytesRead;
+				RedisHandler.setKey(uploadId, String.valueOf(uploadedBytes));
+				System.out.println(uploadedBytes);
 			}
-			
-			RedisHandler.delKey(uploadId);
+
+			RedisHandler.setKey(uploadId, "DONE");
+
 			zOut.close();
 			in.close();
 
@@ -97,7 +90,6 @@ public class FileOperations {
 			e.printStackTrace();
 			return "File uploaded failed";
 		}
-		
 
 		return "File upload successfully";
 	}
@@ -118,7 +110,7 @@ public class FileOperations {
 
 //	File download 
 	public static void DownloadFile(String filepath, String fileName, HttpServletResponse response) {
-		
+
 		Path path = new Path(filepath);
 
 		FSDataInputStream hdfsIn = null;
@@ -179,7 +171,7 @@ public class FileOperations {
 	public static boolean copyFile(String oldFolderId, String newFolderId, String filename) {
 
 		Path sourcePath = new Path("/" + oldFolderId + "/" + filename);
-		
+
 		filename = CheckDuplicateFile.getFileName(Long.parseLong(newFolderId), filename);
 
 		Path destinationPath = new Path("/" + newFolderId + "/" + filename);
@@ -195,26 +187,23 @@ public class FileOperations {
 
 //	Folder size 
 	public static String getFolderSize(long folderId) {
-		
+
 		String size;
 		long fileSize = 0;
 		Path file = null;
 		FileStatus status = null;
-		
-		
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
 			String filePath = "";
-			while(res.next()) {
+			while (res.next()) {
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
 				file = new Path(filePath);
 				status = fs.getFileStatus(file);
 				fileSize += status.getLen();
 			}
-			
-			
+
 			double conversionVal = 1024.0;
 
 			double sizeVal = fileSize;
@@ -272,26 +261,25 @@ public class FileOperations {
 		return size;
 
 	}
-	
+
 //	Get file byte size
 	public static long getSize(String filePath) {
-		
+
 		long fileSize = 0;
-		
+
 		try {
 			Path file = new Path(filePath);
 			FileStatus status = fs.getFileStatus(file);
 			fileSize = status.getLen();
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return fileSize;
 	}
-	
+
 	public static String converFileSizeToString(long fileSize) {
-		
+
 		double conversionVal = 1024.0;
 		double sizeVal = fileSize;
 		String size = fileSize + " B";
@@ -312,7 +300,7 @@ public class FileOperations {
 		}
 
 		return size;
-		
+
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {

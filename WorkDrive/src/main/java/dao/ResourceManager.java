@@ -79,7 +79,7 @@ public class ResourceManager {
 		if (userDetails.next()) {
 			timeZone = userDetails.getString("TimeZone");
 		}
-		if (type.equalsIgnoreCase("Folder")) {
+		if (type.equalsIgnoreCase("FOLDER")) {
 			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
 			while (folderResultSet.next()) {
 				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS, new Object[] { folderResultSet.getLong("ResourceId"), "FILE", folderResultSet.getLong("ResourceId"), "FOLDER"});
@@ -93,7 +93,7 @@ public class ResourceManager {
 				Resource resource = new Resource(folderResultSet.getLong("ResourceId"), folderResultSet.getString("ResourceName"), folderResultSet.getLong("CreatedTime"), folderResultSet.getLong("LastModifiedTime"), folderResultSet.getLong("parentId"), timeZone, totalFiles, totalFolders, size);
 				resources.add(resource.toJson());
 			}
-		} else if (type.equalsIgnoreCase("File")) {
+		} else if (type.equalsIgnoreCase("FILE")) {
 			ResultSet fileResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FILE", cursor, limit});
 			while (fileResultSet.next()) {
 				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"), fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"), timeZone);
@@ -253,8 +253,8 @@ public class ResourceManager {
 		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
 
 		while (subfolders.next()) {
-			long subfolderId = subfolders.getLong("resourceId");
-			String subfolderName = subfolders.getString("resourceName");
+			long subfolderId = subfolders.getLong("ResourceId");
+			String subfolderName = subfolders.getString("ResourceName");
 
 			JSONObject subfolder = addResource(subfolderName, parentFolderId, userId);
 			long newSubfolderId = Long.parseLong(subfolder.getString("resourceId"));
