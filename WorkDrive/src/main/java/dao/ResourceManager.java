@@ -162,7 +162,7 @@ public class ResourceManager {
 	}
 
 	public static String getFilePath(long fileid) {
-
+		
 		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_PATH, new Object[] { fileid });
 
 		try {
@@ -217,7 +217,7 @@ public class ResourceManager {
 
 	public static boolean copyFile(long olderFolderId, long newFolderId, long userId) throws SQLException {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId, "FILE" });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId, "FILE", "active", olderFolderId,30 });
 		String filename;
 		boolean result = false;
 
@@ -261,7 +261,7 @@ public class ResourceManager {
 	private static void copySubfolders(long currentFolderId, long parentFolderId, long userId)
 			throws SQLException, IOException {
 
-		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
+		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId, "FOLDER" });
 
 		while (subfolders.next()) {
 			long subfolderId = subfolders.getLong("ResourceId");

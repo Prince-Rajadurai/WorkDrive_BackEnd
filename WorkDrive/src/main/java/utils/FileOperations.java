@@ -197,10 +197,15 @@ public class FileOperations {
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
 			String filePath = "";
 			while (res.next()) {
+//				System.out.println(res.getLong(ColumnNames.RESOURCE_ID));
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
+//				System.out.println(filePath);
 				file = new Path(filePath);
+				System.out.println(file + "File");
 				status = fs.getFileStatus(file);
+//				System.out.println("Status: " + status);
 				fileSize += status.getLen();
+//				System.out.println("File Size"+fileSize);
 			}
 
 			double conversionVal = 1024.0;
