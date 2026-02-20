@@ -60,6 +60,11 @@ public class ResourceRenderServlet extends HttpServlet {
             int limit = (limitParam == null || limitParam.equals("0")) ? 18 : Integer.parseInt(limitParam);
             int fetchLimit = limit + 1;
             
+            String sortBy = request.getParameter("sortBy");
+            if (sortBy == null || sortBy.equalsIgnoreCase("null")) sortBy = "name";
+            String sortOrder = request.getParameter("sortOrder");
+            if (sortBy == null || sortOrder.equalsIgnoreCase("null")) sortOrder = "asc";
+            
             ArrayList<JSONObject> resources = new ArrayList<>();
             long lastFolderCursor = folderCursor;
             long lastFileCursor = fileCursor;
@@ -69,8 +74,13 @@ public class ResourceRenderServlet extends HttpServlet {
             
             boolean fetchingFolders = folderCursor != -1;
             
+            if (!sortBy.equalsIgnoreCase("resourceId")) {
+            	folderCursor = 0;
+            	fileCursor = 0;
+            }
+            
             if (fetchingFolders) {
-            	ArrayList<JSONObject> Folders = ResourceManager.getResources("FOLDER", parentId, userId, folderCursor, fetchLimit);
+            	ArrayList<JSONObject> Folders = ResourceManager.getResources("FOLDER", parentId, userId, folderCursor, fetchLimit, sortBy, sortOrder);
             	for (JSONObject folder : Folders) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", String.valueOf(folder.getLong("resourceId")));
@@ -95,7 +105,7 @@ public class ResourceRenderServlet extends HttpServlet {
             int remainingLimit = limit - resources.size();
             
             if (remainingLimit > 0) {
-            	ArrayList<JSONObject> Files = ResourceManager.getResources("FILE", parentId, userId, fileCursor, remainingLimit + 1);
+            	ArrayList<JSONObject> Files = ResourceManager.getResources("FILE", parentId, userId, fileCursor, remainingLimit + 1, sortBy, sortOrder);
             	for (JSONObject file : Files) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", String.valueOf(file.getLong("id")));
