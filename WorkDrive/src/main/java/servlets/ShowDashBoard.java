@@ -38,27 +38,38 @@ public class ShowDashBoard extends HttpServlet {
 		
 		long dFiles = ResourceManager.getDeduplicateFiles(userId);
 		
-		long files = ResourceManager.getTotalFiles(userId);
+		long files = ResourceManager.getTotalFiles(userId , "FILE");
 		
 		long deduplicateSize = ResourceManager.getDuplicateFilesSize(userId);
 		
-		float storagePercentage = 0.0f , duplicateSizePercentage = 0.0f , duplicateFilePercentage = 0.0f;
+		long folderCount = ResourceManager.getTotalFiles(userId, "FOLDER");
 		
-		if(storage-compress>deduplicateSize) {
-			 storagePercentage = (float) ((storage-compress)-deduplicateSize)/storage * 100;
+		float storagePercentage = 0.0f;
+		float duplicateSizePercentage = 0.0f;
+		float duplicateFilePercentage = 0.0f;
+
+		if (storage > 0) {
+
+		    storagePercentage = ((float)((storage - compress)+deduplicateSize) / storage) * 100;
+
+		    duplicateSizePercentage = ((float) deduplicateSize / storage) * 100;
+
+		    if (files > 0) {
+		        duplicateFilePercentage = ((float) dFiles / (float) files) * 100;
+		    }
+		}
+		
+		long savedSize = 0;
+		
+		if(deduplicateSize+compress>storage) {
+			savedSize = (deduplicateSize+compress)-storage;
 		}
 		else {
-			storagePercentage = (float) (deduplicateSize-(storage-compress))/storage * 100;
+			savedSize = storage-(deduplicateSize+compress);
 		}
+
 		
-		
-		
-		duplicateSizePercentage = (float) deduplicateSize/storage*100;
-		
-		duplicateFilePercentage = (float) dFiles/files*100;
-		
-		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(storage-compress) , files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage));
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(deduplicateSize),FileOperations.converFileSizeToString(storage-compress) ,FileOperations.converFileSizeToString(savedSize), files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage , storage , compress , folderCount));
 		
 	}
 

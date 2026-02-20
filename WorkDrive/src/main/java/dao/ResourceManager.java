@@ -415,7 +415,7 @@ public class ResourceManager {
 
 	public static String checkExsistingFile(String checkSum, long folderId) {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId , "active" });
 		try {
 			if (res.next()) {
 				return res.getString(ColumnNames.FILE_CHECKSUM);
@@ -496,7 +496,7 @@ public class ResourceManager {
 
 	public static boolean checkExsistingFileName(long folderId, String fileName) {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_EXISTING_FILE, new Object[] { folderId, fileName });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_EXISTING_FILE, new Object[] { folderId, fileName , "active"});
 
 		try {
 			if (res.next()) {
@@ -544,7 +544,7 @@ public class ResourceManager {
 
 		try {
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_ORIGINAL_SIZE,
-					new Object[] { userId, "FILE" });
+					new Object[] { userId, "FILE"  , "active"});
 			if (res.next()) {
 				return res.getLong("total_original_size");
 			}
@@ -559,7 +559,7 @@ public class ResourceManager {
 	public static long getCompressedSize(long userId) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_COMPRESSED_SIZE, new Object[] { userId });
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_COMPRESSED_SIZE, new Object[] { userId , "active"});
 			if (res.next()) {
 				return res.getLong("total_compress_size");
 			}
@@ -574,7 +574,7 @@ public class ResourceManager {
 	public static long getDeduplicateFiles(long userId) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_DEDUPLICATE_FILES, new Object[] { userId });
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_DEDUPLICATE_FILES, new Object[] { userId , "active"});
 			if (res.next()) {
 				return res.getLong("unique_paths_count");
 			}
@@ -586,10 +586,10 @@ public class ResourceManager {
 
 	}
 
-	public static long getTotalFiles(long userId) {
+	public static long getTotalFiles(long userId , String status) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.FIND_ALL_FILES, new Object[] { userId, "FILE" });
+			ResultSet res = QueryHandler.executeQuerry(Queries.FIND_ALL_FILES, new Object[] { userId, status ,"active"});
 			if (res.next()) {
 				return res.getLong("total_files");
 			}
@@ -653,7 +653,7 @@ public class ResourceManager {
 	}
 
 	public static long getDuplicateFilesSize(long userId) {
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_DEDUPLICATE_FILES_SIZES, new Object[] { userId });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_DEDUPLICATE_FILES_SIZES, new Object[] { userId , "active"});
 		long size = 0;
 		try {
 			while (res.next()) {

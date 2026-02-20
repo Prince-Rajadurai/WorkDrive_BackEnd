@@ -91,7 +91,6 @@ public class FolderUploadServlet extends HttpServlet {
 					for (int i = 0; i < nestedPaths.length; i++) {
 
 						if (i == nestedPaths.length - 1) {
-
 							MessageDigest md = GetFileCheckSum.getFileCheckSumValue(part);
 							String checkSum = ConverByteToString.convertByteToString(md);
 
