@@ -100,7 +100,7 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
-	public static String sendResponse(int statusCode , String total_size , String compress_size , long total_files , long deduplicate_files , float storage_precentage , float deduplicate_files_precentage , float deduplicate_size_percentage) {
+	public static String sendResponse(int statusCode , String total_size ,String deduplicate_Size, String compress_size ,String savedStorage, long total_files , long deduplicate_files , float storage_precentage , float deduplicate_files_precentage , float deduplicate_size_percentage , long storageBytesValue , long compressByteValue , long folderCount) {
 		JSONObject responseObject=new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("compress_size", total_size);
@@ -110,6 +110,11 @@ public class RequestHandler {
 		responseObject.put("storage_precentage", Math.floor(storage_precentage));
 		responseObject.put("deduplicate_files_precentage", 100-Math.floor(deduplicate_files_precentage));
 		responseObject.put("deduplicate_size_percentage", Math.floor(deduplicate_size_percentage));
+		responseObject.put("deduplicate_size", deduplicate_Size);
+		responseObject.put("saved", savedStorage);
+		responseObject.put("storageBytesValue", storageBytesValue);
+		responseObject.put("compressByteValue", compressByteValue);
+		responseObject.put("folderCount", folderCount);
 		return responseObject.toString();
 	}
 

@@ -176,83 +176,71 @@ public class FileOperations {
 
 //	Folder size 
 	public static String getFolderSize(long folderId) {
-		
-		String size;
-		long fileSize = 0;
-		Path file = null;
-		FileStatus status = null;
-		
-		
 
-		try {
+	    String size = "0 B";
+	    long fileSize = 0;
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
-			String filePath = "";
-			while(res.next()) {
-				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
-				file = new Path(filePath);
-				status = fs.getFileStatus(file);
-				fileSize += status.getLen();
-			}
-			
-			
-			double conversionVal = 1024.0;
+	    try {
 
-			double sizeVal = fileSize;
-			size = fileSize + " B";
+	        ResultSet res = QueryHandler.executeQuerry(
+	                Queries.GET_ALL_FILES,
+	                new Object[]{folderId}
+	        );
 
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f KB", sizeVal);
+	        while (res.next()) {
 
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f MB", sizeVal);
+	            long resourceId = res.getLong(ColumnNames.RESOURCE_ID);
+	            String filePath = ResourceManager.getFilePath(resourceId);
 
-					if (sizeVal >= 1024) {
-						sizeVal = sizeVal / conversionVal;
-						size = String.format("%.2f GB", sizeVal);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			size = "0 KB";
-		}
+	            FileStatus status = fs.getFileStatus(new Path(filePath));
+	            fileSize += status.getLen();
+	        }
 
-		return size;
+	        double sizeVal = fileSize;
+	        String[] units = {"B", "KB", "MB", "GB", "TB"};
+	        int index = 0;
 
+	        while (sizeVal >= 1024 && index < units.length - 1) {
+	            sizeVal = sizeVal / 1024;
+	            index++;
+	        }
+
+	        size = String.format("%.2f %s", sizeVal, units[index]);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        size = "0 B";
+	    }
+
+	    return size;
 	}
+
 
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
+		
 
-		Path file = new Path(filePath);
-		FileStatus status = fs.getFileStatus(file);
-		double conversionVal = 1024.0;
+		    Path file = new Path(filePath);
+		    FileStatus status = fs.getFileStatus(file);
 
-		long fileSize = status.getLen();
-		double sizeVal = fileSize;
-		String size = fileSize + " B";
+		    long fileSize = status.getLen();
 
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
+		    if (fileSize <= 0) {
+		        return "0 B";
+		    }
 
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f MB", sizeVal);
+		    String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
+		    double size = fileSize;
+		    int unitIndex = 0;
 
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f GB", sizeVal);
-				}
-			}
-		}
+		    while (size >= 1024 && unitIndex < units.length - 1) {
+		        size /= 1024;
+		        unitIndex++;
+		    }
 
-		return size;
-
+		    return String.format("%.2f %s", size, units[unitIndex]);
 	}
+
 	
 //	Get file byte size
 	public static long getSize(String filePath) {
@@ -272,28 +260,19 @@ public class FileOperations {
 	}
 	
 	public static String converFileSizeToString(long fileSize) {
-		
-		double conversionVal = 1024.0;
-		double sizeVal = fileSize;
-		String size = fileSize + " B";
 
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
+	    if (fileSize <= 0) return "0 B";
 
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f MB", sizeVal);
+	    String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
+	    int unitIndex = 0;
+	    double size = fileSize;
 
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f GB", sizeVal);
-				}
-			}
-		}
+	    while (size >= 1024 && unitIndex < units.length - 1) {
+	        size /= 1024;
+	        unitIndex++;
+	    }
 
-		return size;
-		
+	    return String.format("%.2f %s", size, units[unitIndex]);
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {
