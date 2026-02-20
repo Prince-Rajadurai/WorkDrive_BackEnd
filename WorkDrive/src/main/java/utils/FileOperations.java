@@ -186,58 +186,58 @@ public class FileOperations {
 
 //	Folder size 
 	public static String getFolderSize(long folderId) {
-		
+
 		String size;
 		long fileSize = 0;
 		Path file = null;
 		FileStatus status = null;
-		
-		
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
 			String filePath = "";
-			while(res.next()) {
+			while (res.next()) {
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
-//				System.out.println(filePath);
 				file = new Path(filePath);
 				System.out.println(file + "File");
 				status = fs.getFileStatus(file);
-//				System.out.println("Status: " + status);
 				fileSize += status.getLen();
-//				System.out.println("File Size"+fileSize);
 			}
-			
-			
+
 			double conversionVal = 1024.0;
 
-	        double sizeVal = fileSize;
-	        String[] units = {"B", "KB", "MB", "GB", "TB"};
-	        int index = 0;
+			double sizeVal = fileSize;
+			size = fileSize + " B";
 
-	        while (sizeVal >= 1024 && index < units.length - 1) {
-	            sizeVal = sizeVal / 1024;
-	            index++;
-	        }
+			if (sizeVal >= 1024) {
+				sizeVal = sizeVal / conversionVal;
+				size = String.format("%.2f KB", sizeVal);
 
-	        size = String.format("%.2f %s", sizeVal, units[index]);
+				if (sizeVal >= 1024) {
+					sizeVal = sizeVal / conversionVal;
+					size = String.format("%.2f MB", sizeVal);
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        size = "0 B";
-	    }
+					if (sizeVal >= 1024) {
+						sizeVal = sizeVal / conversionVal;
+						size = String.format("%.2f GB", sizeVal);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			size = "0 KB";
+		}
 
-	    return size;
+		return size;
+
 	}
-
 
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
-		
 
-		    Path file = new Path(filePath);
-		    FileStatus status = fs.getFileStatus(file);
+		Path file = new Path(filePath);
+		FileStatus status = fs.getFileStatus(file);
+		double conversionVal = 1024.0;
 
 		long fileSize = status.getLen();
 		double sizeVal = fileSize;
@@ -261,7 +261,7 @@ public class FileOperations {
 		return size;
 
 	}
-	
+
 //	Get file byte size
 	public static long getSize(String filePath) {
 
@@ -279,7 +279,7 @@ public class FileOperations {
 	}
 
 	public static String converFileSizeToString(long fileSize) {
-		
+
 		double conversionVal = 1024.0;
 		double sizeVal = fileSize;
 		String size = fileSize + " B";
@@ -300,7 +300,7 @@ public class FileOperations {
 		}
 
 		return size;
-		
+
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {
