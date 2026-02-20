@@ -73,8 +73,22 @@ public class ResourceManager {
 		return rowsAffected > 0;
 	};
 	
-	public static ArrayList<JSONObject> getResources(String type, long parentId, long userId, long cursor, int limit)
+	public static ArrayList<JSONObject> getResources(String type, long parentId, long userId, long cursor, int limit, String sortBy, String sortOrder)
 			throws SQLException {
+		String sortColumn = ColumnNames.RESOURCE_NAME;
+		String sortorder = "ASC";
+		if (sortBy.equalsIgnoreCase("name")) {
+			sortColumn = ColumnNames.RESOURCE_NAME;
+		} else if (sortBy.equalsIgnoreCase("size")) {
+			sortColumn = ColumnNames.RESOURCE_ORIGINAL_SIZE;
+		} else if (sortBy.equalsIgnoreCase("createdTime")) {
+			sortColumn = ColumnNames.CREATED_TIME;
+		} else if (sortBy.equalsIgnoreCase("lastModifiedTime")) {
+			sortColumn = ColumnNames.MODIFIED_TIME;
+		}
+		if (sortOrder.equalsIgnoreCase("desc")) {
+			sortorder = "DESC";
+		}
 		ArrayList<JSONObject> resources = new ArrayList<>();
 		ResultSet userDetails = QueryHandler.executeQuerry(Queries.GET_TIME_ZONE, new Object[] { userId });
 		String timeZone = "";
@@ -83,8 +97,8 @@ public class ResourceManager {
 		}
 
 		if (type.equalsIgnoreCase("Folder")) {
-			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
-					new Object[] { parentId, "FOLDER", "active", cursor, limit });
+			String query = String.format(Queries.GET_RESOURCES_SORTED, sortColumn, sortorder);
+			ResultSet folderResultSet = QueryHandler.executeQuerry(query, new Object[] { parentId, "FOLDER", "active", cursor, limit });
 			while (folderResultSet.next()) {
 				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
 						new Object[] { folderResultSet.getLong("ResourceId"), "FILE",
@@ -103,8 +117,8 @@ public class ResourceManager {
 				resources.add(resource.toJson());
 			}
 		} else if (type.equalsIgnoreCase("File")) {
-			ResultSet fileResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
-					new Object[] { parentId, "FILE", "active", cursor, limit });
+			String query = String.format(Queries.GET_RESOURCES_SORTED, sortColumn, sortorder);
+			ResultSet fileResultSet = QueryHandler.executeQuerry(query, new Object[] { parentId, "FILE", "active", cursor, limit });
 			while (fileResultSet.next()) {
 				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"),
 						fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"), timeZone);
@@ -162,7 +176,7 @@ public class ResourceManager {
 	}
 
 	public static String getFilePath(long fileid) {
-
+		
 		ResultSet result = QueryHandler.executeQuerry(Queries.GET_FILE_PATH, new Object[] { fileid });
 
 		try {
@@ -217,7 +231,7 @@ public class ResourceManager {
 
 	public static boolean copyFile(long olderFolderId, long newFolderId, long userId) throws SQLException {
 
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId, "FILE" });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { olderFolderId, "FILE", "active", olderFolderId,30 });
 		String filename;
 		boolean result = false;
 
@@ -261,7 +275,7 @@ public class ResourceManager {
 	private static void copySubfolders(long currentFolderId, long parentFolderId, long userId)
 			throws SQLException, IOException {
 
-		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
+		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId, "FOLDER" });
 
 		while (subfolders.next()) {
 			long subfolderId = subfolders.getLong("ResourceId");

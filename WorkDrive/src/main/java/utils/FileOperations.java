@@ -1,36 +1,14 @@
 package utils;
 
-import databasemanager.QueryHandler;
-
-import java.awt.desktop.QuitHandler;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.zip.GZIPOutputStream;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.FileUtil;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
-
-import com.github.luben.zstd.ZstdInputStream;
-import com.github.luben.zstd.ZstdOutputStream;
-
 import constants.ColumnNames;
 import constants.Queries;
 import dao.ResourceManager;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import databasemanager.QueryHandler;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.FileSystem;
+import java.sql.ResultSet;
 
 public class FileOperations {
 
@@ -186,54 +164,58 @@ public class FileOperations {
 
 //	Folder size 
 	public static String getFolderSize(long folderId) {
-		
+
 		String size;
 		long fileSize = 0;
 		Path file = null;
 		FileStatus status = null;
-		
-		
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] {folderId});
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
 			String filePath = "";
-			while(res.next()) {
+			while (res.next()) {
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
 				file = new Path(filePath);
+				System.out.println(file + "File");
 				status = fs.getFileStatus(file);
 				fileSize += status.getLen();
 			}
-			
-			
+
 			double conversionVal = 1024.0;
 
-	        double sizeVal = fileSize;
-	        String[] units = {"B", "KB", "MB", "GB", "TB"};
-	        int index = 0;
+			double sizeVal = fileSize;
+			size = fileSize + " B";
 
-	        while (sizeVal >= 1024 && index < units.length - 1) {
-	            sizeVal = sizeVal / 1024;
-	            index++;
-	        }
+			if (sizeVal >= 1024) {
+				sizeVal = sizeVal / conversionVal;
+				size = String.format("%.2f KB", sizeVal);
 
-	        size = String.format("%.2f %s", sizeVal, units[index]);
+				if (sizeVal >= 1024) {
+					sizeVal = sizeVal / conversionVal;
+					size = String.format("%.2f MB", sizeVal);
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        size = "0 B";
-	    }
+					if (sizeVal >= 1024) {
+						sizeVal = sizeVal / conversionVal;
+						size = String.format("%.2f GB", sizeVal);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			size = "0 KB";
+		}
 
-	    return size;
+		return size;
+
 	}
-
 
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
-		
 
-		    Path file = new Path(filePath);
-		    FileStatus status = fs.getFileStatus(file);
+		Path file = new Path(filePath);
+		FileStatus status = fs.getFileStatus(file);
+		double conversionVal = 1024.0;
 
 		    long fileSize = status.getLen();
 		    if (fileSize <= 0) {
@@ -252,7 +234,7 @@ public class FileOperations {
 		    return String.format("%.2f %s", size, units[unitIndex]);
 
 	}
-	
+
 //	Get file byte size
 	public static long getSize(String filePath) {
 
