@@ -44,6 +44,7 @@ public class UploadProgressServlet extends HttpServlet implements Servlet {
 				response.getWriter().write(RequestHandler.sendResponse(200, "In-Progress ", progress));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.getWriter().write(RequestHandler.sendResponse(200, "In-Progress ", "0"));
 		}
 	}

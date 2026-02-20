@@ -81,14 +81,10 @@ public class ResourceManager {
 		if (userDetails.next()) {
 			timeZone = userDetails.getString("TimeZone");
 		}
-<<<<<<< HEAD
-		if (type.equalsIgnoreCase("FOLDER")) {
-			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES, new Object[] { parentId, "FOLDER", cursor, limit });
-=======
+
 		if (type.equalsIgnoreCase("Folder")) {
 			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
 					new Object[] { parentId, "FOLDER", "active", cursor, limit });
->>>>>>> e4d71e27fd28a228c690a267c6e398cce01f6615
 			while (folderResultSet.next()) {
 				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
 						new Object[] { folderResultSet.getLong("ResourceId"), "FILE",

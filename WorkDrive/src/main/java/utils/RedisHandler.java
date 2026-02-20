@@ -30,11 +30,6 @@ public class RedisHandler {
         }
     }
 
-    public static boolean delKey(String key) {
-        try (Jedis jedis = new Jedis(HOST, PORT)) {
-            return jedis.del(key) > 0;
-        }
-    }
     
     public static boolean expireKey(String key,int seconds) {
     	try (Jedis jedis = new Jedis(HOST, PORT)) {
