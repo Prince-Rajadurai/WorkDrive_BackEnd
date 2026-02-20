@@ -67,6 +67,7 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 		String checkSum = ConverByteToString.convertByteToString(md);
 		String checkDuplicate = ResourceManager.checkExsistingFile(checkSum, folderId);
 		boolean existFileName = ResourceManager.checkExsistingFileName(folderId, filename);
+		
 		boolean updateFileVersionResult = false;
 
 		if (checkReplace) {

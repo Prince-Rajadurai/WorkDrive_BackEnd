@@ -441,7 +441,7 @@ public class ResourceManager {
 	}
 
 	public static long getFileIdUsingCheckSum(String checkSum, long folderId) {
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId });
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_FILE_CHECKSUM, new Object[] { checkSum, folderId , "active" });
 		try {
 			if (res.next()) {
 				return res.getLong(ColumnNames.DFS_FILE_ID);
