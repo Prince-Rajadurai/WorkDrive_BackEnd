@@ -15,7 +15,7 @@ public class Queries {
 	
 	public static final String VALIDATE_USER = "SELECT COUNT(*) FROM "+USERS_TABLE+" WHERE "+USER_EMAIL+" = ? AND "+USER_PASSWORD+" = ?";
 
-	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_ID+" > ? ORDER BY "+RESOURCE_NAME+" ASC LIMIT ?";
+	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_STATUS+" = ? AND "+RESOURCE_ID+" > ? ORDER BY "+RESOURCE_ID+" ASC LIMIT ?";
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	
@@ -32,7 +32,6 @@ public class Queries {
 	public static final String GET_RESOURCE="SELECT r.*, u."+USER_TIMEZONE+" FROM "+RESOURCE_TABLE+" r JOIN Users u ON r.UserId = u.UserId WHERE r."+RESOURCE_ID+" = ?";
 	
 	public static final String GET_ALL_FOLDER="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ?";
-	
 		
 	public static final String UPDATE_PARENT = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ?,"+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	
@@ -74,7 +73,7 @@ public class Queries {
 	
 	public static final String GET_FILE_PATHS = "SELECT * FROM "+DFS_TABLE_NAME+" WHERE "+FILE_CHECKSUM+" = ? ";
 	
-	public static final String UPDATE_FILE_SIZE = "UPDATE "+DFS_TABLE_NAME+" SET "+DFS_FILE_SIZE+" = "+DFS_FILE_SIZE+" + ? WHERE "+FILE_CHECKSUM+" = ?";
+	public static final String UPDATE_FILE_SIZE = "UPDATE "+DFS_TABLE_NAME+" SET "+DFS_FILE_SIZE+" = ? WHERE "+FILE_CHECKSUM+" = ?";
 	
 	public static final String GET_ALL_FILE_VERSIONS = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
 	
@@ -101,4 +100,24 @@ public class Queries {
 	public static final String GET_FILE_VERSIONS_SIZE = "SELECT SUM("+VERSION_SIZE+") As total_size FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ?";
 	
 	public static final String GET_DEDUPLICATE_FILES_SIZES = "SELECT D."+DFS_PATH+" , COUNT(*) AS count , (COUNT(*) -1) * MAX(R."+RESOURCE_ORIGINAL_SIZE+") AS size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+" = D."+DFS_FILE_ID+" WHERE R."+USER_ID+" = ? GROUP BY D."+DFS_PATH+" HAVING COUNT(*) > 1";
+	
+	public static final String UPDATE_FILE_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+RESOURCE_ID+" = ? OR "+PARENT_ID+" = ?";
+	
+	public static final String SELECT_ALL_TRASH_FILES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	
+	public static final String TOTAL_TRASH_RESOURCES = "SELECT COUNT(*) AS count FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	
+	public static final String FIND_PARTCULAR_RESOURCE_COUNT = "SELECT COUNT(*)AS count FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ? AND "+RESOURCE_TYPE+" = ?";
+	
+	public static final String GET_ALL_FILES_TRASH_SIZE = "SELECT SUM("+RESOURCE_ORIGINAL_SIZE+") AS size FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	
+	public static final String CHECK_RESOURCES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	
+	public static final String UPDATE_PARENT_ID = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ? WHERE "+RESOURCE_ID+" = ? AND "+USER_ID+" = ?";
+	
+	public static final String UPDATE_FOLDER_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+RESOURCE_ID+" = ?";
+	
+	public static final String UPDATE_FOLDER_FILES_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+PARENT_ID+" = ? AND "+RESOURCE_STATUS+" = ? ";
+	
 }
+

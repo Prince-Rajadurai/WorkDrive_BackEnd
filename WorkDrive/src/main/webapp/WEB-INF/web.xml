@@ -153,13 +153,6 @@
 		<servlet-name>ShowTrash</servlet-name>
 		<servlet-class>servlets.ShowTrash</servlet-class>
 	</servlet>
-	<servlet>
-		<description>
-		</description>
-		<display-name>UploadProgressServlet</display-name>
-		<servlet-name>UploadProgressServlet</servlet-name>
-		<servlet-class>servlets.UploadProgressServlet</servlet-class>
-	</servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -253,10 +246,6 @@
     <servlet-mapping>
     	<servlet-name>ShowTrash</servlet-name>
     	<url-pattern>/ShowTrash</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>UploadProgressServlet</servlet-name>
-    	<url-pattern>/UploadProgressServlet</url-pattern>
     </servlet-mapping>
 
 	<!-- Welcome Files -->

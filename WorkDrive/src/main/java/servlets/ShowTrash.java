@@ -1,6 +1,9 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import org.json.JSONObject;
 
 import dao.ResourceManager;
 import jakarta.servlet.ServletException;
@@ -8,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.GetUserId;
+import utils.RequestHandler;
 
 /**
  * Servlet implementation class ShowTrash
@@ -27,13 +31,26 @@ public class ShowTrash extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		ArrayList<JSONObject> resources = null;
 		try {
 			long userId = GetUserId.getUserId(request);
-			long myFolderId = ResourceManager.getMyFolderId(userId);
+			
+			String timezone = ResourceManager.getUserTimeZone(userId);
+			
+			long allItems = ResourceManager.getTrashItems(userId);
+			long files = ResourceManager.getParticularResource(userId, "FILE");
+			long folders = ResourceManager.getParticularResource(userId, "FOLDER");
+			long size = ResourceManager.getTrashSize(userId);
+			
+			resources = ResourceManager.showTrashItems(userId , timezone);
+			
+			response.getWriter().write(RequestHandler.sendResponse(200,"Trash Data fetched",allItems,files,folders,size,resources));
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
