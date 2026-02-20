@@ -81,6 +81,7 @@ public class ResourceManager {
 		if (userDetails.next()) {
 			timeZone = userDetails.getString("TimeZone");
 		}
+
 		if (type.equalsIgnoreCase("Folder")) {
 			ResultSet folderResultSet = QueryHandler.executeQuerry(Queries.GET_RESOURCES,
 					new Object[] { parentId, "FOLDER", "active", cursor, limit });
@@ -263,8 +264,8 @@ public class ResourceManager {
 		ResultSet subfolders = QueryHandler.executeQuerry(Queries.GET_ALL_FOLDER, new Object[] { currentFolderId });
 
 		while (subfolders.next()) {
-			long subfolderId = subfolders.getLong("resourceId");
-			String subfolderName = subfolders.getString("resourceName");
+			long subfolderId = subfolders.getLong("ResourceId");
+			String subfolderName = subfolders.getString("ResourceName");
 
 			JSONObject subfolder = addResource(subfolderName, parentFolderId, userId);
 			long newSubfolderId = Long.parseLong(subfolder.getString("resourceId"));

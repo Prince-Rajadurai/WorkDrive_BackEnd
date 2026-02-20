@@ -37,13 +37,15 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		
-		RequestHandler.deleteCookie(response);
-		RedisHandler.redisTest();
+		if(RequestHandler.deleteCookie(response)) {
+			RedisHandler.redisTest();
 
-	    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
+		    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
+		}else{
+			 response.getWriter().write(RequestHandler.sendResponse(400, "Log out failed"));
+		};
+		
 	}
 
 }

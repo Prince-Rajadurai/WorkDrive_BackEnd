@@ -71,6 +71,14 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 	
+	public static String sendResponse(int statusCode, String message, String value) {
+		JSONObject responseObject = new JSONObject();
+		responseObject.put("StatusCode", statusCode);
+		responseObject.put("message", message);
+		responseObject.put("value", value);
+		return responseObject.toString();
+	}
+	
 	public static String sendResponse(int statusCode, String message, long items , long files , long folders , long size , ArrayList<JSONObject> resources) {
 		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);

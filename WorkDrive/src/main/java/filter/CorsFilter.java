@@ -54,6 +54,9 @@ public class CorsFilter extends HttpFilter implements Filter {
             res.setStatus(HttpServletResponse.SC_OK);
             return;
         }
+        
+        response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
 
         chain.doFilter(request, response);
     }

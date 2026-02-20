@@ -51,6 +51,7 @@ public class UploadFileServlet extends HttpServlet {
 		String filename = request.getParameter("filename");
 		String folderid = request.getParameter("folderId");
 		String originalSize = request.getParameter("size");
+		String uploadId = request.getParameter("uploadId");
 		
 		long original_size = Long.parseLong(originalSize);
 		long folderId = Long.parseLong(folderid);
@@ -68,7 +69,7 @@ public class UploadFileServlet extends HttpServlet {
 			String filepath = ResourceManager.getFilePathUsingCheckSum(checkSum);
 			
 			if(filepath == null || filepath.isEmpty()) {
-				String result = FileOperations.UploadFile(file1 , folderid , filename);
+				String result = FileOperations.UploadFile(file1 , folderid , filename, uploadId);
 				filepath = "/"+folderid+"/"+filename;
 			}
 			

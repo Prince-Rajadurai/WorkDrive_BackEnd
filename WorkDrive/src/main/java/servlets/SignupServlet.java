@@ -51,9 +51,6 @@ public class SignupServlet extends HttpServlet {
 
 		try {
 			
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 
 			String fullName = requestObject.getString("fullName");

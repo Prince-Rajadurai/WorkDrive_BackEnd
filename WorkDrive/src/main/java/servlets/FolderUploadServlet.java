@@ -17,6 +17,7 @@ import utils.ConverByteToString;
 import utils.FileOperations;
 import utils.GetFileCheckSum;
 import utils.GetUserId;
+import utils.RedisHandler;
 import utils.RequestHandler;
 
 /**
@@ -52,65 +53,70 @@ public class FolderUploadServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		try {
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			
+
 			Cookie[] cookies = request.getCookies();
 			String cookieValue = null;
 			long userId = 0;
 
 			if (cookies != null) {
-			    for (Cookie cookie : cookies) {
-			        if ("cookie".equals(cookie.getName())) {
-			            cookieValue = cookie.getValue();
-			            break;
-			        }
-			    }
-			    userId = AccountsManager.getUserId(cookieValue);
+				for (Cookie cookie : cookies) {
+					if ("cookie".equals(cookie.getName())) {
+						cookieValue = cookie.getValue();
+						break;
+					}
+				}
+				userId = AccountsManager.getUserId(cookieValue);
 			}
-			
+
 			String parentId = request.getParameter("parentId");
+			String uploadId = request.getParameter("uploadId");
 
 			Collection<Part> parts = request.getParts();
+
 			long size = 0;
 
+			RedisHandler.setKey(uploadId, "0");
+			int uploaded = 0;
+
 			for (Part part : parts) {
-				
+
 				String folderId = parentId;
-			
-				
+
 				if (part.getName().equals("files")) {
-					
-					size=part.getSize();
+
+					size = part.getSize();
 					String path = part.getSubmittedFileName();
 					String[] nestedPaths = path.split("/");
 
 					for (int i = 0; i < nestedPaths.length; i++) {
-					
+
 						if (i == nestedPaths.length - 1) {
-							
 							MessageDigest md = GetFileCheckSum.getFileCheckSumValue(part);
 							String checkSum = ConverByteToString.convertByteToString(md);
-							
+
 							String filepath = ResourceManager.getFilePathUsingCheckSum(checkSum);
-							
-							if(filepath == null || filepath.isEmpty()) {
-								String result = FileOperations.UploadFile(part, folderId, nestedPaths[i]);
-								filepath = "/"+folderId+"/"+nestedPaths[i];
+
+							if (filepath == null || filepath.isEmpty()) {
+								String result = FileOperations.UploadFile(part, folderId, nestedPaths[i], "0");
+								RedisHandler.setKey(uploadId, String.valueOf(++uploaded));
+								filepath = "/" + folderId + "/" + nestedPaths[i];
 							}
-							
-							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i],userId , size); // Add file
-							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , Long.parseLong(folderId) , FileOperations.getSize(filepath)); // Add file to dfs
-							boolean res = ResourceManager.addFileVersion(dfsId , FileOperations.getSize(filepath));
-						
+
+							long fileId = ResourceManager.AddFile(Long.parseLong(folderId), nestedPaths[i], userId,
+									size); // Add file
+							long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId,
+									Long.parseLong(folderId), FileOperations.getSize(filepath)); // Add file to dfs
+							boolean res = ResourceManager.addFileVersion(dfsId, FileOperations.getSize(filepath));
+
 						} else {
-							folderId=String.valueOf(ResourceManager.findOrCreateFolder(folderId,nestedPaths[i],userId));
+							folderId = String
+									.valueOf(ResourceManager.findOrCreateFolder(folderId, nestedPaths[i], userId));
 						}
 					}
 
 				}
 			}
-			
+
 			response.getWriter().write(RequestHandler.sendResponse(200, "Folder Uploaded successfully"));
 		} catch (Exception e) {
 			e.printStackTrace();
