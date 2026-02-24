@@ -558,7 +558,7 @@ public class ResourceManager {
 
 		try {
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_ORIGINAL_SIZE,
-					new Object[] { userId, "FILE"  , "active"});
+					new Object[] { userId, "FILE"});
 			if (res.next()) {
 				return res.getLong("total_original_size");
 			}
@@ -573,7 +573,7 @@ public class ResourceManager {
 	public static long getCompressedSize(long userId) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_COMPRESSED_SIZE, new Object[] { userId , "active"});
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_COMPRESSED_SIZE, new Object[] { userId});
 			if (res.next()) {
 				return res.getLong("total_compress_size");
 			}
@@ -588,7 +588,7 @@ public class ResourceManager {
 	public static long getDeduplicateFiles(long userId) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_DEDUPLICATE_FILES, new Object[] { userId , "active"});
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_DEDUPLICATE_FILES, new Object[] { userId});
 			if (res.next()) {
 				return res.getLong("unique_paths_count");
 			}
@@ -603,7 +603,7 @@ public class ResourceManager {
 	public static long getTotalFiles(long userId , String status) {
 
 		try {
-			ResultSet res = QueryHandler.executeQuerry(Queries.FIND_ALL_FILES, new Object[] { userId, status ,"active"});
+			ResultSet res = QueryHandler.executeQuerry(Queries.FIND_ALL_FILES, new Object[] { userId, status});
 			if (res.next()) {
 				return res.getLong("total_files");
 			}
@@ -667,7 +667,7 @@ public class ResourceManager {
 	}
 
 	public static long getDuplicateFilesSize(long userId) {
-		ResultSet res = QueryHandler.executeQuerry(Queries.GET_DEDUPLICATE_FILES_SIZES, new Object[] { userId , "active"});
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_DEDUPLICATE_FILES_SIZES, new Object[] { userId});
 		long size = 0;
 		try {
 			while (res.next()) {

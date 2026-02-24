@@ -79,13 +79,13 @@ public class Queries {
 	
 	public static final String GET_ALL_FILE_VERSIONS = "SELECT * FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ? ";
 	
-	public static final String GET_ALL_FILES_ORIGINAL_SIZE = "SELECT COALESCE(SUM("+RESOURCE_ORIGINAL_SIZE+"),0) AS total_original_size FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_STATUS+" = ?";
+	public static final String GET_ALL_FILES_ORIGINAL_SIZE = "SELECT COALESCE(SUM("+RESOURCE_ORIGINAL_SIZE+"),0) AS total_original_size FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_TYPE+" = ? ";
 	
-	public static final String GET_ALL_FILES_COMPRESSED_SIZE = "SELECT COALESCE(SUM(D."+DFS_FILE_SIZE+")) AS total_compress_size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+"=D."+DFS_FILE_ID+" WHERE R."+USER_ID+"= ? AND R."+RESOURCE_STATUS+" = ?";
+	public static final String GET_ALL_FILES_COMPRESSED_SIZE = "SELECT COALESCE(SUM(DISTINCT D."+DFS_FILE_SIZE+")) AS total_compress_size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+" = D."+DFS_FILE_ID+" WHERE R."+USER_ID+"= ? ";
 	
-	public static final String GET_ALL_DEDUPLICATE_FILES ="SELECT COUNT(DISTINCT D." + DFS_PATH + ") AS unique_paths_count " +"FROM " + DFS_TABLE_NAME + " D " +"JOIN " + RESOURCE_TABLE + " R ON R." + RESOURCE_ID + " = D." + DFS_FILE_ID + " " +"WHERE R." + USER_ID + " = ? AND "+RESOURCE_STATUS+" = ?";
+	public static final String GET_ALL_DEDUPLICATE_FILES ="SELECT COUNT(DISTINCT D." + DFS_PATH + ") AS unique_paths_count " +"FROM " + DFS_TABLE_NAME + " D " +"JOIN " + RESOURCE_TABLE + " R ON R." + RESOURCE_ID + " = D." + DFS_FILE_ID + " " +"WHERE R." + USER_ID + " = ? ";
 
-	public static final String FIND_ALL_FILES ="SELECT COUNT(" + RESOURCE_NAME + ") AS total_files " +"FROM " + RESOURCE_TABLE + " " +"WHERE " + USER_ID + " = ? AND " + RESOURCE_TYPE + " = ? AND "+RESOURCE_STATUS+" = ?";
+	public static final String FIND_ALL_FILES ="SELECT COUNT(" + RESOURCE_NAME + ") AS total_files " +"FROM " + RESOURCE_TABLE + " " +"WHERE " + USER_ID + " = ? AND " + RESOURCE_TYPE + " = ? ";
 
 	public static final String FILE_ORIGINAL_SIZE = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";
 	
@@ -101,7 +101,7 @@ public class Queries {
 	
 	public static final String GET_FILE_VERSIONS_SIZE = "SELECT SUM("+VERSION_SIZE+") As total_size FROM "+VERSION_TABLE_NAME+" WHERE "+VERSION_DFS_ID+" = ?";
 	
-	public static final String GET_DEDUPLICATE_FILES_SIZES = "SELECT D."+DFS_PATH+" , COUNT(*) AS count , (COUNT(*) -1) * MAX(R."+RESOURCE_ORIGINAL_SIZE+") AS size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+" = D."+DFS_FILE_ID+" WHERE R."+USER_ID+" = ? AND R."+RESOURCE_STATUS+" = ? GROUP BY D."+DFS_PATH+" HAVING COUNT(*) > 1";
+	public static final String GET_DEDUPLICATE_FILES_SIZES = "SELECT D."+DFS_PATH+" , COUNT(*) AS count , (COUNT(*) -1) * MAX(D."+DFS_FILE_SIZE+") AS size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+" = D."+DFS_FILE_ID+" WHERE R."+USER_ID+" = ? GROUP BY D."+DFS_PATH+" HAVING COUNT(*) > 1";
 	
 	public static final String UPDATE_FILE_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+RESOURCE_ID+" = ? OR "+PARENT_ID+" = ?";
 	

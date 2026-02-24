@@ -48,9 +48,11 @@ public class ShowDashBoard extends HttpServlet {
 		float duplicateSizePercentage = 0.0f;
 		float duplicateFilePercentage = 0.0f;
 
+		long compressedSize = (storage-deduplicateSize)-compress;
+		
 		if (storage > 0) {
 
-		    storagePercentage = ((float)((storage - compress)+deduplicateSize) / storage) * 100;
+		    storagePercentage = ((float) (deduplicateSize+compressedSize)/storage * 100);
 
 		    duplicateSizePercentage = ((float) deduplicateSize / storage) * 100;
 
@@ -59,17 +61,12 @@ public class ShowDashBoard extends HttpServlet {
 		    }
 		}
 		
-		long savedSize = 0;
+		System.out.println("Compress ====> "+compressedSize+" Duplicate =====> "+deduplicateSize);
 		
-		if(deduplicateSize+compress>storage) {
-			savedSize = (deduplicateSize+compress)-storage;
-		}
-		else {
-			savedSize = storage-(deduplicateSize+compress);
-		}
+		long savedSize = deduplicateSize+compressedSize;
 
 		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(deduplicateSize),FileOperations.converFileSizeToString(storage-compress) ,FileOperations.converFileSizeToString(savedSize), files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage , storage , compress , folderCount));
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(deduplicateSize),FileOperations.converFileSizeToString(compressedSize) ,FileOperations.converFileSizeToString(savedSize), files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage , storage , compress , folderCount));
 		
 	}
 
