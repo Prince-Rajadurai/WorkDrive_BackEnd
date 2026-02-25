@@ -41,15 +41,14 @@ public class TrashFile extends HttpServlet {
 		String type = requestObject.getString("type");
 		
 		if(type.equals("FILE")) {
-			String fileName = requestObject.getString("filename");
+			String id = requestObject.getString("resourceId");
 			String folderid = requestObject.getString("folderId");
 			
 			long folderId = Long.parseLong(folderid);
+			long fileId = Long.parseLong(id);
 			
 			
-			long fileid = ResourceManager.getFileIdUsingFileName(folderId, fileName);
-			
-			boolean trashRes = ResourceManager.updateFileStatus(fileid,"inactive");
+			boolean trashRes = ResourceManager.updateFileStatus(fileId,"inactive");
 			
 			if(trashRes) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File trashed"));

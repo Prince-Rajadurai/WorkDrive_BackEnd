@@ -32,6 +32,7 @@ import dao.ResourceManager;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
+
 public class FileOperations {
 
 	static Configuration conf = new Configuration();
@@ -206,8 +207,41 @@ public class FileOperations {
 
 			double conversionVal = 1024.0;
 
-			double sizeVal = fileSize;
-			size = fileSize + " B";
+	        double sizeVal = fileSize;
+	        String[] units = {"B", "KB", "MB", "GB", "TB"};
+	        int index = 0;
+
+	        while (sizeVal >= 1024 && index < units.length - 1) {
+	            sizeVal = sizeVal / 1024;
+	            index++;
+	        }
+
+	        size = String.format("%.2f %s", sizeVal, units[index]);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        size = "0 B";
+	    }
+
+	    return size;
+	}
+
+
+//	File size
+	public static String getFileSize(String filePath) throws IOException {
+		
+
+		    Path file = new Path(filePath);
+		    FileStatus status = fs.getFileStatus(file);
+
+		long fileSize = status.getLen();
+		double sizeVal = fileSize;
+		String size = fileSize + " B";
+		double conversionVal = 1024.0;
+
+		if (sizeVal >= 1024) {
+			sizeVal = sizeVal / conversionVal;
+			size = String.format("%.2f KB", sizeVal);
 
 			if (sizeVal >= 1024) {
 				sizeVal = sizeVal / conversionVal;
@@ -239,26 +273,21 @@ public class FileOperations {
 		FileStatus status = fs.getFileStatus(file);
 		double conversionVal = 1024.0;
 
-		long fileSize = status.getLen();
-		double sizeVal = fileSize;
-		String size = fileSize + " B";
+		    long fileSize = status.getLen();
+		    if (fileSize <= 0) {
+		        return "0 B";
+		    }
 
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
+		    final String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
+		    double size = fileSize;
+		    int unitIndex = 0;
 
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f MB", sizeVal);
+		    while (size >= 1024 && unitIndex < units.length - 1) {
+		        size /= 1024.0;
+		        unitIndex++;
+		    }
 
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f GB", sizeVal);
-				}
-			}
-		}
-
-		return size;
+		    return String.format("%.2f %s", size, units[unitIndex]);
 
 	}
 
@@ -280,27 +309,20 @@ public class FileOperations {
 
 	public static String converFileSizeToString(long fileSize) {
 
-		double conversionVal = 1024.0;
-		double sizeVal = fileSize;
-		String size = fileSize + " B";
+	    if (fileSize <= 0) {
+	        return "0 B";
+	    }
 
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
+	    final String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
+	    double size = fileSize;
+	    int unitIndex = 0;
 
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f MB", sizeVal);
+	    while (size >= 1024 && unitIndex < units.length - 1) {
+	        size /= 1024.0;
+	        unitIndex++;
+	    }
 
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f GB", sizeVal);
-				}
-			}
-		}
-
-		return size;
-
+	    return String.format("%.2f %s", size, units[unitIndex]);
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {

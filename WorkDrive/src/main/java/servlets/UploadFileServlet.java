@@ -60,6 +60,7 @@ public class UploadFileServlet extends HttpServlet {
 		String newFileName = CheckDuplicateFile.getFileName(folderId, filename);
 		filename = newFileName;
 		Part file1 = request.getPart("file");
+		
 		try {
 			MessageDigest md = GetFileCheckSum.getFileCheckSumValue(file1);
 			String checkSum = ConverByteToString.convertByteToString(md);
