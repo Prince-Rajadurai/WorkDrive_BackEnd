@@ -51,5 +51,17 @@ public class File {
     	
     }
     
+    public static JSONObject addingJson(JSONObject file) {
+    	JSONObject obj = new JSONObject();
+    	obj.put("id", String.valueOf(file.getLong("id")));
+        obj.put("name", file.getString("filename"));
+        obj.put("type", "FILE");
+        obj.put("createdTime", file.getString("createTime"));
+        obj.put("modifiedTime", file.getString("modifiedTime"));
+        obj.put("size", file.getString("size"));
+        System.out.println("File"+file.getString("size"));
+        return obj;
+    }
+    
 	
 }

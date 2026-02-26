@@ -70,7 +70,9 @@ public class LoginServlet extends HttpServlet {
 			boolean isValidUser = false;
 			
 			try {
+				System.out.println("Hello");
 				isValidUser = AccountsManager.validateUser(email, password);
+				System.out.println(isValidUser);
 
 			} catch (Exception e) {
 				e.printStackTrace();
