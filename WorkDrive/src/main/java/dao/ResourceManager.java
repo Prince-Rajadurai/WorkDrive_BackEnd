@@ -770,5 +770,23 @@ public class ResourceManager {
 		int res1 = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_FILES_STATUS,new Object[] { "ParentInactive", folderId, "active" });
 		return true;
 	}
+	
+	public static JSONObject getSearchResources(String param, long userId) throws SQLException {
+		ArrayList<JSONObject> files=new ArrayList<>();
+		ArrayList<JSONObject> folders=new ArrayList<>();
+		ResultSet rs=QueryHandler.executeQuerry(Queries.SEARCH_RESOURCES, new Object[] {userId,param,param,param,param,param,param});
+		
+		while(rs.next()) {
+			if(rs.getString("type") == "FILE") {
+				files.add();
+			}
+		}
+		
+		
+		JSONObject obj=new JSONObject();
+		obj.put("files", files);
+		obj.put("folders", folders);
+		return obj;
+	}
 
 }

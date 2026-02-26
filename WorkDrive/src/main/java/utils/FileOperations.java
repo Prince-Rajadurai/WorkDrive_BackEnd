@@ -76,8 +76,7 @@ public class FileOperations {
 			int bytesRead;
 
 			while ((bytesRead = in.read(buffer)) != -1) {
-				zOut.write(buffer, 0, bytesRead2026-02-25 12:29:24
-				);
+				zOut.write(buffer, 0, bytesRead);
 				uploadedBytes += bytesRead;
 				RedisHandler.setKey(uploadId, String.valueOf(uploadedBytes));
 			}
@@ -117,7 +116,7 @@ public class FileOperations {
 		FSDataInputStream hdfsIn = null;
 		ZstdInputStream in = null;
 		OutputStream out = null;
-		2026-02-25 12:29:24
+		
 
 		try {
 			hdfsIn = fs.open(path);
