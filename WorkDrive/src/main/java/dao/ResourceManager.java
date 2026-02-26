@@ -135,7 +135,6 @@ public class ResourceManager {
 
 	public static boolean moveResource(long parentId, long resourceId, String finalName) {
 
-		System.out.println(parentId + "==" + resourceId + "==" + finalName);
 		int rowsAffected = QueryHandler.executeUpdate(Queries.UPDATE_PARENT,
 				new Object[] { parentId, finalName, resourceId });
 

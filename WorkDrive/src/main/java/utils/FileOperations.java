@@ -79,6 +79,7 @@ public class FileOperations {
 				zOut.write(buffer, 0, bytesRead);
 				uploadedBytes += bytesRead;
 				RedisHandler.setKey(uploadId, String.valueOf(uploadedBytes));
+				System.out.println(RedisHandler.getKey(uploadId));
 			}
 
 			RedisHandler.setKey(uploadId, "DONE");
