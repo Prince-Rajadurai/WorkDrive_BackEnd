@@ -81,8 +81,6 @@ public class LoginServlet extends HttpServlet {
 				response.getWriter().write(RequestHandler.sendResponse(400, "Invalid email or password"));
 				return;
 			}
-			
-			
 
 			response.addCookie(RequestHandler.setCookie(email));
 			response.getWriter().write(RequestHandler.sendResponse(200, "Login successful"));
