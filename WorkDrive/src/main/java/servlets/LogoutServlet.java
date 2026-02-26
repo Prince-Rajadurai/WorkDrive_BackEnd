@@ -39,7 +39,6 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 		
 		
 		if(RequestHandler.deleteCookie(response)) {
-			RedisHandler.redisTest();
 
 		    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
 		}else{

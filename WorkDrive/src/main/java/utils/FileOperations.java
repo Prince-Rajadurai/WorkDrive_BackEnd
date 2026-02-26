@@ -195,12 +195,11 @@ public class FileOperations {
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId , "FILE" });
 			String filePath = "";
 			while (res.next()) {
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
 				file = new Path(filePath);
-				System.out.println(file + "File");
 				status = fs.getFileStatus(file);
 				fileSize += status.getLen();
 			}
@@ -227,44 +226,6 @@ public class FileOperations {
 	}
 
 
-//	File size
-	public static String getFileSize(String filePath) throws IOException {
-		
-
-		    Path file = new Path(filePath);
-		    FileStatus status = fs.getFileStatus(file);
-
-		long fileSize = status.getLen();
-		double sizeVal = fileSize;
-		String size = fileSize + " B";
-		double conversionVal = 1024.0;
-
-		if (sizeVal >= 1024) {
-			sizeVal = sizeVal / conversionVal;
-			size = String.format("%.2f KB", sizeVal);
-
-			if (sizeVal >= 1024) {
-				sizeVal = sizeVal / conversionVal;
-				size = String.format("%.2f KB", sizeVal);
-
-				if (sizeVal >= 1024) {
-					sizeVal = sizeVal / conversionVal;
-					size = String.format("%.2f MB", sizeVal);
-
-					if (sizeVal >= 1024) {
-						sizeVal = sizeVal / conversionVal;
-						size = String.format("%.2f GB", sizeVal);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			size = "0 KB";
-		}
-
-		return size;
-
-	}
 
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
