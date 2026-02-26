@@ -67,7 +67,7 @@ public class Queries {
 	
 	public static final String GET_FILE_VERSION = "SELECT MAX(" + VERSION_NUMBER + ") AS max_version FROM " + VERSION_TABLE_NAME +" WHERE " + VERSION_DFS_ID + " = ?";
 	
-	public static final String GET_ALL_FILES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? ";
+	public static final String GET_ALL_FILES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ?";
 	
 	public static final String UPDATE_FILE_PARENT_ID = "UPDATE "+RESOURCE_TABLE+" SET "+PARENT_ID+" = ? , "+RESOURCE_NAME+" = ? WHERE "+RESOURCE_ID+" = ?";
 	

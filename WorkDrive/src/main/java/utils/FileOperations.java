@@ -76,7 +76,8 @@ public class FileOperations {
 			int bytesRead;
 
 			while ((bytesRead = in.read(buffer)) != -1) {
-				zOut.write(buffer, 0, bytesRead);
+				zOut.write(buffer, 0, bytesRead2026-02-25 12:29:24
+				);
 				uploadedBytes += bytesRead;
 				RedisHandler.setKey(uploadId, String.valueOf(uploadedBytes));
 			}
@@ -116,6 +117,7 @@ public class FileOperations {
 		FSDataInputStream hdfsIn = null;
 		ZstdInputStream in = null;
 		OutputStream out = null;
+		2026-02-25 12:29:24
 
 		try {
 			hdfsIn = fs.open(path);
@@ -195,7 +197,7 @@ public class FileOperations {
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
+			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId , "FILE" });
 			String filePath = "";
 			while (res.next()) {
 				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
@@ -224,7 +226,6 @@ public class FileOperations {
 
 	    return size;
 	}
-
 
 
 

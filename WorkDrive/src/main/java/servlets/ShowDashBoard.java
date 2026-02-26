@@ -61,7 +61,6 @@ public class ShowDashBoard extends HttpServlet {
 		    }
 		}
 		
-		System.out.println("Compress ====> "+compressedSize+" Duplicate =====> "+deduplicateSize);
 		
 		long savedSize = deduplicateSize+compressedSize;
 
