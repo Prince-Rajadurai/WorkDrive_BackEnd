@@ -19,6 +19,7 @@ import constants.Queries;
 import databasemanager.QueryHandler;
 import utils.Resource;
 import utils.Resources;
+import utils.SearchObject;
 import utils.SnowflakeIdGenerator;
 import utils.Versions;
 
@@ -775,15 +776,16 @@ public class ResourceManager {
 		ResultSet rs=QueryHandler.executeQuerry(Queries.SEARCH_RESOURCES, new Object[] {userId,param,param,param,param,param,param});
 		
 		while(rs.next()) {
-			if(rs.getString("type") == "FILE") {
-				files.add();
+			if(rs.getString("type").equals("FILE")) {
+				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type")).toJson());
+			}else {
+				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type")).toJson());
 			}
 		}
 		
-		
 		JSONObject obj=new JSONObject();
-		obj.put("files", files);
 		obj.put("folders", folders);
+		obj.put("files", files);
 		return obj;
 	}
 
