@@ -777,9 +777,9 @@ public class ResourceManager {
 		
 		while(rs.next()) {
 			if(rs.getString("type").equals("FILE")) {
-				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type")).toJson());
+				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone")).toJson());
 			}else {
-				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type")).toJson());
+				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone")).toJson());
 			}
 		}
 		

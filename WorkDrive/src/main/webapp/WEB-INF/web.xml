@@ -35,6 +35,10 @@
 		<filter-name>CheckExsistFile</filter-name>
 		<url-pattern>/secure/*</url-pattern>
 	</filter-mapping>
+	
+	<listener>
+		<listener-class>Listeners.AppShutdownListener</listener-class>
+	</listener>
 
 	<!-- Servlets -->
 	<servlet>
