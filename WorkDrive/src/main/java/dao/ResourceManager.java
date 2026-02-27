@@ -690,18 +690,40 @@ public class ResourceManager {
 		return result > 0;
 
 	}
+	
+	public static boolean updateChild(long folderId) {
+
+		int result = 0;
+		try {
+			result = QueryHandler.executeUpdate(Queries.UPDATE_CHILDS, new Object[] { "active" , folderId , "ParentInactive" });
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
 
 	public static ArrayList<JSONObject> showTrashItems(long userId, String timezone) {
 
 		ResultSet res = QueryHandler.executeQuerry(Queries.SELECT_ALL_TRASH_FILES, new Object[] { userId, "inactive" });
 		ArrayList<JSONObject> trashResources = new ArrayList<JSONObject>();
+		long innerChildSize = 0;
 
 		try {
 			while (res.next()) {
-				trashResources
-						.add(new Resources(res.getString(ColumnNames.RESOURCE_NAME), res.getLong(ColumnNames.PARENT_ID),
-								res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE), res.getLong(ColumnNames.RESOURCE_ID),
-								res.getLong(ColumnNames.MODIFIED_TIME),res.getString(ColumnNames.RESOURCE_TYPE), timezone).getJsonData());
+				if(res.getString(ColumnNames.RESOURCE_TYPE).equals("FILE")) {
+					trashResources.add(new Resources(res.getString(ColumnNames.RESOURCE_NAME), res.getLong(ColumnNames.PARENT_ID),
+							res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE), res.getLong(ColumnNames.RESOURCE_ID),
+							res.getLong(ColumnNames.MODIFIED_TIME),res.getString(ColumnNames.RESOURCE_TYPE), timezone).getJsonData());
+				}
+				else {
+					ResultSet result = QueryHandler.executeQuerry(Queries.SELECT_ALL_INACTIVE_CHILD, new Object[] {userId , res.getLong(ColumnNames.RESOURCE_ID) , "FILE" , "ParentInactive"});
+					if(result.next()) {
+						innerChildSize = result.getLong("size");
+					}
+					trashResources.add(new Resources(res.getString(ColumnNames.RESOURCE_NAME), res.getLong(ColumnNames.PARENT_ID),
+							innerChildSize, res.getLong(ColumnNames.RESOURCE_ID),
+							res.getLong(ColumnNames.MODIFIED_TIME),res.getString(ColumnNames.RESOURCE_TYPE), timezone).getJsonData());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -769,6 +791,24 @@ public class ResourceManager {
 		int res = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_STATUS, new Object[] { "inactive", folderId });
 		int res1 = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_FILES_STATUS,new Object[] { "ParentInactive", folderId, "active" });
 		return true;
+	}
+	
+	public static boolean updateFolder(long folderId) {
+		int res = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_STATUS, new Object[] { "active", folderId });
+		return res>0;
+	}
+	
+	public static long getSize(long fileId) {
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_SIZE, new Object[] {fileId});
+		try {
+			if(res.next()) {
+				return res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

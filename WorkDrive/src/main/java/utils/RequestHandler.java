@@ -99,12 +99,13 @@ public class RequestHandler {
 		return responseObject.toString();
 	}
 
-	public static String sendResponse(int statusCode, String storage, String size, ArrayList<JSONObject> versions) {
+	public static String sendResponse(int statusCode, String storage, String size, ArrayList<JSONObject> versions , String compressSize) {
 		JSONObject responseObject = new JSONObject();
 		responseObject.put("StatusCode", statusCode);
 		responseObject.put("storage", storage);
 		responseObject.put("size", size);
 		responseObject.put("versions", versions);
+		responseObject.put("compressSize", compressSize);
 		return responseObject.toString();
 	}
 	

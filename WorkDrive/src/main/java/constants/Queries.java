@@ -121,5 +121,11 @@ public class Queries {
 	
 	public static final String UPDATE_FOLDER_FILES_STATUS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+PARENT_ID+" = ? AND "+RESOURCE_STATUS+" = ? ";
 	
+	public static final String UPDATE_CHILDS = "UPDATE "+RESOURCE_TABLE+" SET "+RESOURCE_STATUS+" = ? WHERE "+PARENT_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	
+	public static final String GET_SIZE = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ?";
+	
+	public static final String SELECT_ALL_INACTIVE_CHILD = "SELECT SUM(D."+DFS_FILE_SIZE+") AS size FROM "+DFS_TABLE_NAME+" D JOIN "+RESOURCE_TABLE+" R ON R."+RESOURCE_ID+" = D."+DFS_FILE_ID+" WHERE R."+USER_ID+" = ? AND R."+PARENT_ID+" = ? AND R."+RESOURCE_TYPE+" = ? AND R."+RESOURCE_STATUS+" = ?";
+	
 }
 
