@@ -31,6 +31,7 @@ public class AccountsManager {
 	public static boolean validateUser(String email, String password) throws Exception {
 		String encryptPass;
 		encryptPass = new PasswordHashing().passwordHashing(password);
+		System.out.println(encryptPass);
 
 		ResultSet rs = QueryHandler.executeQuerry(Queries.VALIDATE_USER, new Object[] { email, encryptPass });
 		rs.next();

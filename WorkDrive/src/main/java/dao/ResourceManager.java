@@ -79,8 +79,6 @@ public class ResourceManager {
 		String sortorder = "ASC";
 		if (sortBy.equalsIgnoreCase("name")) {
 			sortColumn = ColumnNames.RESOURCE_NAME;
-		} else if (sortBy.equalsIgnoreCase("size")) {
-			sortColumn = ColumnNames.RESOURCE_ORIGINAL_SIZE;
 		} else if (sortBy.equalsIgnoreCase("createdTime")) {
 			sortColumn = ColumnNames.CREATED_TIME;
 		} else if (sortBy.equalsIgnoreCase("lastModifiedTime")) {

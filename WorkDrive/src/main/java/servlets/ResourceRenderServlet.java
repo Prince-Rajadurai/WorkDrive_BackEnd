@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import utils.RequestHandler;
+import utils.Resources;
+import utils.File;
 import dao.AccountsManager;
 import dao.ResourceManager;
 
@@ -82,16 +84,8 @@ public class ResourceRenderServlet extends HttpServlet {
             if (fetchingFolders) {
             	ArrayList<JSONObject> Folders = ResourceManager.getResources("FOLDER", parentId, userId, folderCursor, fetchLimit, sortBy, sortOrder);
             	for (JSONObject folder : Folders) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", String.valueOf(folder.getLong("resourceId")));
-                    obj.put("name", folder.getString("resourceName"));
-                    obj.put("type", "FOLDER");
-                    obj.put("createdTime", folder.getString("createdTime"));
-                    obj.put("modifiedTime", folder.getString("modifiedTime"));
-                    obj.put("size", folder.getString("size"));
-                    obj.put("files", folder.getInt("files"));
-                    obj.put("folders", folder.getInt("folders"));
-                    resources.add(obj);
+            		JSONObject obj = Resources.addingJson(folder);
+            		resources.add(obj);            		
                 }
             	if (Folders.size() > limit) {
             		hasMoreFolders = true;
@@ -107,13 +101,7 @@ public class ResourceRenderServlet extends HttpServlet {
             if (remainingLimit > 0) {
             	ArrayList<JSONObject> Files = ResourceManager.getResources("FILE", parentId, userId, fileCursor, remainingLimit + 1, sortBy, sortOrder);
             	for (JSONObject file : Files) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", String.valueOf(file.getLong("id")));
-                    obj.put("name", file.getString("filename"));
-                    obj.put("type", "FILE");
-                    obj.put("createdTime", file.getString("createTime"));
-                    obj.put("modifiedTime", file.getString("modifiedTime"));
-                    obj.put("size", file.getString("size"));
+                    JSONObject obj = File.addingJson(file);
                     resources.add(obj);
                 }
             	if (Files.size() > remainingLimit) {

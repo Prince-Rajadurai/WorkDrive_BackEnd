@@ -30,4 +30,18 @@ public class Resources {
 		
 		return obj;
 	}
+	
+	public static JSONObject addingJson(JSONObject resource) {
+		JSONObject obj = new JSONObject();
+        obj.put("id", String.valueOf(resource.getLong("resourceId")));
+        obj.put("name", resource.getString("resourceName"));
+        obj.put("type", "FOLDER");
+        obj.put("createdTime", resource.getString("createdTime"));
+        obj.put("modifiedTime", resource.getString("modifiedTime"));
+        obj.put("size", resource.getString("size"));
+        System.out.println("Resource"+resource.getString("size"));
+        obj.put("files", resource.getInt("files"));
+        obj.put("folders", resource.getInt("folders"));
+		return obj;
+	}
 }
