@@ -79,7 +79,6 @@ public class FileOperations {
 				zOut.write(buffer, 0, bytesRead);
 				uploadedBytes += bytesRead;
 				RedisHandler.setKey(uploadId, String.valueOf(uploadedBytes));
-				System.out.println(RedisHandler.getKey(uploadId));
 			}
 
 			RedisHandler.setKey(uploadId, "DONE");
@@ -117,6 +116,7 @@ public class FileOperations {
 		FSDataInputStream hdfsIn = null;
 		ZstdInputStream in = null;
 		OutputStream out = null;
+		
 
 		try {
 			hdfsIn = fs.open(path);

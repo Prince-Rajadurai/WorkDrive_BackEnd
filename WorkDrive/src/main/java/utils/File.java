@@ -55,7 +55,6 @@ public class File {
         obj.put("createdTime", file.getString("createTime"));
         obj.put("modifiedTime", file.getString("modifiedTime"));
         obj.put("size", file.getString("size"));
-        System.out.println("File"+file.getString("size"));
         return obj;
     }
     
