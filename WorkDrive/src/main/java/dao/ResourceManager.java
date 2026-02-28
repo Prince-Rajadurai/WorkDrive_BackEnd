@@ -12,6 +12,7 @@ import utils.File;
 import utils.FileOperations;
 import utils.GetUserId;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import constants.ColumnNames;
@@ -19,6 +20,7 @@ import constants.Queries;
 import databasemanager.QueryHandler;
 import utils.Resource;
 import utils.Resources;
+import utils.SearchObject;
 import utils.SnowflakeIdGenerator;
 import utils.Versions;
 
@@ -124,6 +126,23 @@ public class ResourceManager {
 			}
 		}
 		return resources;
+	}
+	
+	public static JSONObject getResourceBasicInfo(long resourceId) throws JSONException, SQLException {
+		ResultSet rs = QueryHandler.executeQuerry(Queries.GET_RESOURCE_BASIC, new Object[] { resourceId });
+		if (rs.next()) {
+			JSONObject obj = new JSONObject();
+			obj.put("id", rs.getLong("ResourceId"));
+			obj.put("name", rs.getString("ResourceName"));
+			Long parentId = (Long) rs.getObject("ParentId");
+			if (parentId == null) {
+				obj.put("parentId", JSONObject.NULL);
+			} else {
+				obj.put("parentId", parentId);
+			}
+			return obj;
+		}
+		return null;
 	}
 
 	public static boolean existResourceName(long userId, long parentId, String resourceName) throws SQLException {
@@ -789,6 +808,25 @@ public class ResourceManager {
 		int res = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_STATUS, new Object[] { "inactive", folderId });
 		int res1 = QueryHandler.executeUpdate(Queries.UPDATE_FOLDER_FILES_STATUS,new Object[] { "ParentInactive", folderId, "active" });
 		return true;
+	}
+	
+	public static JSONObject getSearchResources(String param, long userId) throws SQLException {
+		ArrayList<JSONObject> files=new ArrayList<>();
+		ArrayList<JSONObject> folders=new ArrayList<>();
+		ResultSet rs=QueryHandler.executeQuerry(Queries.SEARCH_RESOURCES, new Object[] {userId,param,param,param,param,param,param});
+		
+		while(rs.next()) {
+			if(rs.getString("type").equals("FILE")) {
+				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
+			}else {
+				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
+			}
+		}
+		
+		JSONObject obj=new JSONObject();
+		obj.put("folders", folders);
+		obj.put("files", files);
+		return obj;
 	}
 	
 	public static boolean updateFolder(long folderId) {
