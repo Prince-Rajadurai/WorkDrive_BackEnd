@@ -65,7 +65,7 @@ public class ShowDashBoard extends HttpServlet {
 		long savedSize = deduplicateSize+compressedSize;
 
 		
-		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(deduplicateSize),FileOperations.converFileSizeToString(compressedSize) ,FileOperations.converFileSizeToString(savedSize), files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage , storage , compress , folderCount));
+		response.getWriter().write(RequestHandler.sendResponse(200,FileOperations.converFileSizeToString(storage),FileOperations.converFileSizeToString(deduplicateSize),FileOperations.converFileSizeToString(compressedSize) ,FileOperations.converFileSizeToString(savedSize), files , files-dFiles, storagePercentage , duplicateFilePercentage , duplicateSizePercentage , storage , compressedSize , deduplicateSize , folderCount));
 		
 	}
 

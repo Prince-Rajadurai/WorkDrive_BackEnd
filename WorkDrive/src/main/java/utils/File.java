@@ -16,13 +16,15 @@ public class File {
     private long modifiedTime;
     private Long fileId;
     private String timeZone;
+    private long size;
     
-    public File(String filename , long createdTime , long modifiedTime , long fileId , String timeZone) {
+    public File(String filename , long createdTime , long modifiedTime , long fileId ,long size, String timeZone) {
     	
     	this.filename = filename;
     	this.createdTime = createdTime;
     	this.modifiedTime = modifiedTime;
     	this.fileId = fileId;
+    	this.size = size;
     	this.timeZone = timeZone;
     	
     }
@@ -33,18 +35,12 @@ public class File {
     	        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     	
     	JSONObject resObject = new JSONObject(); 
-    	
-    	String filePath = ResourceManager.getFilePath(fileId);
 
     	
     	resObject.put("filename", filename);
     	resObject.put("createTime", TimeConversion.convertMillisToFormattedDate(createdTime, timeZone));
     	resObject.put("modifiedTime", TimeConversion.convertMillisToFormattedDate(modifiedTime, timeZone));
-    	try {
-			resObject.put("size", FileOperations.getFileSize(filePath));
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
+    	resObject.put("size", FileOperations.converFileSizeToString(size));
     	resObject.put("id", String.valueOf(fileId));
     	
     	return resObject;

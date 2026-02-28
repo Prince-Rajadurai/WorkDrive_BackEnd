@@ -199,10 +199,7 @@ public class FileOperations {
 			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId , "FILE" });
 			String filePath = "";
 			while (res.next()) {
-				filePath = ResourceManager.getFilePath(res.getLong(ColumnNames.RESOURCE_ID));
-				file = new Path(filePath);
-				status = fs.getFileStatus(file);
-				fileSize += status.getLen();
+				fileSize += res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
 			}
 
 			double conversionVal = 1024.0;

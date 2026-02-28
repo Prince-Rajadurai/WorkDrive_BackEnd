@@ -119,7 +119,7 @@ public class ResourceManager {
 			ResultSet fileResultSet = QueryHandler.executeQuerry(query, new Object[] { parentId, "FILE", "active", cursor, limit });
 			while (fileResultSet.next()) {
 				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"),
-						fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"), timeZone);
+						fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"),fileResultSet.getLong("originalSize"), timeZone);
 				resources.add(file.getFileData());
 			}
 		}
