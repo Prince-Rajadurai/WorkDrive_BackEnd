@@ -15,7 +15,6 @@ public class DBConnection {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/Workdrive", "root","Prince-zoho1");
 		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

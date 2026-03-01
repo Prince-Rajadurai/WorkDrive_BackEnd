@@ -35,6 +35,10 @@
 		<filter-name>CheckExsistFile</filter-name>
 		<url-pattern>/secure/*</url-pattern>
 	</filter-mapping>
+	
+	<listener>
+		<listener-class>Listeners.AppShutdownListener</listener-class>
+	</listener>
 
 	<!-- Servlets -->
 	<servlet>
@@ -172,20 +176,6 @@
 		<servlet-name>RestoreServlet</servlet-name>
 		<servlet-class>servlets.RestoreServlet</servlet-class>
 	</servlet>
-	<servlet>
-		<description>
-		</description>
-		<display-name>SearchBarServlet</display-name>
-		<servlet-name>SearchBarServlet</servlet-name>
-		<servlet-class>servlets.SearchBarServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<description>
-		</description>
-		<display-name>BreadCrumbServlet</display-name>
-		<servlet-name>BreadCrumbServlet</servlet-name>
-		<servlet-class>servlets.BreadCrumbServlet</servlet-class>
-	</servlet>
 
 	<!-- Servlet Mappings -->
 	<servlet-mapping>
@@ -291,14 +281,6 @@
 	<servlet-mapping>
 		<servlet-name>RestoreServlet</servlet-name>
 		<url-pattern>/RestoreServlet</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SearchBarServlet</servlet-name>
-		<url-pattern>/SearchBarServlet</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>BreadCrumbServlet</servlet-name>
-		<url-pattern>/BreadCrumbServlet</url-pattern>
 	</servlet-mapping>
 
 	<!-- Welcome Files -->

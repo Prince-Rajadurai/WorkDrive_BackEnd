@@ -817,9 +817,15 @@ public class ResourceManager {
 		
 		while(rs.next()) {
 			if(rs.getString("type").equals("FILE")) {
+<<<<<<< HEAD
 				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
 			}else {
 				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
+=======
+				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone")).toJson());
+			}else {
+				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone")).toJson());
+>>>>>>> 4ce80fe79a817488a86a707eec7e2a8019367f7a
 			}
 		}
 		

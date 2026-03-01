@@ -39,7 +39,6 @@ public class LogoutServlet extends HttpServlet implements Servlet {
 		
 		
 		if(RequestHandler.deleteCookie(response)) {
-
 		    response.getWriter().write(RequestHandler.sendResponse(200, "Loged out successfully"));
 		}else{
 			 response.getWriter().write(RequestHandler.sendResponse(400, "Log out failed"));
