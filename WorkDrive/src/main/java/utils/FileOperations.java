@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.zip.GZIPOutputStream;
 
@@ -31,7 +32,6 @@ import constants.Queries;
 import dao.ResourceManager;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-
 
 public class FileOperations {
 
@@ -116,7 +116,6 @@ public class FileOperations {
 		FSDataInputStream hdfsIn = null;
 		ZstdInputStream in = null;
 		OutputStream out = null;
-		
 
 		try {
 			hdfsIn = fs.open(path);
@@ -196,34 +195,44 @@ public class FileOperations {
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId , "FILE" });
-			String filePath = "";
-			while (res.next()) {
-				fileSize += res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
-			}
+			fileSize = getSubFolderSize(folderId);
 
 			double conversionVal = 1024.0;
 
-	        double sizeVal = fileSize;
-	        String[] units = {"B", "KB", "MB", "GB", "TB"};
-	        int index = 0;
+			double sizeVal = fileSize;
+			String[] units = { "B", "KB", "MB", "GB", "TB" };
+			int index = 0;
 
-	        while (sizeVal >= 1024 && index < units.length - 1) {
-	            sizeVal = sizeVal / 1024;
-	            index++;
-	        }
+			while (sizeVal >= 1024 && index < units.length - 1) {
+				sizeVal = sizeVal / 1024;
+				index++;
+			}
 
-	        size = String.format("%.2f %s", sizeVal, units[index]);
+			size = String.format("%.2f %s", sizeVal, units[index]);
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        size = "0 B";
-	    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			size = "0 B";
+		}
 
-	    return size;
+		return size;
 	}
 
-
+	public static long getSubFolderSize(long folderId) throws SQLException {
+		long folderSize = 0;
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
+		
+		String filePath = "";
+		while (res.next()) {
+			if (res.getString("type").equals("FILE")) {
+				folderSize += res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
+			} else {
+				folderSize += getSubFolderSize(res.getLong("ResourceId"));
+			}
+		}
+		return folderSize;
+	}
 //	File size
 //	public static String getFileSize(String filePath) throws IOException {
 //		
@@ -270,21 +279,21 @@ public class FileOperations {
 		FileStatus status = fs.getFileStatus(file);
 		double conversionVal = 1024.0;
 
-		    long fileSize = status.getLen();
-		    if (fileSize <= 0) {
-		        return "0 B";
-		    }
+		long fileSize = status.getLen();
+		if (fileSize <= 0) {
+			return "0 B";
+		}
 
-		    final String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
-		    double size = fileSize;
-		    int unitIndex = 0;
+		final String[] units = { "B", "KB", "MB", "GB", "TB", "PB" };
+		double size = fileSize;
+		int unitIndex = 0;
 
-		    while (size >= 1024 && unitIndex < units.length - 1) {
-		        size /= 1024.0;
-		        unitIndex++;
-		    }
+		while (size >= 1024 && unitIndex < units.length - 1) {
+			size /= 1024.0;
+			unitIndex++;
+		}
 
-		    return String.format("%.2f %s", size, units[unitIndex]);
+		return String.format("%.2f %s", size, units[unitIndex]);
 
 	}
 
@@ -306,20 +315,20 @@ public class FileOperations {
 
 	public static String converFileSizeToString(long fileSize) {
 
-	    if (fileSize <= 0) {
-	        return "0 B";
-	    }
+		if (fileSize <= 0) {
+			return "0 B";
+		}
 
-	    final String[] units = {"B", "KB", "MB", "GB", "TB", "PB"};
-	    double size = fileSize;
-	    int unitIndex = 0;
+		final String[] units = { "B", "KB", "MB", "GB", "TB", "PB" };
+		double size = fileSize;
+		int unitIndex = 0;
 
-	    while (size >= 1024 && unitIndex < units.length - 1) {
-	        size /= 1024.0;
-	        unitIndex++;
-	    }
+		while (size >= 1024 && unitIndex < units.length - 1) {
+			size /= 1024.0;
+			unitIndex++;
+		}
 
-	    return String.format("%.2f %s", size, units[unitIndex]);
+		return String.format("%.2f %s", size, units[unitIndex]);
 	}
 
 //	public static boolean moveFile(String oldFolder, String newFolder, String filename , long fileId) throws IOException {
