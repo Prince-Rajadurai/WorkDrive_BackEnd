@@ -95,10 +95,25 @@ public class ResourceManager {
 		if (userDetails.next()) {
 			timeZone = userDetails.getString("TimeZone");
 		}
-
 		if (type.equalsIgnoreCase("Folder")) {
-			String query = String.format(Queries.GET_RESOURCES_SORTED, sortColumn, sortorder);
-			ResultSet folderResultSet = QueryHandler.executeQuerry(query, new Object[] { parentId, "FOLDER", "active", cursor, limit });
+			String cursorCondition = "";
+			Object[] params;
+
+			if (cursor > 0) {
+			    cursorCondition = " AND ResourceId < ? ";
+			    params = new Object[]{ parentId, "FOLDER", "active", cursor, limit };
+			} else {
+			    params = new Object[]{ parentId, "FOLDER", "active", limit };
+			}
+
+			String query = String.format(
+			    Queries.GET_RESOURCES_SORTED,
+			    cursorCondition,
+			    sortColumn,
+			    sortorder
+			);
+
+			ResultSet folderResultSet = QueryHandler.executeQuerry(query, params);
 			while (folderResultSet.next()) {
 				ResultSet tempRs = QueryHandler.executeQuerry(Queries.GET_ALL_CONTAINS,
 						new Object[] { folderResultSet.getLong("ResourceId"), "FILE",
@@ -117,8 +132,24 @@ public class ResourceManager {
 				resources.add(resource.toJson());
 			}
 		} else if (type.equalsIgnoreCase("File")) {
-			String query = String.format(Queries.GET_RESOURCES_SORTED, sortColumn, sortorder);
-			ResultSet fileResultSet = QueryHandler.executeQuerry(query, new Object[] { parentId, "FILE", "active", cursor, limit });
+			String cursorCondition = "";
+			Object[] params;
+
+			if (cursor > 0) {
+			    cursorCondition = " AND ResourceId < ? ";
+			    params = new Object[]{ parentId, "FILE", "active", cursor, limit };
+			} else {
+			    params = new Object[]{ parentId, "FILE", "active", limit };
+			}
+
+			String query = String.format(
+			    Queries.GET_RESOURCES_SORTED,
+			    cursorCondition,
+			    sortColumn,
+			    sortorder
+			);
+
+			ResultSet fileResultSet = QueryHandler.executeQuerry(query, params);
 			while (fileResultSet.next()) {
 				File file = new File(fileResultSet.getString("ResourceName"), fileResultSet.getLong("CreatedTime"),
 						fileResultSet.getLong("LastModifiedTime"), fileResultSet.getLong("ResourceId"),fileResultSet.getLong("originalSize"), timeZone);

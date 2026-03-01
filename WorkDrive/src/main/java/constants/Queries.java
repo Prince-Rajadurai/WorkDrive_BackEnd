@@ -17,7 +17,7 @@ public class Queries {
 
 	public static final String GET_RESOURCES="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_STATUS+" = ? AND "+RESOURCE_ID+" > ? ORDER BY "+RESOURCE_ID+" ASC LIMIT ?";
 	
-	public static final String GET_RESOURCES_SORTED="SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" = ? AND "+RESOURCE_TYPE+" = ? AND "+RESOURCE_STATUS+" = ? AND "+RESOURCE_ID+" > ? ORDER BY %s %s LIMIT ?";
+	public static final String GET_RESOURCES_SORTED = "SELECT * FROM " + RESOURCE_TABLE + " WHERE " + PARENT_ID + " = ? AND " + RESOURCE_TYPE + " = ? AND " + RESOURCE_STATUS + " = ? %s ORDER BY %s %s LIMIT ?";
 	
 	public static final String GET_ROOT_ID= "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+PARENT_ID+" IS NULL AND "+USER_ID+" = ?";
 	

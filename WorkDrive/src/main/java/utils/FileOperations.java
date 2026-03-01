@@ -223,46 +223,6 @@ public class FileOperations {
 	    return size;
 	}
 
-
-//	File size
-//	public static String getFileSize(String filePath) throws IOException {
-//		
-//
-//		    Path file = new Path(filePath);
-//		    FileStatus status = fs.getFileStatus(file);
-//
-//		long fileSize = status.getLen();
-//		double sizeVal = fileSize;
-//		String size = fileSize + " B";
-//		double conversionVal = 1024.0;
-//
-//		if (sizeVal >= 1024) {
-//			sizeVal = sizeVal / conversionVal;
-//			size = String.format("%.2f KB", sizeVal);
-//
-//			if (sizeVal >= 1024) {
-//				sizeVal = sizeVal / conversionVal;
-//				size = String.format("%.2f KB", sizeVal);
-//
-//				if (sizeVal >= 1024) {
-//					sizeVal = sizeVal / conversionVal;
-//					size = String.format("%.2f MB", sizeVal);
-//
-//					if (sizeVal >= 1024) {
-//						sizeVal = sizeVal / conversionVal;
-//						size = String.format("%.2f GB", sizeVal);
-//					}
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			size = "0 KB";
-//		}
-//
-//		return size;
-//
-//	}
-
 //	File size
 	public static String getFileSize(String filePath) throws IOException {
 

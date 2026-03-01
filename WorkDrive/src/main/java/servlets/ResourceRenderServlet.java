@@ -65,7 +65,7 @@ public class ResourceRenderServlet extends HttpServlet {
             String sortBy = request.getParameter("sortBy");
             if (sortBy == null || sortBy.equalsIgnoreCase("null")) sortBy = "name";
             String sortOrder = request.getParameter("sortOrder");
-            if (sortBy == null || sortOrder.equalsIgnoreCase("null")) sortOrder = "asc";
+            if (sortOrder == null || sortOrder.equalsIgnoreCase("null")) sortOrder = "asc";
             
             ArrayList<JSONObject> resources = new ArrayList<>();
             long lastFolderCursor = folderCursor;
@@ -76,10 +76,10 @@ public class ResourceRenderServlet extends HttpServlet {
             
             boolean fetchingFolders = folderCursor != -1;
             
-            if (!sortBy.equalsIgnoreCase("resourceId")) {
-            	folderCursor = 0;
-            	fileCursor = 0;
-            }
+//            if (!sortBy.equalsIgnoreCase("resourceId")) {
+//            	folderCursor = 0;
+//            	fileCursor = 0;
+//            }
             
             if (fetchingFolders) {
             	ArrayList<JSONObject> Folders = ResourceManager.getResources("FOLDER", parentId, userId, folderCursor, fetchLimit, sortBy, sortOrder);
