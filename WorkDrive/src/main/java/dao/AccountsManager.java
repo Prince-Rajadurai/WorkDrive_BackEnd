@@ -63,20 +63,22 @@ public class AccountsManager {
 		return null;
 	}
 	
-	public static boolean updateUser(String name,String timeZone,String encryptedPassword,long userId) {
-		int result;
+	public static boolean updateUser(String name, String timeZone, String encryptedPassword, long userId) {
+	    int result;
+	    
+	    if (encryptedPassword != null && !encryptedPassword.isBlank()) {
+	        result = QueryHandler.executeUpdate(
+	            Queries.UPDATE_PROFILE_WITH_PASSWORD,
+	            new Object[] { name, timeZone, encryptedPassword, userId }
+	        );
+	    } else {
+	        result = QueryHandler.executeUpdate(
+	            Queries.UPDATE_PROFILE,
+	            new Object[] { name, timeZone, userId }
+	        );
+	    }
 
-		if (encryptedPassword != null) {
-
-			result = QueryHandler.executeUpdate(Queries.UPDATE_PROFILE_WITH_PASSWORD,
-					new Object[] { name, timeZone, encryptedPassword, userId });
-
-		} else {
-
-			result = QueryHandler.executeUpdate(Queries.UPDATE_PROFILE,new Object[] {name, timeZone, userId});
-		}
-		
-		return result>0;
+	    return result > 0;
 	}
 
 }

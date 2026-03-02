@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.zip.GZIPOutputStream;
 
@@ -196,31 +197,43 @@ public class FileOperations {
 
 		try {
 
-			ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId , "FILE" });
-			String filePath = "";
-			while (res.next()) {
-				fileSize += res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
-			}
+			fileSize = getSubFolderSize(folderId);
 
 			double conversionVal = 1024.0;
 
-	        double sizeVal = fileSize;
-	        String[] units = {"B", "KB", "MB", "GB", "TB"};
-	        int index = 0;
+			double sizeVal = fileSize;
+			String[] units = { "B", "KB", "MB", "GB", "TB" };
+			int index = 0;
 
-	        while (sizeVal >= 1024 && index < units.length - 1) {
-	            sizeVal = sizeVal / 1024;
-	            index++;
-	        }
+			while (sizeVal >= 1024 && index < units.length - 1) {
+				sizeVal = sizeVal / 1024;
+				index++;
+			}
 
-	        size = String.format("%.2f %s", sizeVal, units[index]);
+			size = String.format("%.2f %s", sizeVal, units[index]);
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        size = "0 B";
-	    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			size = "0 B";
+		}
 
-	    return size;
+		return size;
+	}
+
+	public static long getSubFolderSize(long folderId) throws SQLException {
+		long folderSize = 0;
+		
+		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES, new Object[] { folderId });
+		
+		String filePath = "";
+		while (res.next()) {
+			if (res.getString("type").equals("FILE")) {
+				folderSize += res.getLong(ColumnNames.RESOURCE_ORIGINAL_SIZE);
+			} else {
+				folderSize += getSubFolderSize(res.getLong("ResourceId"));
+			}
+		}
+		return folderSize;
 	}
 
 
