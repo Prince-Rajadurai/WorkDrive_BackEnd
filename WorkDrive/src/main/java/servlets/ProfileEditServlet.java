@@ -105,20 +105,22 @@ public class ProfileEditServlet extends HttpServlet implements Servlet {
 					return;
 				}
 
-				if (password != "" && Validations.passwordValidation(password)) {
-					response.getWriter().write(RequestHandler.sendResponse(400,
-							"Password must be strong (8 chars, upper, lower, special)"));
-					return;
-				}
-
-				if (!password.equals(confirmPassword)) {
-					response.getWriter().write(RequestHandler.sendResponse(400, "Confirm Password does not match"));
-					return;
-				}
-
 				String encryptedPassword = null;
 
-				encryptedPassword = new PasswordHashing().passwordHashing(password);
+				if (!password.isBlank()) {
+				    if (Validations.passwordValidation(password)) {
+				        response.getWriter().write(RequestHandler.sendResponse(400,
+				                "Password must be strong (8 chars, upper, lower, special)"));
+				        return;
+				    }
+
+				    if (!password.equals(confirmPassword)) {
+				        response.getWriter().write(RequestHandler.sendResponse(400, "Confirm Password does not match"));
+				        return;
+				    }
+
+				    encryptedPassword = new PasswordHashing().passwordHashing(password);
+				}
 
 				if (AccountsManager.updateUser(name, timeZone, encryptedPassword, userId)) {
 					response.getWriter().write(RequestHandler.sendResponse(200, "Profile updated"));
