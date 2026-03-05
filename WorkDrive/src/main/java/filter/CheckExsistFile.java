@@ -83,7 +83,7 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 				boolean updateFileSize = ResourceManager.updateFileSize(checkSum, size);
 				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
 				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion,
-						"/" + folderId + "/" + filename);
+						"/" + folderId + "/" + filename,original_size);
 
 			} else {
 
@@ -94,7 +94,6 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 				if (pathCount != 2) {
 					deleteResult = FileOperations.DeleteFile(filePath);
 				}
-
 				FileOperations.UploadFile(file, folderid, filename, uploadId);
 
 				boolean updatePath = ResourceManager.updateDfsPath("/" + folderId + "/" + filename, checkSum, fileId);
@@ -103,7 +102,7 @@ public class CheckExsistFile extends HttpFilter implements Filter {
 				size = ResourceManager.getFileSize(fileId);
 				int updateVersion = UpdateFileVersion.getUpdatedFileVersion(dfsId);
 				updateFileVersionResult = ResourceManager.addNewFileVersion(dfsId, updateVersion,
-						"/" + folderId + "/" + filename);
+						"/" + folderId + "/" + filename , original_size);
 
 			}
 

@@ -13,7 +13,7 @@ public class DBConnection {
 	private DBConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/Workdrive", "root","Prince-zoho1");
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/WorkDrive", "root","Bass@020305");
 		} catch (SQLException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

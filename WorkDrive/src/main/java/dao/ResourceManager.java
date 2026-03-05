@@ -513,13 +513,13 @@ public class ResourceManager {
 		return 0;
 	}
 
-	public static boolean addNewFileVersion(long dfsId, int version, String path) {
+	public static boolean addNewFileVersion(long dfsId, int version, String path , long size) {
 
 		long id = SnowflakeIdGenerator.nextId();
 		long time = System.currentTimeMillis();
 
 		int updateFileVersionResult = QueryHandler.executeUpdate(Queries.ADD_VERSION,
-				new Object[] { id, version, dfsId, time, FileOperations.getSize(path) });
+				new Object[] { id, version, dfsId, time,  size});
 
 		return updateFileVersionResult > 0 ? true : false;
 	}

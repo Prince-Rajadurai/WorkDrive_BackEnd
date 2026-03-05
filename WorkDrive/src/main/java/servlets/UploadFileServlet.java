@@ -77,7 +77,7 @@ public class UploadFileServlet extends HttpServlet {
 			
 			long fileId = ResourceManager.AddFile( folderId, filename,  userId , original_size); // Add file
 			long dfsId = ResourceManager.addDFSFiles(filepath, checkSum, fileId , folderId , FileOperations.getSize(filepath)); // Add file to dfs
-			boolean res = ResourceManager.addFileVersion(dfsId , FileOperations.getSize(filepath)); // Add file version
+			boolean res = ResourceManager.addFileVersion(dfsId ,original_size); // Add file version
 			
 			if(res) {
 				response.getWriter().write(RequestHandler.sendResponse(200, "File uploaded successfully"));
