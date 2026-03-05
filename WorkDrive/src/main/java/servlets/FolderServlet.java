@@ -19,36 +19,39 @@ import utils.RequestHandler;
 public class FolderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor. 
-     */
-    public FolderServlet() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public FolderServlet() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
 
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String resourceName = requestObject.getString("resourceName");
 
-			
 //			long parentId = Long.parseLong(requestObject.getString("parentId"));
 			Long parentId = null;
 
 			if (requestObject.has("parentId") && !requestObject.isNull("parentId")) {
-			    parentId = requestObject.getLong("parentId");
+				parentId = requestObject.getLong("parentId");
 			}
 
 			Cookie[] cookies = request.getCookies();
@@ -56,21 +59,22 @@ public class FolderServlet extends HttpServlet {
 			long userId = 0;
 
 			if (cookies != null) {
-			    for (Cookie cookie : cookies) {
-			        if ("cookie".equals(cookie.getName())) {
-			            cookieValue = cookie.getValue();
-			            break;
-			        }
-			    }
-			    userId = AccountsManager.getUserId(cookieValue);
+				for (Cookie cookie : cookies) {
+					if ("cookie".equals(cookie.getName())) {
+						cookieValue = cookie.getValue();
+						break;
+					}
+				}
+				userId = AccountsManager.getUserId(cookieValue);
 			}
-			
+
 //			if (!ResourceManager.existResourceName(userId, parentId, resourceName)) {
 			if (parentId == null || !ResourceManager.existResourceName(userId, parentId, resourceName)) {
 				JSONObject resource = ResourceManager.addResource(resourceName, parentId, userId);
 
 				if (resource != null) {
-					response.getWriter().write(RequestHandler.sendResponse(200, "Resource Added successfully", resource));
+					response.getWriter()
+							.write(RequestHandler.sendResponse(200, "Resource Added successfully", resource));
 				} else {
 					response.getWriter().write(
 							RequestHandler.sendResponse(400, "Failed to add resource (Something wrong with Server)"));
@@ -85,10 +89,11 @@ public class FolderServlet extends HttpServlet {
 			response.getWriter().write(RequestHandler.sendResponse(500, "Server error"));
 		}
 	}
-	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
-			
+
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			long resourceId = Long.parseLong(requestObject.getString("resourceId"));
 			if (ResourceManager.deleteResource(resourceId)) {
@@ -103,10 +108,11 @@ public class FolderServlet extends HttpServlet {
 
 		}
 	}
-	
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
-			
+
 			JSONObject requestObject = new JSONObject(RequestHandler.getRequestObjectString(request));
 			String newResourceName = requestObject.getString("newName");
 			long resourceId = Long.parseLong(requestObject.getString("resourceId"));
@@ -123,6 +129,5 @@ public class FolderServlet extends HttpServlet {
 
 		}
 	}
-	
 
 }

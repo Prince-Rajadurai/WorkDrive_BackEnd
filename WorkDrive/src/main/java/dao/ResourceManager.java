@@ -777,10 +777,17 @@ public class ResourceManager {
 	public static long getTrashSize(long userId) {
 		ResultSet res = QueryHandler.executeQuerry(Queries.GET_ALL_FILES_TRASH_SIZE,
 				new Object[] { userId, "inactive" });
+		long size=0;
 		try {
-			if (res.next()) {
-				return res.getLong("size");
+			while(res.next()) {
+				if(res.getString("type").equals("FILE")) {
+				    size+=res.getLong("originalSize");
+				}else {
+					size+=FileOperations.getSubFolderSize(res.getLong("ResourceId"));
+				}
 			}
+			
+			return size;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -811,22 +818,37 @@ public class ResourceManager {
 	}
 	
 	public static JSONObject getSearchResources(String param, long userId) throws SQLException {
-		ArrayList<JSONObject> files=new ArrayList<>();
-		ArrayList<JSONObject> folders=new ArrayList<>();
-		ResultSet rs=QueryHandler.executeQuerry(Queries.SEARCH_RESOURCES, new Object[] {userId,param,param,param,param,param,param});
-		
-		while(rs.next()) {
-			if(rs.getString("type").equals("FILE")) {
-				files.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
-			}else {
-				folders.add(new SearchObject(rs.getLong("ResourceId"),rs.getString("ResourceName"),rs.getString("type"),rs.getLong("CreatedTime"),rs.getLong("LastModifiedTime"),rs.getString("TimeZone"),rs.getLong("ParentId")).toJson());
-			}
-		}
-		
-		JSONObject obj=new JSONObject();
-		obj.put("folders", folders);
-		obj.put("files", files);
-		return obj;
+	    ArrayList<JSONObject> files = new ArrayList<>();
+	    ArrayList<JSONObject> folders = new ArrayList<>();
+	    ResultSet rs = QueryHandler.executeQuerry(
+	        Queries.SEARCH_RESOURCES, 
+	        new Object[]{userId, param, param, param, param, param, param}
+	    );
+
+	    while (rs.next()) {
+	        long resourceId = rs.getLong("ResourceId");
+	        String resourceName = rs.getString("ResourceName");
+	        String type = rs.getString("type");
+	        long createdTime = rs.getLong("CreatedTime");
+	        long modifiedTime = rs.getLong("LastModifiedTime");
+	        String timezone = rs.getString("TimeZone");
+	        long parentId = rs.getLong("ParentId");
+	        SearchObject searchObj = new SearchObject(
+	            resourceId, resourceName, type, createdTime, modifiedTime, timezone, parentId
+	        );
+
+	        if ("FILE".equals(type)) {
+	            files.add(searchObj.toJson());
+	        } else {
+	            folders.add(searchObj.toJson());
+	        }
+	    }
+
+	    JSONObject obj = new JSONObject();
+	    obj.put("folders", folders);
+	    obj.put("files", files);
+
+	    return obj;
 	}
 	
 	public static boolean updateFolder(long folderId) {

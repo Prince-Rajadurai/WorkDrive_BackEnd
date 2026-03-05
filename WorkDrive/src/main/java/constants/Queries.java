@@ -111,7 +111,7 @@ public class Queries {
 	
 	public static final String FIND_PARTCULAR_RESOURCE_COUNT = "SELECT COUNT(*)AS count FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ? AND "+RESOURCE_TYPE+" = ?";
 	
-	public static final String GET_ALL_FILES_TRASH_SIZE = "SELECT SUM("+RESOURCE_ORIGINAL_SIZE+") AS size FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
+	public static final String GET_ALL_FILES_TRASH_SIZE = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+USER_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
 	
 	public static final String CHECK_RESOURCES = "SELECT * FROM "+RESOURCE_TABLE+" WHERE "+RESOURCE_ID+" = ? AND "+RESOURCE_STATUS+" = ?";
 	

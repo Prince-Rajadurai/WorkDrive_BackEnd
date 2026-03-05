@@ -20,7 +20,8 @@ public class RedisHandler {
 
     public static boolean setKey(String key, String value) {
         try (Jedis jedis = new Jedis(HOST, PORT)) {
-            return "OK".equals(jedis.set(key, value));
+            jedis.set(key, value);
+            return true;
         }
     }
 
